@@ -238,7 +238,7 @@ class DeliveryAgentReturnsService {
       case ReturnStatus.DENIED:
         return { label: 'Denied', color: 'bg-red-100 text-red-800' };
       case ReturnStatus.COMPLETED:
-        return { label: 'Completed', color: 'bg-blue-100 text-blue-800' };
+        return { label: 'Completed', color: 'bg-green-100 text-green-800' };
       default:
         return { label: status, color: 'bg-gray-100 text-gray-800' };
     }
@@ -252,7 +252,7 @@ class DeliveryAgentReturnsService {
       case DeliveryStatus.NOT_ASSIGNED:
         return { label: 'Not Assigned', color: 'bg-gray-100 text-gray-800' };
       case DeliveryStatus.ASSIGNED:
-        return { label: 'Assigned', color: 'bg-blue-100 text-blue-800' };
+        return { label: 'Assigned', color: 'bg-green-100 text-green-800' };
       case DeliveryStatus.PICKUP_SCHEDULED:
         return { label: 'Pickup Scheduled', color: 'bg-purple-100 text-purple-800' };
       case DeliveryStatus.PICKUP_IN_PROGRESS:

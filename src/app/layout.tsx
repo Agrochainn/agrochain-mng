@@ -20,8 +20,8 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "ShopSphere Admin",
-  description: "ShopSphere eCommerce Admin Dashboard",
+  title: "Agrochain Admin",
+  description: "Agrochain Agriculture Admin Dashboard",
 };
 
 export default function RootLayout({

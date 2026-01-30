@@ -115,7 +115,7 @@ export default function SystemResetPage() {
       label: "Products",
       description: "All products with variants, images, videos, stocks, batches, cart items, and reviews",
       icon: Package,
-      color: "text-blue-500",
+      color: "text-green-500",
     },
     {
       key: "deleteOrders" as keyof SystemResetSelections,

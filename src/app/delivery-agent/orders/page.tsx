@@ -176,7 +176,7 @@ export default function DeliveryAgentOrdersPage() {
     if (group.hasDeliveryFinished) {
       return { label: "Completed", variant: "default", className: "bg-green-100 text-green-800" };
     } else if (group.hasDeliveryStarted) {
-      return { label: "In Progress", variant: "default", className: "bg-blue-100 text-blue-800" };
+      return { label: "In Progress", variant: "default", className: "bg-green-100 text-green-800" };
     } else {
       return { label: "Pending", variant: "secondary", className: "bg-yellow-100 text-yellow-800" };
     }
@@ -339,12 +339,12 @@ export default function DeliveryAgentOrdersPage() {
 
       {/* Info Banner for History View */}
       {showHistory && filteredGroups.length > 0 && (
-        <div className="bg-blue-50 border border-blue-200 rounded-md p-4">
+        <div className="bg-green-50 border border-green-200 rounded-md p-4">
           <div className="flex items-start gap-3">
-            <History className="h-5 w-5 text-blue-600 mt-0.5" />
+            <History className="h-5 w-5 text-green-600 mt-0.5" />
             <div>
-              <h3 className="font-semibold text-blue-900 mb-1">Viewing Completed Deliveries</h3>
-              <p className="text-sm text-blue-800">
+              <h3 className="font-semibold text-green-900 mb-1">Viewing Completed Deliveries</h3>
+              <p className="text-sm text-green-800">
                 These delivery groups have been marked as finished. You can view order details and notes, but cannot modify delivery status.
               </p>
             </div>

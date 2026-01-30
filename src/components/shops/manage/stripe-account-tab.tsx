@@ -236,15 +236,15 @@ export function StripeAccountTab({
               )}
 
               <div className="pt-4 border-t">
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                  <p className="text-sm font-medium text-blue-900 mb-2">
+                <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                  <p className="text-sm font-medium text-green-900 mb-2">
                     Mock Credentials (Development Only)
                   </p>
-                  <p className="text-xs text-blue-700">
+                  <p className="text-xs text-green-700">
                     These are generated mock credentials for development and testing purposes.
                     In production, this would be replaced with real Stripe OAuth integration.
                   </p>
-                  <div className="mt-2 text-xs text-blue-800">
+                  <div className="mt-2 text-xs text-green-800">
                     <p><strong>Stripe Account ID:</strong> {stripeAccount.stripeAccountId}</p>
                     <p><strong>Status:</strong> {stripeAccount.accountStatus}</p>
                     <p><strong>Country:</strong> {stripeAccount.country || 'US'}</p>
@@ -285,14 +285,14 @@ export function StripeAccountTab({
               </div>
 
               <div className="space-y-4">
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 max-w-md mx-auto">
+                <div className="bg-green-50 border border-green-200 rounded-lg p-4 max-w-md mx-auto">
                   <div className="flex items-start gap-3">
-                    <CheckCircle className="h-5 w-5 text-blue-500 mt-0.5" />
+                    <CheckCircle className="h-5 w-5 text-green-500 mt-0.5" />
                     <div className="text-sm">
-                      <p className="font-medium text-blue-900">
+                      <p className="font-medium text-green-900">
                         Secure Connection
                       </p>
-                      <p className="text-blue-700">
+                      <p className="text-green-700">
                         Your financial data remains secure with Stripe's
                         industry-leading security standards.
                       </p>

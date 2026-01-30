@@ -810,17 +810,17 @@ export default function OrderDetailsPage() {
                         {item.hasDiscount &&
                           item.originalPrice &&
                           item.discountPercentage && (
-                            <div className="mt-2 p-2 bg-blue-50 border border-blue-200 rounded-md">
+                            <div className="mt-2 p-2 bg-green-50 border border-green-200 rounded-md">
                               <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-2">
                                   <Badge
                                     variant="secondary"
-                                    className="bg-blue-100 text-blue-800 font-semibold"
+                                    className="bg-green-100 text-green-800 font-semibold"
                                   >
                                     -{Math.round(item.discountPercentage)}%
                                     DISCOUNT
                                   </Badge>
-                                  <span className="text-xs text-blue-700 font-medium">
+                                  <span className="text-xs text-green-700 font-medium">
                                     Applied at purchase
                                   </span>
                                 </div>
@@ -839,7 +839,7 @@ export default function OrderDetailsPage() {
                                   <span className="text-muted-foreground">
                                     Discounted:{" "}
                                   </span>
-                                  <span className="text-blue-700 font-semibold">
+                                  <span className="text-green-700 font-semibold">
                                     {(item.price || 0).toLocaleString()} RWF
                                   </span>
                                 </div>
@@ -847,7 +847,7 @@ export default function OrderDetailsPage() {
                                   <span className="text-muted-foreground">
                                     Saved:{" "}
                                   </span>
-                                  <span className="text-blue-700 font-semibold">
+                                  <span className="text-green-700 font-semibold">
                                     {(
                                       (item.originalPrice || 0) -
                                       (item.price || 0)
@@ -891,7 +891,7 @@ export default function OrderDetailsPage() {
                                     className="text-xs"
                                   >
                                     <div className="flex items-center justify-between mb-1">
-                                      <span className="font-medium text-blue-700">
+                                      <span className="font-medium text-green-700">
                                         {warehouse.warehouseName}
                                       </span>
                                       <span className="text-muted-foreground">
@@ -963,14 +963,14 @@ export default function OrderDetailsPage() {
                               ).toLocaleString()}{" "}
                               RWF
                             </p>
-                            <p className="font-medium text-blue-600">
+                            <p className="font-medium text-green-600">
                               {(
                                 item.totalPrice ||
                                 (item.price || 0) * item.quantity
                               ).toLocaleString()}{" "}
                               RWF
                             </p>
-                            <p className="text-xs text-blue-600">
+                            <p className="text-xs text-green-600">
                               Saved:{" "}
                               {(
                                 ((item.originalPrice || 0) -
@@ -1292,7 +1292,7 @@ export default function OrderDetailsPage() {
                     <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
                       Contact Phone
                     </label>
-                    <p className="text-sm font-medium text-blue-700 dark:text-blue-400">
+                    <p className="text-sm font-medium text-green-700 dark:text-green-400">
                       {order.shippingAddress.phone}
                     </p>
                   </div>
@@ -1331,7 +1331,7 @@ export default function OrderDetailsPage() {
                     {displayData?.paymentMethod === "HYBRID" && (
                       <Badge
                         variant="outline"
-                        className="text-[10px] bg-blue-50 text-blue-700 border-blue-200"
+                        className="text-[10px] bg-green-50 text-green-700 border-green-200"
                       >
                         HYBRID
                       </Badge>
@@ -1548,9 +1548,9 @@ export default function OrderDetailsPage() {
 
                 {/* Instructions */}
                 {order.status !== OrderStatus.DELIVERED && (
-                  <div className="bg-blue-50 p-4 rounded-md">
-                    <p className="font-medium mb-2 text-blue-900">Quick Instructions:</p>
-                    <ul className="text-sm text-blue-800 space-y-1">
+                  <div className="bg-green-50 p-4 rounded-md">
+                    <p className="font-medium mb-2 text-green-900">Quick Instructions:</p>
+                    <ul className="text-sm text-green-800 space-y-1">
                       <li>• Ask customer to show their pickup QR code</li>
                       <li>• Use camera for real-time scanning (recommended)</li>
                       <li>• Or take a photo and upload it</li>

@@ -797,8 +797,8 @@ export default function ProductClient({ product, id }: ProductClientProps) {
                       Total Stock Units
                     </div>
                   </div>
-                  <div className="text-center p-4 bg-blue-50 rounded-md">
-                    <div className="text-2xl font-bold text-blue-600">
+                  <div className="text-center p-4 bg-green-50 rounded-md">
+                    <div className="text-2xl font-bold text-green-600">
                       {product.totalWarehouses || 0}
                     </div>
                     <div className="text-sm text-muted-foreground">
@@ -870,7 +870,7 @@ export default function ProductClient({ product, id }: ProductClientProps) {
                           {/* Stock Info */}
                           <div className="space-y-2">
                             <div className="flex items-center gap-2">
-                              <Package className="h-4 w-4 text-blue-600" />
+                              <Package className="h-4 w-4 text-green-600" />
                               <span className="font-semibold">
                                 {stock.quantity} units
                               </span>

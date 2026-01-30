@@ -126,7 +126,7 @@ export default function DeliveryGroupDetailsPage() {
       return (
         <Badge
           variant="default"
-          className="flex items-center w-fit gap-1 bg-blue-600"
+          className="flex items-center w-fit gap-1 bg-green-600"
         >
           <Truck className="h-3 w-3" />
           In Progress
@@ -174,7 +174,7 @@ export default function DeliveryGroupDetailsPage() {
       CONFIRMED: {
         label: "Confirmed",
         variant: "default",
-        className: "bg-blue-600",
+        className: "bg-green-600",
       },
       PROCESSING: {
         label: "Processing",

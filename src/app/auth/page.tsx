@@ -23,9 +23,9 @@ function AuthPageContent() {
 
   return (
     <div className="container relative min-h-screen flex-col items-center justify-center grid lg:max-w-none lg:grid-cols-2 lg:px-0">
-      <div className="relative hidden h-full flex-col bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800 p-10 text-white lg:flex overflow-hidden">
+      <div className="relative hidden h-full flex-col bg-gradient-to-br from-green-600 via-green-700 to-green-800 p-10 text-white lg:flex overflow-hidden">
         {/* Background Pattern */}
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-600/90 via-blue-700/90 to-blue-800/90" />
+        <div className="absolute inset-0 bg-gradient-to-br from-green-600/90 via-green-700/90 to-green-800/90" />
         <div className="absolute inset-0 opacity-10">
           <div
             className="absolute inset-0"
@@ -51,7 +51,7 @@ function AuthPageContent() {
               <path d="M15 6v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3" />
             </svg>
           </div>
-          ShopSphere Admin, Employee and Delivery Agent portal
+          Agrochain Admin, Employee and Delivery Agent portal
         </div>
 
         <div className="relative z-20 flex-1 flex flex-col justify-center space-y-8">
@@ -133,7 +133,7 @@ function AuthPageContent() {
 
             <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
               <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 bg-blue-400 rounded-md flex items-center justify-center">
+                <div className="w-8 h-8 bg-green-400 rounded-md flex items-center justify-center">
                   <svg
                     className="w-4 h-4 text-white"
                     fill="currentColor"
@@ -173,7 +173,7 @@ function AuthPageContent() {
         <div className="relative z-20 mt-8">
           <blockquote className="space-y-3">
             <p className="text-lg leading-relaxed">
-              "ShopSphere has transformed how we manage our e-commerce
+              "Agrochain has transformed how we manage our agriculture marketplace
               operations. The intuitive dashboard and powerful analytics give us
               complete control over our business growth."
             </p>
@@ -211,8 +211,8 @@ export default function AuthPage() {
     <Suspense
       fallback={
         <div className="container relative min-h-screen flex-col items-center justify-center grid lg:max-w-none lg:grid-cols-2 lg:px-0">
-          <div className="relative hidden h-full flex-col bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800 p-10 text-white lg:flex overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-600/90 via-blue-700/90 to-blue-800/90" />
+          <div className="relative hidden h-full flex-col bg-gradient-to-br from-green-600 via-green-700 to-green-800 p-10 text-white lg:flex overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-green-600/90 via-green-700/90 to-green-800/90" />
             <div className="absolute inset-0 opacity-10">
               <div
                 className="absolute inset-0"
@@ -237,7 +237,7 @@ export default function AuthPage() {
                   <path d="M15 6v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3" />
                 </svg>
               </div>
-              ShopSphere Admin
+              Agrochain Admin
             </div>
             <div className="relative z-20 flex-1 flex items-center justify-center">
               <div className="text-center">

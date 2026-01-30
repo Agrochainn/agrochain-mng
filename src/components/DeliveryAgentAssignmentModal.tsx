@@ -244,7 +244,7 @@ export default function DeliveryAgentAssignmentModal({
         Excellent
       </Badge>;
     } else if (successRate >= 85) {
-      return <Badge variant="secondary" className="bg-blue-100 text-blue-800 flex items-center gap-1">
+      return <Badge variant="secondary" className="bg-green-100 text-green-800 flex items-center gap-1">
         <TrendingUp className="h-3 w-3" />
         Good
       </Badge>;
@@ -298,34 +298,34 @@ export default function DeliveryAgentAssignmentModal({
 
         {/* Return Request Details */}
         {returnRequestDetails && (
-          <div className="p-4 bg-blue-50 rounded-md border border-blue-200">
-            <h4 className="font-medium text-blue-900 mb-2 flex items-center gap-2">
+          <div className="p-4 bg-green-50 rounded-md border border-green-200">
+            <h4 className="font-medium text-green-900 mb-2 flex items-center gap-2">
               <Package className="h-4 w-4" />
               Return Request Details
             </h4>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
               {returnRequestDetails.customerName && (
                 <div>
-                  <span className="text-blue-700 font-medium">Customer:</span>{" "}
-                  <span className="text-blue-800">{returnRequestDetails.customerName}</span>
+                  <span className="text-green-700 font-medium">Customer:</span>{" "}
+                  <span className="text-green-800">{returnRequestDetails.customerName}</span>
                 </div>
               )}
               {returnRequestDetails.orderNumber && (
                 <div>
-                  <span className="text-blue-700 font-medium">Order:</span>{" "}
-                  <span className="text-blue-800">#{returnRequestDetails.orderNumber}</span>
+                  <span className="text-green-700 font-medium">Order:</span>{" "}
+                  <span className="text-green-800">#{returnRequestDetails.orderNumber}</span>
                 </div>
               )}
               {returnRequestDetails.submittedAt && (
                 <div>
-                  <span className="text-blue-700 font-medium">Submitted:</span>{" "}
-                  <span className="text-blue-800">{new Date(returnRequestDetails.submittedAt).toLocaleDateString()}</span>
+                  <span className="text-green-700 font-medium">Submitted:</span>{" "}
+                  <span className="text-green-800">{new Date(returnRequestDetails.submittedAt).toLocaleDateString()}</span>
                 </div>
               )}
               {returnRequestDetails.reason && (
                 <div className="md:col-span-2">
-                  <span className="text-blue-700 font-medium">Reason:</span>{" "}
-                  <span className="text-blue-800">{returnRequestDetails.reason}</span>
+                  <span className="text-green-700 font-medium">Reason:</span>{" "}
+                  <span className="text-green-800">{returnRequestDetails.reason}</span>
                 </div>
               )}
             </div>

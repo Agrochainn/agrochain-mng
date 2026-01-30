@@ -227,7 +227,7 @@ export function RewardRanges({ rewardSystem, onUpdate }: RewardRangesProps) {
                     <div
                       className={`p-3 rounded-lg border-2 ${
                         currentRangeType === "QUANTITY"
-                          ? "border-blue-200 bg-blue-50"
+                          ? "border-green-200 bg-green-50"
                           : "border-green-200 bg-green-50"
                       }`}
                     >
@@ -235,7 +235,7 @@ export function RewardRanges({ rewardSystem, onUpdate }: RewardRangesProps) {
                         <div
                           className={`w-3 h-3 rounded-full ${
                             currentRangeType === "QUANTITY"
-                              ? "bg-blue-500"
+                              ? "bg-green-500"
                               : "bg-green-500"
                           }`}
                         ></div>

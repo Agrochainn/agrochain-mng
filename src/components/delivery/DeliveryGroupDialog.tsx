@@ -558,11 +558,11 @@ export function DeliveryGroupDialog({
                   </div>
                   <div className="text-sm text-yellow-600">Skipped</div>
                 </div>
-                <div className="p-4 bg-blue-50 rounded-md">
-                  <div className="text-2xl font-bold text-blue-600">
+                <div className="p-4 bg-green-50 rounded-md">
+                  <div className="text-2xl font-bold text-green-600">
                     {bulkResult.totalRequested}
                   </div>
-                  <div className="text-sm text-blue-600">Total Requested</div>
+                  <div className="text-sm text-green-600">Total Requested</div>
                 </div>
               </div>
 

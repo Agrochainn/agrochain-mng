@@ -6,6 +6,12 @@ import {
   ProductSearchDTO,
 } from "../types/product";
 
+export interface UnitOption {
+  id: number;
+  symbol: string;
+  name: string;
+}
+
 export interface ProductPricing {
   productId: string;
   productName: string;
@@ -15,12 +21,15 @@ export interface ProductPricing {
   profitMargin?: number;
   profitPercentage?: number;
   currency: string;
-  costPrice:number
+  costPrice: number;
+  unit?: UnitOption | null;
 }
 
 export interface ProductPricingUpdate {
   price?: number;
   compareAtPrice?: number;
+  costPrice?: number;
+  unitId?: number | null;
 }
 
 export interface ProductMedia {
@@ -194,7 +203,8 @@ export interface ProductBasicInfo {
   newArrival: boolean;
   onSale: boolean;
   salePercentage?: number;
-  costPrice?:number;
+  costPrice?: number;
+  organic?: boolean;
 }
 import { handleApiError } from "../utils/error-handler";
 

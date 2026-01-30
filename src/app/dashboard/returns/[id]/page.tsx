@@ -563,7 +563,7 @@ export default function ReturnRequestDetailPage() {
                       >
                         <div className="flex items-center gap-2 mb-2">
                           {isImageFile(media) ? (
-                            <ImageIcon className="h-4 w-4 text-blue-600" />
+                            <ImageIcon className="h-4 w-4 text-green-600" />
                           ) : (
                             <Video className="h-4 w-4 text-purple-600" />
                           )}
@@ -687,7 +687,7 @@ export default function ReturnRequestDetailPage() {
                       />
                       {refundScreenshot && (
                         <div className="flex items-center gap-2 p-2 bg-muted rounded-md">
-                          <ImageIcon className="h-4 w-4 text-blue-600" />
+                          <ImageIcon className="h-4 w-4 text-green-600" />
                           <span className="text-sm text-muted-foreground flex-1">
                             {refundScreenshot.name}
                           </span>
@@ -788,7 +788,7 @@ export default function ReturnRequestDetailPage() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-start gap-3">
-                <div className="w-2 h-2 bg-blue-600 rounded-full mt-2"></div>
+                <div className="w-2 h-2 bg-green-600 rounded-full mt-2"></div>
                 <div>
                   <p className="font-medium text-sm">Return Requested</p>
                   <p className="text-xs text-muted-foreground">

@@ -466,8 +466,8 @@ export default function AnalyticsPage() {
                   </CardTitle>
                   <CardDescription>
                     {shopSlug 
-                      ? `Shop income trend - Blue line rises with revenue, falls with expenses (${moneyFlowData?.granularity || "loading..."} granularity)`
-                      : `Monthly income trend - Blue line rises with revenue, falls with expenses (${moneyFlowData?.granularity || "loading..."} granularity)`}
+                      ? `Shop income trend - green line rises with revenue, falls with expenses (${moneyFlowData?.granularity || "loading..."} granularity)`
+                      : `Monthly income trend - green line rises with revenue, falls with expenses (${moneyFlowData?.granularity || "loading..."} granularity)`}
                   </CardDescription>
                 </div>
                 <div className="flex items-center gap-2">
@@ -598,14 +598,14 @@ export default function AnalyticsPage() {
                         </p>
                       </div>
 
-                      <div className="p-4 bg-blue-50 dark:bg-blue-950/20 rounded-md border border-blue-200 dark:border-blue-900">
+                      <div className="p-4 bg-green-50 dark:bg-green-950/20 rounded-md border border-green-200 dark:border-green-900">
                         <div className="flex items-center gap-2 mb-2">
-                          <BarChart3 className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-                          <p className="text-sm font-medium text-blue-900 dark:text-blue-100">
+                          <BarChart3 className="h-5 w-5 text-green-600 dark:text-green-400" />
+                          <p className="text-sm font-medium text-green-900 dark:text-green-100">
                             Net Balance
                           </p>
                         </div>
-                        <p className="text-2xl font-bold text-blue-700 dark:text-blue-300">
+                        <p className="text-2xl font-bold text-green-700 dark:text-green-300">
                           {formatCurrency(
                             moneyFlowData.aggregations.reduce(
                               (sum, agg) => sum + agg.netBalance,
@@ -714,7 +714,7 @@ export default function AnalyticsPage() {
                                 const data = payload[0].payload;
                                 return (
                                   <div className="bg-background border border-border rounded-md shadow-lg p-4 max-w-sm">
-                                    <p className="font-semibold mb-2 text-blue-600">
+                                    <p className="font-semibold mb-2 text-green-600">
                                       {data.originalPeriod || data.period}
                                     </p>
                                     <div className="space-y-1 text-sm">

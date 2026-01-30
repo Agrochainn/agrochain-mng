@@ -695,20 +695,20 @@ export default function AppealsPage() {
               </div>
 
               {/* Return Request Link */}
-              <div className="p-4 bg-blue-50 rounded-md border border-blue-200">
+              <div className="p-4 bg-green-50 rounded-md border border-green-200">
                 <div className="flex items-center justify-between">
                   <div>
-                    <h4 className="font-medium text-blue-900">
+                    <h4 className="font-medium text-green-900">
                       Related Return Request
                     </h4>
-                    <p className="text-sm text-blue-700">
+                    <p className="text-sm text-green-700">
                       View the original return request that was appealed
                     </p>
                   </div>
                   <Button
                     variant="outline"
                     size="sm"
-                    className="border-blue-300 text-blue-700 hover:bg-blue-100"
+                    className="border-green-300 text-green-700 hover:bg-green-100"
                     onClick={() =>
                       window.open(
                         `/dashboard/returns/${selectedAppeal.returnRequestId}`,
@@ -1053,10 +1053,10 @@ export default function AppealsPage() {
                     <CardTitle className="text-sm font-medium">
                       Recent Appeals
                     </CardTitle>
-                    <FileText className="h-4 w-4 text-blue-500" />
+                    <FileText className="h-4 w-4 text-green-500" />
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold text-blue-600">
+                    <div className="text-2xl font-bold text-green-600">
                       {stats.recentCount}
                     </div>
                     <p className="text-xs text-muted-foreground">
@@ -1106,8 +1106,8 @@ export default function AppealsPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <Card className="p-4">
                     <div className="flex items-center gap-3">
-                      <div className="p-2 bg-blue-100 rounded-md">
-                        <FileText className="h-5 w-5 text-blue-600" />
+                      <div className="p-2 bg-green-100 rounded-md">
+                        <FileText className="h-5 w-5 text-green-600" />
                       </div>
                       <div>
                         <h4 className="font-medium">Total Appeals</h4>

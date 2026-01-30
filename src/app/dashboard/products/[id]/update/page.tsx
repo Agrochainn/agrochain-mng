@@ -34,8 +34,10 @@ import {
   ProductVariantsResponse,
   ProductDetails,
   ProductDetailsUpdate,
+  UnitOption,
 } from "@/lib/services/product-service";
 import { CategoryDropdown } from "@/components/products/CategoryDropdown";
+import { UnitSelector } from "@/components/products/UnitSelector";
 import { BrandDropdown } from "@/components/products/BrandDropdown";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
@@ -359,6 +361,8 @@ const productUpdateSchema = z.object({
   searchKeywords: z.string().optional(),
   dimensionsCm: z.string().optional(),
   weightKg: z.coerce.number().min(0).optional(),
+  unitId: z.number().optional().nullable(),
+  organic: z.boolean().default(false),
 });
 
 type ProductUpdateForm = z.infer<typeof productUpdateSchema>;
@@ -504,6 +508,7 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
   const [isDeleteVariantModalOpen, setIsDeleteVariantModalOpen] = useState(false);
   const [attributeValue, setAttributeValue] = useState("");
   const [pendingAction, setPendingAction] = useState<(() => void) | null>(null);
+  const [pricingUnit, setPricingUnit] = useState<UnitOption | null>(null);
   const initialFormData = useRef<any>(null);
 
   // Form setup
@@ -537,6 +542,8 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
       material: "",
       warranty: "",
       careInstructions: "",
+      unitId: undefined,
+      organic: false,
     },
   });
 
@@ -579,6 +586,7 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
           material: productData.material || "",
           warranty: productData.warrantyInfo || "",
           careInstructions: productData.careInstructions || "",
+          organic: productData.organic ?? false,
         });
 
         // Set initial form data after loading product data
@@ -837,6 +845,9 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
       if (currentFormData.salePercentage !== initialData.salePercentage) {
         changedFields.salePercentage = currentFormData.salePercentage;
       }
+      if (currentFormData.organic !== initialData.organic) {
+        changedFields.organic = currentFormData.organic;
+      }
 
       // Only send request if there are changes
       if (Object.keys(changedFields).length === 0) {
@@ -922,6 +933,7 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
         form.setValue("price", pricingData.price);
         form.setValue("compareAtPrice", pricingData.compareAtPrice || 0);
         form.setValue("costPrice", pricingData.costPrice || 0);
+        form.setValue("unitId", pricingData.unit?.id ?? undefined);
 
         // Update initial form data to reflect current pricing state
         const currentFormData = form.getValues();
@@ -1380,7 +1392,7 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
     const valueMap: Record<string, string[]> = {
       Color: [
         "Red",
-        "Blue",
+        "green",
         "Green",
         "Black",
         "White",
@@ -2724,6 +2736,20 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
                       On Sale
                     </Label>
                   </div>
+
+                  <div className="flex items-center space-x-2">
+                    <Switch
+                      id="organic"
+                      {...form.register("organic")}
+                      checked={form.watch("organic")}
+                      onCheckedChange={(checked) =>
+                        form.setValue("organic", checked)
+                      }
+                    />
+                    <Label htmlFor="organic" className="text-sm cursor-pointer">
+                      Organic
+                    </Label>
+                  </div>
                 </div>
               </CardContent>
             </Card>
@@ -2766,7 +2792,21 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
               <CardContent className="pt-6 grid gap-6">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <div>
-                    <Label htmlFor="price">Price *</Label>
+                    <div className="flex items-center gap-1.5">
+                      <Label htmlFor="price">Price *</Label>
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <button type="button" className="inline-flex text-muted-foreground hover:text-foreground">
+                              <HelpCircle className="h-4 w-4" />
+                            </button>
+                          </TooltipTrigger>
+                          <TooltipContent side="right" className="max-w-xs">
+                            The selling price per unit (e.g. per kg or per piece). Shown to customers.
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </div>
                     <Input
                       id="price"
                       type="number"
@@ -2778,7 +2818,21 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
                   </div>
 
                   <div>
-                    <Label htmlFor="compareAtPrice">Compare At Price</Label>
+                    <div className="flex items-center gap-1.5">
+                      <Label htmlFor="compareAtPrice">Compare At Price</Label>
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <button type="button" className="inline-flex text-muted-foreground hover:text-foreground">
+                              <HelpCircle className="h-4 w-4" />
+                            </button>
+                          </TooltipTrigger>
+                          <TooltipContent side="right" className="max-w-xs">
+                            Original price before discount. Shown crossed out next to the current price to show savings.
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </div>
                     <Input
                       id="compareAtPrice"
                       type="number"
@@ -2790,7 +2844,21 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
                   </div>
 
                   <div>
-                    <Label htmlFor="costPrice">Cost Price</Label>
+                    <div className="flex items-center gap-1.5">
+                      <Label htmlFor="costPrice">Cost Price</Label>
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <button type="button" className="inline-flex text-muted-foreground hover:text-foreground">
+                              <HelpCircle className="h-4 w-4" />
+                            </button>
+                          </TooltipTrigger>
+                          <TooltipContent side="right" className="max-w-xs">
+                            Your cost per unit. Used for profit calculation only; not shown to customers.
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </div>
                     <Input
                       id="costPrice"
                       type="number"
@@ -2800,6 +2868,23 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
                       className="border-primary/20 focus-visible:ring-primary mt-2"
                     />
                   </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Unit of measure</Label>
+                  <UnitSelector
+                    value={form.watch("unitId") ?? undefined}
+                    selectedUnit={pricingUnit}
+                    onChange={(unitId, unit) => {
+                      form.setValue("unitId", unitId ?? undefined, { shouldDirty: true });
+                      setPricingUnit(unit);
+                      setHasUnsavedChanges(true);
+                    }}
+                    placeholder="Select unit (e.g. kg, pc)"
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    How this product is sold (e.g. per kilogram, per piece). Price above is per one unit.
+                  </p>
                 </div>
               </CardContent>
             </Card>
@@ -2835,6 +2920,9 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
                       currentFormData.costPrice !== null
                     ) {
                       pricingUpdateData.costPrice = currentFormData.costPrice;
+                    }
+                    if (currentFormData.unitId !== undefined) {
+                      pricingUpdateData.unitId = currentFormData.unitId ?? null;
                     }
 
                     // Call the API to update pricing
@@ -3333,7 +3421,7 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
                                         );
                                       // setVariantWarehouseStocks(currentStocks); // Removed - using batch version
                                     }}
-                                    className="text-blue-600 hover:bg-blue-50"
+                                    className="text-green-600 hover:bg-green-50"
                                   >
                                     <Warehouse className="w-4 h-4 mr-2" />
                                     Stock
@@ -3720,7 +3808,7 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
                                           );
                                         // setVariantWarehouseStocks(currentStocks); // Removed - using batch version
                                       }}
-                                      className="text-blue-600 hover:bg-blue-50"
+                                      className="text-green-600 hover:bg-green-50"
                                     >
                                       <Warehouse className="w-4 h-4 mr-2" />
                                       Manage Stock
@@ -3755,7 +3843,7 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
                                             );
                                           // setVariantWarehouseStocks(currentStocks); // Removed - using batch version
                                         }}
-                                        className="text-blue-600 hover:bg-blue-50"
+                                        className="text-green-600 hover:bg-green-50"
                                       >
                                         <Warehouse className="w-4 h-4 mr-2" />
                                         Assign to Warehouses

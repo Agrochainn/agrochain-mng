@@ -696,7 +696,7 @@ export default function ReturnRequestDetailsPage() {
         <CardContent>
           <div className="space-y-4">
             <div className="flex items-center gap-3">
-              <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
               <div>
                 <p className="font-medium">Assigned</p>
                 <p className="text-sm text-muted-foreground">{formatDate(returnDetails.assignedAt)}</p>

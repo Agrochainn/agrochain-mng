@@ -84,7 +84,7 @@ export function FilterDialog({
     { name: "Black" },
     { name: "White" },
     { name: "Red" },
-    { name: "Blue" },
+    { name: "green" },
     { name: "Green" },
     { name: "Yellow" },
     { name: "Purple" },

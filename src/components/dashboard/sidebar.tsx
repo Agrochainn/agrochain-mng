@@ -110,7 +110,7 @@ export function Sidebar({ className }: SidebarProps) {
           )}
         >
           {!collapsed && (
-            <span className="text-xl font-bold text-primary">ShopSphere</span>
+            <span className="text-xl font-bold text-primary">Agrochain</span>
           )}
           {collapsed && <Layers className="h-6 w-6 text-primary" />}
         </Link>

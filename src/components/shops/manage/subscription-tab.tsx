@@ -415,7 +415,7 @@ export function SubscriptionTab({ shop }: SubscriptionTabProps) {
           )}
 
           {hasActiveSubscription && !isCurrentPlan && (
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-sm text-blue-800">
+            <div className="bg-green-50 border border-green-200 rounded-lg p-3 text-sm text-green-800">
               <p className="font-medium">Active subscription required</p>
               <p className="text-xs mt-1">Cancel your current subscription to switch plans.</p>
             </div>

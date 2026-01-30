@@ -467,7 +467,7 @@ export function WarehouseStockWithBatches({
                     ) : (
                       <ChevronRight className="w-4 h-4 text-muted-foreground" />
                     )}
-                    <Warehouse className="w-4 h-4 text-blue-600" />
+                    <Warehouse className="w-4 h-4 text-green-600" />
                     <div>
                       <div className="font-medium text-sm">
                         {stock.warehouseName}
@@ -498,7 +498,7 @@ export function WarehouseStockWithBatches({
 
                     {warehouseBatches.length > 0 && (
                       <div className="text-right">
-                        <div className="text-sm font-medium text-blue-600">
+                        <div className="text-sm font-medium text-green-600">
                           {warehouseBatches.length} batch
                           {warehouseBatches.length !== 1 ? "es" : ""}
                         </div>
@@ -527,7 +527,7 @@ export function WarehouseStockWithBatches({
                       <Button
                         size="sm"
                         onClick={() => handleCreateBatch(stock.warehouseId)}
-                        className="bg-blue-600 hover:bg-blue-700 text-white"
+                        className="bg-green-600 hover:bg-green-700 text-white"
                       >
                         <Plus className="w-4 h-4 mr-2" />
                         Add Batch
@@ -547,7 +547,7 @@ export function WarehouseStockWithBatches({
                                   {batch.batchNumber}
                                 </span>
                                 {getBatchStatusBadge(batch)}
-                                <span className="text-sm font-semibold text-blue-600">
+                                <span className="text-sm font-semibold text-green-600">
                                   {batch.quantity} units
                                 </span>
                               </div>
@@ -559,7 +559,7 @@ export function WarehouseStockWithBatches({
                                 variant="outline"
                                 size="sm"
                                 onClick={() => handleEditBatch(batch)}
-                                className="text-blue-600 hover:bg-blue-50"
+                                className="text-green-600 hover:bg-green-50"
                               >
                                 <Edit className="w-3 h-3 mr-1" />
                                 Edit

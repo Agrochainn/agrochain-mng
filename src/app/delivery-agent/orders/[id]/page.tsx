@@ -148,7 +148,7 @@ export default function DeliveryAgentOrderDetails() {
       case "PENDING":
         return "bg-yellow-100 text-yellow-800";
       case "CONFIRMED":
-        return "bg-blue-100 text-blue-800";
+        return "bg-green-100 text-green-800";
       case "PROCESSING":
         return "bg-purple-100 text-purple-800";
       case "SHIPPED":
@@ -320,9 +320,9 @@ export default function DeliveryAgentOrderDetails() {
                 </div>
 
                 {/* Instructions */}
-                <div className="bg-blue-50 p-4 rounded-md">
-                  <p className="font-medium mb-2 text-blue-900">Quick Instructions:</p>
-                  <ul className="text-sm text-blue-800 space-y-1">
+                <div className="bg-green-50 p-4 rounded-md">
+                  <p className="font-medium mb-2 text-green-900">Quick Instructions:</p>
+                  <ul className="text-sm text-green-800 space-y-1">
                     <li>• Ask customer to show their pickup QR code</li>
                     <li>• Use camera for real-time scanning (recommended)</li>
                     <li>• Or take a photo and upload it</li>
@@ -393,12 +393,12 @@ export default function DeliveryAgentOrderDetails() {
                 <div className="space-y-3">
                   <a 
                     href={`tel:${order.customerPhone}`}
-                    className="flex items-center gap-3 p-3 rounded-md bg-blue-50 hover:bg-blue-100 transition-colors"
+                    className="flex items-center gap-3 p-3 rounded-md bg-green-50 hover:bg-green-100 transition-colors"
                   >
-                    <Phone className="h-5 w-5 text-blue-600" />
+                    <Phone className="h-5 w-5 text-green-600" />
                     <div>
-                      <p className="font-medium text-blue-900">Call Customer</p>
-                      <p className="text-sm text-blue-700">{order.customerPhone}</p>
+                      <p className="font-medium text-green-900">Call Customer</p>
+                      <p className="text-sm text-green-700">{order.customerPhone}</p>
                     </div>
                   </a>
                   <a 
@@ -482,11 +482,11 @@ export default function DeliveryAgentOrderDetails() {
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              <div className="bg-blue-50 p-4 rounded-md">
-                <p className="text-sm text-blue-900 font-medium mb-2">
+              <div className="bg-green-50 p-4 rounded-md">
+                <p className="text-sm text-green-900 font-medium mb-2">
                   Why add notes?
                 </p>
-                <ul className="text-sm text-blue-800 space-y-1">
+                <ul className="text-sm text-green-800 space-y-1">
                   <li>• Record customer-specific delivery instructions</li>
                   <li>• Document any issues or delays for this order</li>
                   <li>• Keep track of communication with the customer</li>
@@ -630,7 +630,7 @@ export default function DeliveryAgentOrderDetails() {
 
                 {order.updatedAt && order.updatedAt !== order.createdAt && (
                   <div className="flex items-center gap-3">
-                    <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+                    <div className="w-3 h-3 bg-green-500 rounded-full"></div>
                     <div>
                       <p className="font-medium">Last Updated</p>
                       <p className="text-sm text-muted-foreground">
