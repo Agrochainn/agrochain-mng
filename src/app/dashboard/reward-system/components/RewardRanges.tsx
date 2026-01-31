@@ -23,6 +23,7 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { rewardSystemService } from "@/lib/services/reward-system-service";
 import { RewardSystemDTO, RewardRangeDTO } from "@/lib/types/reward-system";
+import { CURRENCY_SYMBOL } from "@/lib/constants/currency";
 import { Plus, Trash2 } from "lucide-react";
 
 interface RewardRangesProps {
@@ -175,7 +176,7 @@ export function RewardRanges({ rewardSystem, onUpdate }: RewardRangesProps) {
   };
 
   const getRangeTypeUnit = (type: string) => {
-    return type === "QUANTITY" ? "items" : "$";
+    return type === "QUANTITY" ? "items" : CURRENCY_SYMBOL;
   };
 
   return (

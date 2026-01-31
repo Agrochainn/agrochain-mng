@@ -25,6 +25,7 @@ import { deliveryGroupsService } from "@/lib/services/delivery-groups-service";
 import { DeliveryGroupDTO } from "@/lib/types/delivery-groups";
 import { useQuery } from "@tanstack/react-query";
 import { shopService } from "@/lib/services/shop-service";
+import { formatCurrency } from "@/lib/utils";
 import { useSearchParams } from "next/navigation";
 import {
   ArrowLeft,
@@ -157,12 +158,9 @@ export default function DeliveryGroupDetailsPage() {
     return new Date(dateString).toLocaleString();
   };
 
-  const formatCurrency = (amount?: number) => {
+  const formatCurrencyDisplay = (amount?: number) => {
     if (!amount) return "N/A";
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-    }).format(amount);
+    return formatCurrency(amount);
   };
 
   const getOrderStatusBadge = (status: string) => {
@@ -458,7 +456,7 @@ export default function DeliveryGroupDetailsPage() {
                           {order.totalItems !== 1 ? "s" : ""}
                         </TableCell>
                         <TableCell className="hidden lg:table-cell">
-                          {formatCurrency(order.totalAmount)}
+                          {formatCurrencyDisplay(order.totalAmount)}
                         </TableCell>
                         <TableCell>
                           {getOrderStatusBadge(order.status)}

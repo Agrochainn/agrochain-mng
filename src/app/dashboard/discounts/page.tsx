@@ -5,6 +5,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { shopService } from "@/lib/services/shop-service";
+import { formatCurrency } from "@/lib/utils";
 import {
   Card,
   CardContent,
@@ -303,13 +304,6 @@ export default function DiscountsPage() {
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString();
-  };
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-    }).format(amount);
   };
 
   const getDiscountStatus = (discount: DiscountDTO) => {

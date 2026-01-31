@@ -43,6 +43,7 @@ import { DiscountDTO, discountService } from "@/lib/services/discount-service";
 import { productService } from "@/lib/services/product-service";
 import { CountdownTimer } from "@/components/CountdownTimer";
 import { toast } from "@/hooks/use-toast";
+import { formatCurrency } from "@/lib/utils";
 
 interface ProductInfo {
   productId: string;
@@ -132,13 +133,6 @@ export function DiscountDetailsModal({
       month: "long",
       day: "numeric",
     });
-  };
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-    }).format(amount);
   };
 
   const handleRemoveProduct = async (productId: string) => {

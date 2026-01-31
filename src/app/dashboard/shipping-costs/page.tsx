@@ -58,6 +58,7 @@ import { CreateShippingCostForm } from "@/components/shipping/CreateShippingCost
 import { EditShippingCostForm } from "@/components/shipping/EditShippingCostForm";
 import { useSearchParams } from "next/navigation";
 import { shopService } from "@/lib/services/shop-service";
+import { formatCurrency } from "@/lib/utils";
 
 export default function ShippingCostsPage() {
   const { toast } = useToast();
@@ -176,12 +177,9 @@ export default function ShippingCostsPage() {
     toggleActiveMutation.mutate(shippingCost.id);
   };
 
-  const formatCurrency = (amount?: number) => {
+  const formatCurrencyDisplay = (amount?: number) => {
     if (amount === undefined || amount === null) return "N/A";
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-    }).format(amount);
+    return formatCurrency(amount);
   };
 
   const formatNumber = (value?: number, decimals: number = 2) => {
@@ -329,16 +327,16 @@ export default function ShippingCostsPage() {
                           {shippingCost.name}
                         </TableCell>
                         <TableCell>
-                          {formatCurrency(shippingCost.baseFee)}
+                          {formatCurrencyDisplay(shippingCost.baseFee)}
                         </TableCell>
                         <TableCell>
-                          {formatCurrency(shippingCost.distanceKmCost)}/km
+                          {formatCurrencyDisplay(shippingCost.distanceKmCost)}/km
                         </TableCell>
                         <TableCell>
                           {formatCurrency(shippingCost.weightKgCost)}/kg
                         </TableCell>
                         <TableCell>
-                          {formatCurrency(shippingCost.freeShippingThreshold)}
+                          {formatCurrencyDisplay(shippingCost.freeShippingThreshold)}
                         </TableCell>
                         <TableCell>
                           <div className="flex items-center gap-2">

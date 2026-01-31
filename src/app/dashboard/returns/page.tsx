@@ -53,6 +53,7 @@ import {
 import returnService from "@/services/returnService";
 import { formatDistanceToNow, format } from "date-fns";
 import Link from "next/link";
+import { formatCurrency } from "@/lib/utils";
 import DeliveryAgentAssignmentModal from "@/components/DeliveryAgentAssignmentModal";
 import deliveryAssignmentService from "@/lib/services/delivery-assignment-service";
 import { useSearchParams } from "next/navigation";
@@ -225,13 +226,6 @@ export default function ReturnRequestsPage() {
         {status}
       </Badge>
     );
-  };
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-    }).format(amount);
   };
 
   const calculateTotalRefundAmount = (returnRequest: ReturnRequestDTO) => {

@@ -39,6 +39,7 @@ import { orderService } from "@/lib/services/order-service";
 import LiveRouteMap from "@/components/delivery/LiveRouteMap";
 import AddOrderNoteDialog from "@/components/delivery-agent/AddOrderNoteDialog";
 import ViewOrderNotesDialog from "@/components/delivery-agent/ViewOrderNotesDialog";
+import { formatCurrency } from "@/lib/utils";
 
 export default function DeliveryAgentOrderDetails() {
   const params = useParams();
@@ -174,13 +175,8 @@ export default function DeliveryAgentOrderDetails() {
     });
   };
 
-  const formatCurrency = (amount: number | string) => {
-    const numAmount = typeof amount === "string" ? parseFloat(amount) : amount;
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-    }).format(numAmount);
-  };
+  const formatCurrencyDisplay = (amount: number | string) =>
+    formatCurrency(typeof amount === "string" ? parseFloat(amount) : amount);
 
   if (loading) {
     return (
@@ -574,10 +570,10 @@ export default function DeliveryAgentOrderDetails() {
                   </div>
                   <div className="text-right">
                     <p className="font-semibold text-lg">
-                      {formatCurrency(item.price)}
+                      {formatCurrencyDisplay(item.price)}
                     </p>
                     <p className="text-sm text-muted-foreground">
-                      Total: {formatCurrency(item.totalPrice)}
+                      Total: {formatCurrencyDisplay(item.totalPrice)}
                     </p>
                   </div>
                 </div>
@@ -598,12 +594,12 @@ export default function DeliveryAgentOrderDetails() {
               <div className="space-y-4">
                 <div className="flex justify-between text-lg">
                   <span>Total Amount</span>
-                  <span className="font-semibold">{formatCurrency(order.totalAmount)}</span>
+                  <span className="font-semibold">{formatCurrencyDisplay(order.totalAmount)}</span>
                 </div>
                 <Separator />
                 <div className="flex justify-between text-xl font-bold">
                   <span>Order Total</span>
-                  <span>{formatCurrency(order.totalAmount)}</span>
+                  <span>{formatCurrencyDisplay(order.totalAmount)}</span>
                 </div>
               </div>
             </CardContent>
