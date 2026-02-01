@@ -38,7 +38,7 @@ import {
   CheckCircle,
   Truck,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, formatCurrency } from "@/lib/utils";
 import {
   deliveryAgentReturnsService,
   DeliveryAgentReturnDetails,
@@ -154,14 +154,6 @@ export default function ReturnRequestDetailsPage() {
       minute: "2-digit",
     });
   };
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-    }).format(amount);
-  };
-
 
   if (isLoading) {
     return (

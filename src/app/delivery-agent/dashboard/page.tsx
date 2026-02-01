@@ -24,7 +24,7 @@ import {
   Play,
   Square,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, formatCurrency } from "@/lib/utils";
 import {
   deliveryAgentService,
   DeliveryGroupDto,
@@ -153,13 +153,6 @@ export default function DeliveryAgentDashboard() {
       hour: "2-digit",
       minute: "2-digit",
     });
-  };
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-    }).format(amount);
   };
 
   if (loading) {

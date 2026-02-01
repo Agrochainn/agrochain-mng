@@ -29,6 +29,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
+import { CURRENCY_CODE } from "@/lib/constants/currency";
 import {
   CreateSubscriptionPlanRequest,
   SubscriptionPlan,
@@ -99,7 +100,7 @@ export function SubscriptionPlanDialog({
       name: "",
       description: "",
       price: 0,
-      currency: "USD",
+      currency: CURRENCY_CODE,
       durationInDays: 30,
       isActive: true,
       isFreemium: false,
@@ -133,7 +134,7 @@ export function SubscriptionPlanDialog({
         name: "",
         description: "",
         price: 0,
-        currency: "USD",
+        currency: CURRENCY_CODE,
         durationInDays: 30,
         isActive: true,
         isFreemium: false,

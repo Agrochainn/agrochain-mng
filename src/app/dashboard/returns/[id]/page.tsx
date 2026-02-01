@@ -48,6 +48,7 @@ import { ReturnRequestDTO, ReturnDecisionDTO } from "@/types/return";
 import returnService from "@/services/returnService";
 import { formatDistanceToNow, format } from "date-fns";
 import Link from "next/link";
+import { formatCurrency } from "@/lib/utils";
 
 export default function ReturnRequestDetailPage() {
   const params = useParams();
@@ -174,13 +175,6 @@ export default function ReturnRequestDetailPage() {
         {status}
       </Badge>
     );
-  };
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-    }).format(amount);
   };
 
   const calculateTotalRefundAmount = () => {
@@ -435,10 +429,9 @@ export default function ReturnRequestDetailPage() {
                             Card Refund
                           </span>
                           <span className="text-xl font-bold text-green-600 dark:text-green-400">
-                            $
-                            {(
+                            {formatCurrency(
                               returnRequest.expectedRefund.monetaryRefund || 0
-                            ).toFixed(2)}
+                            )}
                           </span>
                         </div>
                       )}
@@ -458,11 +451,10 @@ export default function ReturnRequestDetailPage() {
                               Points Value
                             </span>
                             <span className="text-sm font-semibold text-green-600 dark:text-green-400">
-                              $
-                              {(
+                              {formatCurrency(
                                 returnRequest.expectedRefund
                                   .pointsRefundValue || 0
-                              ).toFixed(2)}
+                              )}
                             </span>
                           </div>
                         </>
@@ -476,10 +468,9 @@ export default function ReturnRequestDetailPage() {
                           Items Refund
                         </span>
                         <span className="font-medium">
-                          $
-                          {(
+                          {formatCurrency(
                             returnRequest.expectedRefund.itemsRefund || 0
-                          ).toFixed(2)}
+                          )}
                         </span>
                       </div>
                       {returnRequest.expectedRefund.shippingRefund > 0 && (
@@ -488,10 +479,9 @@ export default function ReturnRequestDetailPage() {
                             Shipping Refund
                           </span>
                           <span className="font-medium">
-                            $
-                            {(
+                            {formatCurrency(
                               returnRequest.expectedRefund.shippingRefund || 0
-                            ).toFixed(2)}
+                            )}
                           </span>
                         </div>
                       )}
@@ -510,10 +500,9 @@ export default function ReturnRequestDetailPage() {
                         Total Refund Value
                       </span>
                       <span className="text-2xl font-bold text-green-600 dark:text-green-400">
-                        $
-                        {(
+                        {formatCurrency(
                           returnRequest.expectedRefund.totalRefundValue || 0
-                        ).toFixed(2)}
+                        )}
                       </span>
                     </div>
 

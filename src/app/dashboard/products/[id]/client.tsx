@@ -48,6 +48,7 @@ import {
 
 import { ProductDTO } from "@/lib/types/product";
 import WarehouseStockTable from "@/components/WarehouseStockTable";
+import { formatCurrency } from "@/lib/utils";
 
 interface ProductClientProps {
   product: ProductDTO;
@@ -95,12 +96,7 @@ export default function ProductClient({ product, id }: ProductClientProps) {
     });
   };
 
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-    }).format(price);
-  };
+  const formatPrice = (price: number) => formatCurrency(price);
 
   const getPrimaryImage = () => {
     if (product.images && product.images.length > 0) {

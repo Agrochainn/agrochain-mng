@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { shopService } from "@/lib/services/shop-service";
 import {
@@ -22,7 +22,7 @@ import { ArrowLeft, Plus, Trash2 } from "lucide-react";
 
 type TempRewardRange = Omit<RewardRangeDTO, "id"> & { tempId: string };
 
-export default function CreateRewardSystemPage() {
+function CreateRewardSystemPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { toast } = useToast();
@@ -613,5 +613,19 @@ export default function CreateRewardSystemPage() {
         </Button>
       </div>
     </div>
+  );
+}
+
+export default function CreateRewardSystemPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex min-h-[50vh] items-center justify-center">
+          <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+        </div>
+      }
+    >
+      <CreateRewardSystemPageContent />
+    </Suspense>
   );
 }

@@ -92,6 +92,10 @@ export default function ProductsPage() {
   const [productToDelete, setProductToDelete] = useState<string>("");
   const [dontAskAgain, setDontAskAgain] = useState(false);
 
+  // Deletion error dialog (e.g. DELETION_BLOCKED from backend)
+  const [deletionErrorDialogOpen, setDeletionErrorDialogOpen] = useState(false);
+  const [deletionErrorMessage, setDeletionErrorMessage] = useState<string>("");
+
   // Fetch shop by slug to get shopId
   const { data: shopData, isLoading: shopLoading, error: shopFetchError } = useQuery({
     queryKey: ["shop", shopSlug],
@@ -197,18 +201,25 @@ export default function ProductsPage() {
       // Refresh the product list
       refetch();
 
+      setDeleteModalOpen(false);
+      setProductToDelete("");
+
       toast({
         title: "Success",
         description: "Product deleted successfully",
         variant: "default",
       });
-    } catch (error) {
+    } catch (error: unknown) {
       console.error("Error deleting product:", error);
-      toast({
-        title: "Error",
-        description: "Failed to delete product",
-        variant: "destructive",
-      });
+      const message =
+        typeof error === "string"
+          ? error
+          : (error as { message?: string })?.message ||
+            "Failed to delete product. Please try again.";
+      setDeletionErrorMessage(message);
+      setDeletionErrorDialogOpen(true);
+      setDeleteModalOpen(false);
+      setProductToDelete("");
     }
   };
 
@@ -859,6 +870,39 @@ export default function ProductsPage() {
             <Button type="button" variant="destructive" onClick={confirmDelete}>
               <Trash className="w-4 h-4 mr-2" />
               Delete
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Deletion blocked / error dialog */}
+      <Dialog
+        open={deletionErrorDialogOpen}
+        onOpenChange={(open) => {
+          setDeletionErrorDialogOpen(open);
+          if (!open) setDeletionErrorMessage("");
+        }}
+      >
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-destructive">
+              Cannot Delete Product
+            </DialogTitle>
+            <DialogDescription asChild>
+              <p className="text-sm text-muted-foreground whitespace-pre-wrap pt-1">
+                {deletionErrorMessage}
+              </p>
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="sm:justify-end">
+            <Button
+              type="button"
+              onClick={() => {
+                setDeletionErrorDialogOpen(false);
+                setDeletionErrorMessage("");
+              }}
+            >
+              Close
             </Button>
           </DialogFooter>
         </DialogContent>
