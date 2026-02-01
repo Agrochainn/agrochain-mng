@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, Suspense } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { useAppSelector } from "@/lib/redux/hooks";
 import { UserRole } from "@/lib/constants";
@@ -11,11 +11,9 @@ interface ProtectedRouteProps {
 }
 
 /**
- * Wraps components that require authentication
- * Redirects to login page if user is not authenticated
- * Can also check for specific roles
+ * Inner component that uses useSearchParams - must be inside Suspense.
  */
-export default function ProtectedRoute({
+function ProtectedRouteContent({
   children,
   allowedRoles = [UserRole.ADMIN, UserRole.EMPLOYEE],
 }: ProtectedRouteProps) {
@@ -93,5 +91,24 @@ export default function ProtectedRoute({
     <div className="flex items-center justify-center min-h-screen">
       <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
     </div>
+  );
+}
+
+/**
+ * Wraps components that require authentication.
+ * Redirects to login page if user is not authenticated.
+ * Can also check for specific roles.
+ */
+export default function ProtectedRoute(props: ProtectedRouteProps) {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex items-center justify-center min-h-screen">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        </div>
+      }
+    >
+      <ProtectedRouteContent {...props} />
+    </Suspense>
   );
 }

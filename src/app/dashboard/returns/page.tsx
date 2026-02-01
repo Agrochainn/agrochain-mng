@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, Suspense } from "react";
 import {
   Card,
   CardContent,
@@ -63,7 +63,7 @@ import { useAppSelector } from "@/lib/redux/hooks";
 import type { RootState } from "@/lib/redux/store";
 import { useRouter } from "next/navigation";
 
-export default function ReturnRequestsPage() {
+function ReturnRequestsPageContent() {
   const [returnRequests, setReturnRequests] = useState<ReturnRequestDTO[]>([]);
   const [loading, setLoading] = useState(true);
   const [totalElements, setTotalElements] = useState(0);
@@ -803,5 +803,19 @@ export default function ReturnRequestsPage() {
         onAssignmentComplete={handleAssignmentComplete}
       />
     </div>
+  );
+}
+
+export default function ReturnRequestsPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex flex-1 items-center justify-center p-6">
+          <RefreshCw className="h-8 w-8 animate-spin text-muted-foreground" />
+        </div>
+      }
+    >
+      <ReturnRequestsPageContent />
+    </Suspense>
   );
 }
