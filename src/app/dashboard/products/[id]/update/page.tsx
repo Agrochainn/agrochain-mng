@@ -95,7 +95,6 @@ import {
   Ruler,
   Weight,
   Hash,
-  Barcode,
   CheckCircle,
   XCircle,
   ExternalLink,
@@ -223,19 +222,17 @@ const mockVariantWarehouseStock = {
   ],
 };
 
-// Mock data for demonstration
+// Mock data for demonstration (Agriculture-focused)
 const mockProduct = {
-  productName: "iPhone 17 Pro",
-  shortDescription: "The latest iPhone with advanced features",
+  productName: "Organic Tomatoes",
+  shortDescription: "Fresh organic tomatoes from local farms",
   description:
-    "Experience the future with iPhone 17 Pro featuring cutting-edge technology, enhanced camera system, and powerful performance.",
-  sku: "IPH17PRO-001",
-  barcode: "1234567890123",
-  model: "A3101",
-  slug: "iphone-17-pro",
-  price: 1099.99,
-  compareAtPrice: 1199.99,
-  costPrice: 800.0,
+    "Premium quality organic tomatoes grown using sustainable farming practices. Perfect for salads, cooking, and fresh consumption.",
+  sku: "ORG-TOM-001",
+  slug: "organic-tomatoes",
+  price: 4.99,
+  compareAtPrice: 5.99,
+  costPrice: 2.50,
   stockQuantity: 150,
   categoryId: 1,
   brandId: 1,
@@ -244,17 +241,11 @@ const mockProduct = {
   bestseller: true,
   newArrival: true,
   onSale: false,
-  metaTitle: "iPhone 17 Pro - Latest Apple Smartphone",
-  metaDescription:
-    "Buy the new iPhone 17 Pro with advanced features and cutting-edge technology",
-  metaKeywords: "iPhone, Apple, smartphone, mobile, technology",
-  searchKeywords:
-    "iPhone 17 Pro, Apple phone, smartphone, mobile device, latest iPhone, premium phone, titanium phone, advanced camera, wireless charging, Face ID, iOS, Apple ecosystem, flagship phone, mobile technology, smartphone camera, wireless phone, premium smartphone",
-  dimensionsCm: "15.5 x 7.6 x 0.8",
-  weightKg: 0.187,
-  material: "Titanium",
-  warranty: "1 Year",
-  careInstructions: "Handle with care, avoid water exposure",
+  weightKg: 1.0,
+  organic: true,
+  // Agriculture-specific fields (product-level; harvest/expiry/grade/origin are on batches)
+  storageInstructions: "Keep refrigerated at 4°C. Best consumed within 7 days of purchase.",
+  nutritionalInfo: "Calories: 18 per 100g, Vitamin C: 14mg, Fiber: 1.2g",
   images: [
     {
       imageId: 1,
@@ -338,12 +329,7 @@ const productUpdateSchema = z.object({
   description: z.string().optional(),
   shortDescription: z.string().optional(),
   sku: z.string().min(1, "SKU is required"),
-  barcode: z.string().optional(),
-  model: z.string().optional(),
   slug: z.string().optional(),
-  material: z.string().optional(),
-  warranty: z.string().optional(),
-  careInstructions: z.string().optional(),
   price: z.coerce.number().min(0.01, "Price must be greater than 0"),
   compareAtPrice: z.coerce.number().min(0.01).optional(),
   costPrice: z.coerce.number().min(0.01).optional(),
@@ -355,14 +341,17 @@ const productUpdateSchema = z.object({
   newArrival: z.boolean().default(false),
   onSale: z.boolean().default(false),
   salePercentage: z.coerce.number().min(0).max(100).optional(),
-  metaTitle: z.string().optional(),
-  metaDescription: z.string().optional(),
-  metaKeywords: z.string().optional(),
-  searchKeywords: z.string().optional(),
-  dimensionsCm: z.string().optional(),
   weightKg: z.coerce.number().min(0).optional(),
   unitId: z.number().optional().nullable(),
   organic: z.boolean().default(false),
+  // Agriculture-specific fields (product-level only; harvest/expiry/grade/origin are on batches)
+  storageInstructions: z.string().optional(),
+  nutritionalInfo: z.string().optional(),
+  // Shipping and return fields
+  shippingInfo: z.string().optional(),
+  returnPolicy: z.string().optional(),
+  maximumDaysForReturn: z.coerce.number().min(0).optional(),
+  displayToCustomers: z.boolean().default(false),
 });
 
 type ProductUpdateForm = z.infer<typeof productUpdateSchema>;
@@ -458,7 +447,6 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
   const [newVariant, setNewVariant] = useState({
     variantName: "",
     variantSku: "",
-    variantBarcode: "",
     price: 0,
     salePrice: null as number | null,
     costPrice: null as number | null,
@@ -489,17 +477,15 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
   const [isInventoryModalOpen, setIsInventoryModalOpen] = useState(false);
   const [productHasVariants, setProductHasVariants] = useState(false);
   const [productDetails, setProductDetails] = useState<{
-    metaTitle?: string;
-    metaDescription?: string;
-    metaKeywords?: string;
-    tags?: string;
+    description?: string;
+    storageInstructions?: string;
+    nutritionalInfo?: string;
     [key: string]: any;
   }>({});
   const [initialProductDetails, setInitialProductDetails] = useState<{
-    metaTitle?: string;
-    metaDescription?: string;
-    metaKeywords?: string;
-    tags?: string;
+    description?: string;
+    storageInstructions?: string;
+    nutritionalInfo?: string;
     [key: string]: any;
   }>({});
   const [hasProductDetailsChanges, setHasProductDetailsChanges] = useState(false);
@@ -519,8 +505,6 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
       description: "",
       shortDescription: "",
       sku: "",
-      barcode: "",
-      model: "",
       slug: "",
       price: 0,
       compareAtPrice: 0,
@@ -533,17 +517,11 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
       newArrival: false,
       onSale: false,
       salePercentage: 0,
-      metaTitle: "",
-      metaDescription: "",
-      metaKeywords: "",
-      searchKeywords: "",
-      dimensionsCm: "",
       weightKg: 0,
-      material: "",
-      warranty: "",
-      careInstructions: "",
       unitId: undefined,
       organic: false,
+      storageInstructions: "",
+      nutritionalInfo: "",
     },
   });
 
@@ -569,8 +547,6 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
           description: productData.description || "",
           shortDescription: productData.shortDescription || "",
           sku: productData.sku,
-          barcode: productData.barcode || "",
-          model: productData.model || "",
           slug: productData.slug,
           price: productData.price,
           compareAtPrice: productData.compareAtPrice || 0,
@@ -583,9 +559,6 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
           newArrival: productData.newArrival,
           onSale: productData.onSale,
           salePercentage: productData.salePercentage || 0,
-          material: productData.material || "",
-          warranty: productData.warrantyInfo || "",
-          careInstructions: productData.careInstructions || "",
           organic: productData.organic ?? false,
         });
 
@@ -794,23 +767,8 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
       if (currentFormData.sku !== initialData.sku) {
         changedFields.sku = currentFormData.sku;
       }
-      if (currentFormData.barcode !== initialData.barcode) {
-        changedFields.barcode = currentFormData.barcode;
-      }
-      if (currentFormData.model !== initialData.model) {
-        changedFields.model = currentFormData.model;
-      }
       if (currentFormData.slug !== initialData.slug) {
         changedFields.slug = currentFormData.slug;
-      }
-      if (currentFormData.material !== initialData.material) {
-        changedFields.material = currentFormData.material;
-      }
-      if (currentFormData.warranty !== initialData.warranty) {
-        changedFields.warrantyInfo = currentFormData.warranty;
-      }
-      if (currentFormData.careInstructions !== initialData.careInstructions) {
-        changedFields.careInstructions = currentFormData.careInstructions;
       }
       if (currentFormData.price !== initialData.price) {
         changedFields.price = currentFormData.price;
@@ -1989,39 +1947,19 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
       if (productDetails.description !== initialProductDetails.description) {
         updateData.description = productDetails.description;
       }
-      if (productDetails.metaTitle !== initialProductDetails.metaTitle) {
-        updateData.metaTitle = productDetails.metaTitle;
+      if (
+        productDetails.storageInstructions !==
+        initialProductDetails.storageInstructions
+      ) {
+        updateData.storageInstructions = productDetails.storageInstructions;
       }
       if (
-        productDetails.metaDescription !== initialProductDetails.metaDescription
+        productDetails.nutritionalInfo !== initialProductDetails.nutritionalInfo
       ) {
-        updateData.metaDescription = productDetails.metaDescription;
-      }
-      if (productDetails.metaKeywords !== initialProductDetails.metaKeywords) {
-        updateData.metaKeywords = productDetails.metaKeywords;
-      }
-      if (
-        productDetails.searchKeywords !== initialProductDetails.searchKeywords
-      ) {
-        updateData.searchKeywords = productDetails.searchKeywords;
-      }
-      if (productDetails.dimensionsCm !== initialProductDetails.dimensionsCm) {
-        updateData.dimensionsCm = productDetails.dimensionsCm;
+        updateData.nutritionalInfo = productDetails.nutritionalInfo;
       }
       if (productDetails.weightKg !== initialProductDetails.weightKg) {
         updateData.weightKg = productDetails.weightKg;
-      }
-      if (productDetails.material !== initialProductDetails.material) {
-        updateData.material = productDetails.material;
-      }
-      if (
-        productDetails.careInstructions !==
-        initialProductDetails.careInstructions
-      ) {
-        updateData.careInstructions = productDetails.careInstructions;
-      }
-      if (productDetails.warrantyInfo !== initialProductDetails.warrantyInfo) {
-        updateData.warrantyInfo = productDetails.warrantyInfo;
       }
       if (productDetails.shippingInfo !== initialProductDetails.shippingInfo) {
         updateData.shippingInfo = productDetails.shippingInfo;
@@ -2287,7 +2225,6 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
     setNewVariant({
       variantName: "",
       variantSku: "",
-      variantBarcode: "",
       price: 0,
       salePrice: null,
       costPrice: null,
@@ -2305,7 +2242,6 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
     setNewVariant({
       variantName: "",
       variantSku: "",
-      variantBarcode: "",
       price: 0,
       salePrice: null,
       costPrice: null,
@@ -2519,41 +2455,11 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
                   </div>
 
                   <div>
-                    <Label htmlFor="barcode">Barcode</Label>
-                    <Input
-                      id="barcode"
-                      placeholder="Enter barcode"
-                      {...form.register("barcode")}
-                      className="border-primary/20 focus-visible:ring-primary mt-2"
-                    />
-                  </div>
-
-                  <div>
-                    <Label htmlFor="model">Model</Label>
-                    <Input
-                      id="model"
-                      placeholder="Enter model"
-                      {...form.register("model")}
-                      className="border-primary/20 focus-visible:ring-primary mt-2"
-                    />
-                  </div>
-
-                  <div>
                     <Label htmlFor="slug">Slug</Label>
                     <Input
                       id="slug"
                       placeholder="Enter URL slug"
                       {...form.register("slug")}
-                      className="border-primary/20 focus-visible:ring-primary mt-2"
-                    />
-                  </div>
-
-                  <div>
-                    <Label htmlFor="material">Material</Label>
-                    <Input
-                      id="material"
-                      placeholder="Enter material"
-                      {...form.register("material")}
                       className="border-primary/20 focus-visible:ring-primary mt-2"
                     />
                   </div>
@@ -2577,28 +2483,6 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
                       {...form.register("description")}
                       className="min-h-[120px] border-primary/20 focus-visible:ring-primary mt-2"
                       rows={4}
-                    />
-                  </div>
-
-                  <div className="col-span-full">
-                    <Label htmlFor="warranty">Warranty Information</Label>
-                    <Textarea
-                      id="warranty"
-                      placeholder="Enter warranty details and terms"
-                      {...form.register("warranty")}
-                      className="min-h-[80px] border-primary/20 focus-visible:ring-primary mt-2"
-                      rows={3}
-                    />
-                  </div>
-
-                  <div className="col-span-full">
-                    <Label htmlFor="careInstructions">Care Instructions</Label>
-                    <Textarea
-                      id="careInstructions"
-                      placeholder="Enter care and maintenance instructions"
-                      {...form.register("careInstructions")}
-                      className="min-h-[80px] border-primary/20 focus-visible:ring-primary mt-2"
-                      rows={3}
                     />
                   </div>
                 </div>
@@ -3286,8 +3170,8 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
                     </h3>
                     <p className="text-muted-foreground mb-6 max-w-md mx-auto">
                       This product doesn't have any variants yet. Create
-                      variants to offer different options like size, color, or
-                      material.
+                      variants to offer different options like size, grade, or
+                      origin.
                     </p>
                     <Button
                       type="button"
@@ -3509,32 +3393,6 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
                                             );
                                           }}
                                           className="h-8 text-sm font-mono"
-                                        />
-                                      </div>
-                                      <div>
-                                        <Label
-                                          htmlFor={`variant-barcode-${variant.variantId}`}
-                                          className="text-xs font-medium"
-                                        >
-                                          Barcode
-                                        </Label>
-                                        <Input
-                                          id={`variant-barcode-${variant.variantId}`}
-                                          value={
-                                            (getVariantFieldValue(
-                                              variant,
-                                              "variantBarcode"
-                                            ) as string) || ""
-                                          }
-                                          onChange={(e) => {
-                                            updateVariantField(
-                                              variant.variantId,
-                                              "variantBarcode",
-                                              e.target.value
-                                            );
-                                          }}
-                                          className="h-8 text-sm font-mono"
-                                          placeholder="Enter barcode"
                                         />
                                       </div>
                                     </div>
@@ -4126,83 +3984,6 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
               </CardHeader>
               <CardContent className="pt-6">
                 <div className="space-y-8">
-                  {/* SEO Section */}
-                  <div className="space-y-6">
-                    <div className="flex items-center gap-2">
-                      <Globe className="h-5 w-5 text-primary" />
-                      <h3 className="text-lg font-semibold">
-                        SEO & Meta Information
-                      </h3>
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div>
-                        <Label htmlFor="metaTitle">Meta Title</Label>
-                        <Input
-                          id="metaTitle"
-                          placeholder="Enter meta title"
-                          value={productDetails.metaTitle || ""}
-                          onChange={(e) =>
-                            setProductDetails((prev) => ({
-                              ...prev,
-                              metaTitle: e.target.value,
-                            }))
-                          }
-                          className="border-primary/20 focus-visible:ring-primary mt-2"
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="metaDescription">
-                          Meta Description
-                        </Label>
-                        <Textarea
-                          id="metaDescription"
-                          placeholder="Enter meta description"
-                          value={productDetails.metaDescription || ""}
-                          onChange={(e) =>
-                            setProductDetails((prev) => ({
-                              ...prev,
-                              metaDescription: e.target.value,
-                            }))
-                          }
-                          className="border-primary/20 focus-visible:ring-primary mt-2"
-                          rows={3}
-                        />
-                      </div>
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div>
-                        <Label htmlFor="metaKeywords">Meta Keywords</Label>
-                        <Input
-                          id="metaKeywords"
-                          placeholder="Enter meta keywords (comma-separated)"
-                          value={productDetails.metaKeywords || ""}
-                          onChange={(e) =>
-                            setProductDetails((prev) => ({
-                              ...prev,
-                              metaKeywords: e.target.value,
-                            }))
-                          }
-                          className="border-primary/20 focus-visible:ring-primary mt-2"
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="searchKeywords">Search Keywords</Label>
-                        <Input
-                          id="searchKeywords"
-                          placeholder="Enter search keywords (comma-separated)"
-                          value={productDetails.searchKeywords || ""}
-                          onChange={(e) =>
-                            setProductDetails((prev) => ({
-                              ...prev,
-                              searchKeywords: e.target.value,
-                            }))
-                          }
-                          className="border-primary/20 focus-visible:ring-primary mt-2"
-                        />
-                      </div>
-                    </div>
-                  </div>
-
                   {/* Product Information Section */}
                   <div className="space-y-6">
                     <div className="flex items-center gap-2">
@@ -4227,54 +4008,58 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
                         rows={4}
                       />
                     </div>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                      <div>
-                        <Label htmlFor="dimensionsCm">Dimensions (cm)</Label>
-                        <Input
-                          id="dimensionsCm"
-                          placeholder="e.g., 10 x 15 x 5"
-                          value={productDetails.dimensionsCm || ""}
-                          onChange={(e) =>
-                            setProductDetails((prev) => ({
-                              ...prev,
-                              dimensionsCm: e.target.value,
-                            }))
-                          }
-                          className="border-primary/20 focus-visible:ring-primary mt-2"
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="weightKg">Weight (kg)</Label>
-                        <Input
-                          id="weightKg"
-                          type="number"
-                          step="0.001"
-                          placeholder="0.000"
-                          value={productDetails.weightKg || ""}
-                          onChange={(e) =>
-                            setProductDetails((prev) => ({
-                              ...prev,
-                              weightKg: parseFloat(e.target.value) || 0,
-                            }))
-                          }
-                          className="border-primary/20 focus-visible:ring-primary mt-2"
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="material">Material</Label>
-                        <Input
-                          id="material"
-                          placeholder="e.g., Cotton, Plastic, Metal"
-                          value={productDetails.material || ""}
-                          onChange={(e) =>
-                            setProductDetails((prev) => ({
-                              ...prev,
-                              material: e.target.value,
-                            }))
-                          }
-                          className="border-primary/20 focus-visible:ring-primary mt-2"
-                        />
-                      </div>
+                    <div>
+                      <Label htmlFor="weightKg">Weight (kg)</Label>
+                      <Input
+                        id="weightKg"
+                        type="number"
+                        step="0.001"
+                        placeholder="0.000"
+                        value={productDetails.weightKg ?? ""}
+                        onChange={(e) =>
+                          setProductDetails((prev) => ({
+                            ...prev,
+                            weightKg: parseFloat(e.target.value) || 0,
+                          }))
+                        }
+                        className="border-primary/20 focus-visible:ring-primary mt-2"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="storageInstructions">
+                        Storage Instructions
+                      </Label>
+                      <Textarea
+                        id="storageInstructions"
+                        placeholder="e.g., Keep refrigerated at 4°C. Best consumed within 7 days."
+                        value={productDetails.storageInstructions || ""}
+                        onChange={(e) =>
+                          setProductDetails((prev) => ({
+                            ...prev,
+                            storageInstructions: e.target.value,
+                          }))
+                        }
+                        className="border-primary/20 focus-visible:ring-primary mt-2"
+                        rows={3}
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="nutritionalInfo">
+                        Nutritional Information
+                      </Label>
+                      <Textarea
+                        id="nutritionalInfo"
+                        placeholder="e.g., Calories: 18 per 100g, Vitamin C: 14mg"
+                        value={productDetails.nutritionalInfo || ""}
+                        onChange={(e) =>
+                          setProductDetails((prev) => ({
+                            ...prev,
+                            nutritionalInfo: e.target.value,
+                          }))
+                        }
+                        className="border-primary/20 focus-visible:ring-primary mt-2"
+                        rows={3}
+                      />
                     </div>
                   </div>
 
@@ -4285,44 +4070,6 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
                       <h3 className="text-lg font-semibold">
                         Policies & Information
                       </h3>
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div>
-                        <Label htmlFor="careInstructions">
-                          Care Instructions
-                        </Label>
-                        <Textarea
-                          id="careInstructions"
-                          placeholder="Enter care instructions"
-                          value={productDetails.careInstructions || ""}
-                          onChange={(e) =>
-                            setProductDetails((prev) => ({
-                              ...prev,
-                              careInstructions: e.target.value,
-                            }))
-                          }
-                          className="border-primary/20 focus-visible:ring-primary mt-2"
-                          rows={3}
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="warrantyInfo">
-                          Warranty Information
-                        </Label>
-                        <Textarea
-                          id="warrantyInfo"
-                          placeholder="Enter warranty information"
-                          value={productDetails.warrantyInfo || ""}
-                          onChange={(e) =>
-                            setProductDetails((prev) => ({
-                              ...prev,
-                              warrantyInfo: e.target.value,
-                            }))
-                          }
-                          className="border-primary/20 focus-visible:ring-primary mt-2"
-                          rows={3}
-                        />
-                      </div>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
@@ -4990,26 +4737,6 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
                       placeholder="Enter SKU"
                       className="font-mono"
                       required
-                    />
-                  </div>
-                  <div>
-                    <Label
-                      htmlFor="variant-barcode"
-                      className="text-sm font-medium"
-                    >
-                      Barcode
-                    </Label>
-                    <Input
-                      id="variant-barcode"
-                      value={newVariant.variantBarcode}
-                      onChange={(e) =>
-                        setNewVariant((prev) => ({
-                          ...prev,
-                          variantBarcode: e.target.value,
-                        }))
-                      }
-                      placeholder="Enter barcode"
-                      className="font-mono"
                     />
                   </div>
                   <div>

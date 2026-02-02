@@ -248,7 +248,6 @@ export interface ProductDTO {
   name: string;
   description: string;
   sku: string;
-  barcode: string;
   basePrice: number;
   salePrice?: number;
   discountedPrice?: number;
@@ -257,7 +256,6 @@ export interface ProductDTO {
   categoryName?: string;
   brandId?: string;
   brandName?: string;
-  model?: string;
   slug: string;
   isActive: boolean;
   isFeatured: boolean;
@@ -283,11 +281,11 @@ export interface ProductDTO {
 
   // Product details
   fullDescription?: string;
-  metaTitle?: string;
-  metaDescription?: string;
-  metaKeywords?: string;
-  dimensionsCm?: string;
   weightKg?: number;
+
+  // Agriculture-specific fields (product-level only; batch-level fields are on StockBatch)
+  storageInstructions?: string;
+  nutritionalInfo?: string;
 }
 
 // Keep ProductDetailDTO for backward compatibility
@@ -318,7 +316,6 @@ export interface ProductVariantDTO {
   variantId: number;
   variantSku: string;
   variantName?: string;
-  variantBarcode?: string;
   price: number;
   salePrice?: number;
   costPrice?: number;
@@ -388,9 +385,7 @@ export interface ProductSearchDTO {
   name?: string;
   description?: string;
   sku?: string;
-  barcode?: string;
   slug?: string;
-  model?: string;
 
   // Price filters
   basePriceMin?: number;

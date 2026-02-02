@@ -63,7 +63,6 @@ import {
 const createVariantSchema = z.object({
   variantName: z.string().min(1, "Variant name is required"),
   variantSku: z.string().min(1, "SKU is required"),
-  variantBarcode: z.string().optional(),
   price: z.number().min(0, "Price must be non-negative"),
   salePrice: z.number().min(0, "Sale price must be non-negative").optional(),
   costPrice: z.number().min(0, "Cost price must be non-negative").optional(),
@@ -98,7 +97,6 @@ export default function CreateVariantPage() {
     defaultValues: {
       variantName: "",
       variantSku: "",
-      variantBarcode: "",
       price: 0,
       salePrice: 0,
       costPrice: 0,
@@ -471,15 +469,6 @@ export default function CreateVariantPage() {
                     {form.formState.errors.variantSku.message}
                   </p>
                 )}
-              </div>
-
-              <div>
-                <Label htmlFor="variantBarcode">Barcode</Label>
-                <Input
-                  id="variantBarcode"
-                  {...form.register("variantBarcode")}
-                  placeholder="e.g., 1234567890123"
-                />
               </div>
 
               <div className="flex items-center space-x-2">

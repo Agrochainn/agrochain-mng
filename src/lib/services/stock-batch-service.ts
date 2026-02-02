@@ -11,6 +11,8 @@ export interface StockBatch {
   status: string;
   supplierName?: string;
   supplierBatchNumber?: string;
+  originFarm?: string;
+  gradeQuality?: string;
   createdAt: string;
   updatedAt: string;
   productName: string;
@@ -34,6 +36,8 @@ export interface CreateStockBatchRequest {
   quantity: number;
   supplierName?: string;
   supplierBatchNumber?: string;
+  originFarm?: string;
+  gradeQuality?: string;
 }
 
 export interface CreateVariantBatchRequest {
@@ -43,6 +47,8 @@ export interface CreateVariantBatchRequest {
   quantity: number;
   supplierName?: string;
   supplierBatchNumber?: string;
+  originFarm?: string;
+  gradeQuality?: string;
 }
 
 export interface UpdateStockBatchRequest {
@@ -52,6 +58,8 @@ export interface UpdateStockBatchRequest {
   quantity: number;
   supplierName?: string;
   supplierBatchNumber?: string;
+  originFarm?: string;
+  gradeQuality?: string;
 }
 
 class StockBatchService {
