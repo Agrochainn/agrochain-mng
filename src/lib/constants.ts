@@ -6,8 +6,13 @@ export const API_URL =
 export const API_ENDPOINTS = {
   AUTH: {
     LOGIN: `/auth/users/login`,
+    REGISTER: `/auth/users/register`,
     LOGOUT: `/auth/users/logout`,
     ME: `/auth/users/me`,
+    PASSWORD_RESET_REQUEST: `/auth/users/request-password-reset`,
+    VERIFY_RESET_CODE: `/auth/users/verify-reset`,
+    VERIFY_RESET_TOKEN: `/auth/users/verify-reset-token`,
+    RESET_PASSWORD: `/auth/users/reset-password`,
   },
   DASHBOARD: {
     BASE: `/dashboard`,

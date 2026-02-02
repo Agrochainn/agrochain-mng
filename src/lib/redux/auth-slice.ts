@@ -11,6 +11,7 @@ const getInitialAuthState = (): AuthState => {
       isLoading: false,
       error: null,
       checkingAuth: false,
+      signupResponse: null,
     };
   }
 
@@ -23,6 +24,7 @@ const getInitialAuthState = (): AuthState => {
     isLoading: false,
     error: null,
     checkingAuth: !!token, // Will be verified by AuthChecker
+    signupResponse: null,
   };
 };
 
@@ -77,6 +79,14 @@ export const authSlice = createSlice({
       state.user = null;
       state.checkingAuth = false;
     },
+    registerSuccess: (state, action: PayloadAction<any>) => {
+      state.signupResponse = action.payload;
+      state.isLoading = false;
+      state.error = null;
+    },
+    clearSignupResponse: (state) => {
+      state.signupResponse = null;
+    },
   },
 });
 
@@ -90,6 +100,8 @@ export const {
   checkAuthStart,
   checkAuthSuccess,
   checkAuthFailure,
+  registerSuccess,
+  clearSignupResponse,
 } = authSlice.actions;
 
 export default authSlice.reducer;

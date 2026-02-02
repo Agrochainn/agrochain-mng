@@ -1,6 +1,35 @@
 import { UserRole } from "./constants";
 
 // Auth-related types
+export interface UserRegistrationDTO {
+  email: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+  phoneNumber?: string;
+}
+
+export interface SignupResponseDTO {
+  message: string;
+  userId: string;
+  awardedPoints: number;
+  pointsDescription?: string;
+}
+
+export interface PasswordResetRequest {
+  email: string;
+}
+
+export interface VerifyResetCodeRequest {
+  email: string;
+  code: string;
+}
+
+export interface ResetPasswordRequest {
+  token: string;
+  newPassword: string;
+}
+
 export interface LoginRequest {
   email: string;
   password: string;
@@ -38,4 +67,5 @@ export interface AuthState {
   isLoading: boolean;
   error: string | null;
   checkingAuth: boolean;
+  signupResponse: SignupResponseDTO | null;
 }

@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/form";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Layers, Eye, EyeOff } from "lucide-react";
+import Link from "next/link";
 import { authService } from "@/lib/services/auth-service";
 import { LoginRequest } from "@/lib/types";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
@@ -109,7 +110,7 @@ export function LoginForm() {
           emailVerified: false,
           phoneVerified: false,
           enabled: true,
-        })
+        }),
       );
 
       toast({
@@ -199,7 +200,15 @@ export function LoginForm() {
             name="password"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Password</FormLabel>
+                <div className="flex items-center justify-between">
+                  <FormLabel>Password</FormLabel>
+                  <Link
+                    href="/auth/forgot-password"
+                    className="text-sm font-medium text-primary hover:underline"
+                  >
+                    Forgot password?
+                  </Link>
+                </div>
                 <FormControl>
                   <div className="relative">
                     <Input
@@ -251,6 +260,13 @@ export function LoginForm() {
           </Button>
         </form>
       </Form>
+
+      <div className="text-center text-sm text-muted-foreground">
+        Don&apos;t have an account?{" "}
+        <Link href="/auth/register" className="text-primary hover:underline">
+          Sign up
+        </Link>
+      </div>
     </div>
   );
 }
