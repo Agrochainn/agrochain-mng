@@ -28,7 +28,6 @@ import {
   BarChart3,
   Weight,
   Hash,
-  Barcode,
   Globe,
   Clock,
   Eye,
@@ -352,27 +351,7 @@ export default function ProductClient({ product, id }: ProductClientProps) {
                       {product.sku}
                     </span>
                   </div>
-                  <div>
-                    <label className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                      <Barcode className="h-4 w-4" />
-                      Barcode
-                    </label>
-                    <span className="mt-1 text-sm font-mono bg-muted px-2 py-1 rounded">
-                      {product.barcode || "Not set"}
-                    </span>
-                  </div>
                 </div>
-
-                {product.model && (
-                  <div>
-                    <label className="text-sm font-medium text-muted-foreground">
-                      Model
-                    </label>
-                    <span className="mt-1 text-sm bg-muted px-2 py-1 rounded">
-                      {product.model}
-                    </span>
-                  </div>
-                )}
 
                 <Separator />
 
@@ -448,32 +427,19 @@ export default function ProductClient({ product, id }: ProductClientProps) {
                 )}
 
                 {/* Physical Properties */}
-                {(product.dimensionsCm || product.weightKg) && (
+                {product.weightKg != null && (
                   <>
                     <Separator />
                     <div className="grid gap-4 md:grid-cols-2">
-                      {product.dimensionsCm && (
-                        <div>
-                          <label className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                            <Ruler className="h-4 w-4" />
-                            Dimensions
-                          </label>
-                          <span className="mt-1 text-sm bg-muted px-2 py-1 rounded">
-                            {product.dimensionsCm}
-                          </span>
-                        </div>
-                      )}
-                      {product.weightKg && (
-                        <div>
-                          <label className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                            <Weight className="h-4 w-4" />
-                            Weight
-                          </label>
-                          <span className="mt-1 text-sm bg-muted px-2 py-1 rounded">
-                            {product.weightKg} kg
-                          </span>
-                        </div>
-                      )}
+                      <div>
+                        <label className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                          <Weight className="h-4 w-4" />
+                          Weight
+                        </label>
+                        <span className="mt-1 text-sm bg-muted px-2 py-1 rounded">
+                          {product.weightKg} kg
+                        </span>
+                      </div>
                     </div>
                   </>
                 )}
@@ -669,17 +635,6 @@ export default function ProductClient({ product, id }: ProductClientProps) {
                               Variant Name
                             </label>
                             <p className="mt-1">{variant.variantName}</p>
-                          </div>
-                        )}
-
-                        {variant.variantBarcode && (
-                          <div className="mt-4">
-                            <label className="text-sm font-medium text-muted-foreground">
-                              Variant Barcode
-                            </label>
-                            <p className="mt-1 font-mono text-sm bg-muted px-2 py-1 rounded">
-                              {variant.variantBarcode}
-                            </p>
                           </div>
                         )}
 
@@ -998,34 +953,10 @@ export default function ProductClient({ product, id }: ProductClientProps) {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <FileText className="h-5 w-5" />
-                  SEO Information
+                  Product Details
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div>
-                  <label className="text-sm font-medium text-muted-foreground">
-                    Meta Title
-                  </label>
-                  <p className="mt-1 text-sm bg-muted px-2 py-1 rounded">
-                    {product.metaTitle || "Not set"}
-                  </p>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-muted-foreground">
-                    Meta Description
-                  </label>
-                  <p className="mt-1 text-sm bg-muted px-2 py-1 rounded">
-                    {product.metaDescription || "Not set"}
-                  </p>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-muted-foreground">
-                    Meta Keywords
-                  </label>
-                  <p className="mt-1 text-sm bg-muted px-2 py-1 rounded">
-                    {product.metaKeywords || "Not set"}
-                  </p>
-                </div>
                 <div>
                   <label className="text-sm font-medium text-muted-foreground">
                     Slug
@@ -1034,6 +965,26 @@ export default function ProductClient({ product, id }: ProductClientProps) {
                     {product.slug}
                   </p>
                 </div>
+                {product.storageInstructions && (
+                  <div>
+                    <label className="text-sm font-medium text-muted-foreground">
+                      Storage Instructions
+                    </label>
+                    <p className="mt-1 text-sm bg-muted px-2 py-1 rounded">
+                      {product.storageInstructions}
+                    </p>
+                  </div>
+                )}
+                {product.nutritionalInfo && (
+                  <div>
+                    <label className="text-sm font-medium text-muted-foreground">
+                      Nutritional Information
+                    </label>
+                    <p className="mt-1 text-sm bg-muted px-2 py-1 rounded">
+                      {product.nutritionalInfo}
+                    </p>
+                  </div>
+                )}
               </CardContent>
             </Card>
 

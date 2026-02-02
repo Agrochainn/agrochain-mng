@@ -59,7 +59,6 @@ export interface ProductVariant {
   variantId: number;
   variantSku: string;
   variantName: string;
-  variantBarcode?: string;
   price: number;
   salePrice?: number;
   costPrice?: number;
@@ -122,36 +121,26 @@ export interface ProductVariantsResponse {
 
 export interface ProductDetails {
   description?: string;
-  metaTitle?: string;
-  metaDescription?: string;
-  metaKeywords?: string;
-  searchKeywords?: string;
-  dimensionsCm?: string;
   weightKg?: number;
-  material?: string;
-  careInstructions?: string;
-  warrantyInfo?: string;
   shippingInfo?: string;
   returnPolicy?: string;
   maximumDaysForReturn?: number;
   displayToCustomers?: boolean;
+  // Agriculture-specific fields (product-level only)
+  storageInstructions?: string;
+  nutritionalInfo?: string;
 }
 
 export interface ProductDetailsUpdate {
   description?: string;
-  metaTitle?: string;
-  metaDescription?: string;
-  metaKeywords?: string;
-  searchKeywords?: string;
-  dimensionsCm?: string;
   weightKg?: number;
-  material?: string;
-  careInstructions?: string;
-  warrantyInfo?: string;
   shippingInfo?: string;
   returnPolicy?: string;
   maximumDaysForReturn?: number;
   displayToCustomers?: boolean;
+  // Agriculture-specific fields (product-level only)
+  storageInstructions?: string;
+  nutritionalInfo?: string;
 }
 
 export interface ProductBasicInfoUpdate {
@@ -159,12 +148,7 @@ export interface ProductBasicInfoUpdate {
   shortDescription?: string;
   description?: string;
   sku?: string;
-  barcode?: string;
-  model?: string;
   slug?: string;
-  material?: string;
-  warrantyInfo?: string;
-  careInstructions?: string;
   price?: number;
   compareAtPrice?: number;
   categoryId?: number;
@@ -175,7 +159,9 @@ export interface ProductBasicInfoUpdate {
   newArrival?: boolean;
   onSale?: boolean;
   salePercentage?: number;
-  costPrice:number;
+  costPrice?: number;
+  organic?: boolean;
+  unitId?: number;
 }
 
 export interface ProductBasicInfo {
@@ -184,12 +170,7 @@ export interface ProductBasicInfo {
   shortDescription?: string;
   description?: string;
   sku: string;
-  barcode?: string;
-  model?: string;
   slug: string;
-  material?: string;
-  warrantyInfo?: string;
-  careInstructions?: string;
   price: number;
   compareAtPrice?: number;
   categoryId?: number;
@@ -895,7 +876,6 @@ class ProductService {
     variantData: {
       variantName: string;
       variantSku: string;
-      variantBarcode?: string;
       price: number;
       salePrice?: number;
       costPrice?: number;
@@ -915,9 +895,6 @@ class ProductService {
 
       formData.append("variantName", variantData.variantName);
       formData.append("variantSku", variantData.variantSku);
-      if (variantData.variantBarcode) {
-        formData.append("variantBarcode", variantData.variantBarcode);
-      }
       formData.append("price", variantData.price.toString());
       if (variantData.salePrice) {
         formData.append("salePrice", variantData.salePrice.toString());
