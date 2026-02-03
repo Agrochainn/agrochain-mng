@@ -15,6 +15,12 @@ export interface ShopDTO {
   contactPhone?: string;
   address?: string;
   isActive?: boolean;
+  isTrulyActive?: boolean;
+  category?: string;
+  shopCategoryId?: number;
+  shopCategoryName?: string;
+  primaryCapability?: string;
+  capabilities?: string[];
   productCount?: number;
   createdAt?: string;
   updatedAt?: string;
