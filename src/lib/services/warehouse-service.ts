@@ -6,8 +6,6 @@ export interface WarehouseDTO {
   description?: string;
   address: string;
   city: string;
-  state: string;
-  zipCode: string;
   country: string;
   phone?: string;
   email?: string;
@@ -39,8 +37,8 @@ export interface CreateWarehouseDTO {
   description?: string;
   address: string;
   city: string;
-  state: string;
-  zipCode: string;
+  state?: string;
+  zipCode?: string;
   country: string;
   phone?: string;
   email?: string;
@@ -56,8 +54,6 @@ export interface UpdateWarehouseDTO {
   description?: string;
   address?: string;
   city?: string;
-  state?: string;
-  zipCode?: string;
   country?: string;
   phone?: string;
   email?: string;
@@ -122,7 +118,7 @@ class WarehouseService {
   async getWarehouses(
     page: number = 0,
     size: number = 10,
-    shopId?: string
+    shopId?: string,
   ): Promise<PaginatedResponse<WarehouseDTO>> {
     const params = new URLSearchParams({
       page: page.toString(),
@@ -131,7 +127,9 @@ class WarehouseService {
     if (shopId) {
       params.append("shopId", shopId);
     }
-    const response = await apiClient.get(`${this.baseUrl}?${params.toString()}`);
+    const response = await apiClient.get(
+      `${this.baseUrl}?${params.toString()}`,
+    );
     return response.data;
   }
 
@@ -142,7 +140,7 @@ class WarehouseService {
 
   async createWarehouse(
     warehouse: CreateWarehouseDTO,
-    images?: File[]
+    images?: File[],
   ): Promise<WarehouseDTO> {
     const formData = new FormData();
 
@@ -167,7 +165,7 @@ class WarehouseService {
   async updateWarehouse(
     id: number,
     warehouse: UpdateWarehouseDTO,
-    images?: File[]
+    images?: File[],
   ): Promise<WarehouseDTO> {
     const formData = new FormData();
 
@@ -196,20 +194,20 @@ class WarehouseService {
   async getWarehouseProducts(
     id: number,
     page: number = 0,
-    size: number = 10
+    size: number = 10,
   ): Promise<PaginatedResponse<WarehouseProductDTO>> {
     const response = await apiClient.get(
-      `${this.baseUrl}/${id}/products?page=${page}&size=${size}`
+      `${this.baseUrl}/${id}/products?page=${page}&size=${size}`,
     );
     return response.data;
   }
 
   async getProductVariantsInWarehouse(
     warehouseId: number,
-    productId: string
+    productId: string,
   ): Promise<ProductVariantWarehouseDTO[]> {
     const response = await apiClient.get(
-      `${this.baseUrl}/${warehouseId}/products/${productId}/variants`
+      `${this.baseUrl}/${warehouseId}/products/${productId}/variants`,
     );
     return response.data;
   }
@@ -218,23 +216,23 @@ class WarehouseService {
     warehouseId: number,
     productId: string,
     quantity: number,
-    lowStockThreshold: number = 10
+    lowStockThreshold: number = 10,
   ): Promise<void> {
     await apiClient.post(
       `${this.baseUrl}/${warehouseId}/products/${productId}`,
       {
         quantity,
         lowStockThreshold,
-      }
+      },
     );
   }
 
   async removeProductFromWarehouse(
     warehouseId: number,
-    productId: string
+    productId: string,
   ): Promise<void> {
     await apiClient.delete(
-      `${this.baseUrl}/${warehouseId}/products/${productId}`
+      `${this.baseUrl}/${warehouseId}/products/${productId}`,
     );
   }
 
@@ -242,14 +240,14 @@ class WarehouseService {
     warehouseId: number,
     productId: string,
     quantity: number,
-    lowStockThreshold: number
+    lowStockThreshold: number,
   ): Promise<void> {
     await apiClient.put(
       `${this.baseUrl}/${warehouseId}/products/${productId}`,
       {
         quantity,
         lowStockThreshold,
-      }
+      },
     );
   }
 
@@ -257,7 +255,7 @@ class WarehouseService {
     query: string,
     page: number = 0,
     size: number = 10,
-    shopId?: string
+    shopId?: string,
   ): Promise<PaginatedResponse<WarehouseDTO>> {
     const params = new URLSearchParams({
       query,
@@ -267,18 +265,25 @@ class WarehouseService {
     if (shopId) {
       params.append("shopId", shopId);
     }
-    const response = await apiClient.get(`${this.baseUrl}/search?${params.toString()}`);
+    const response = await apiClient.get(
+      `${this.baseUrl}/search?${params.toString()}`,
+    );
     return response.data;
   }
 
-  async getWarehousesByLocation(location: string, shopId?: string): Promise<WarehouseDTO[]> {
+  async getWarehousesByLocation(
+    location: string,
+    shopId?: string,
+  ): Promise<WarehouseDTO[]> {
     const params = new URLSearchParams({
       location: location,
     });
     if (shopId) {
       params.append("shopId", shopId);
     }
-    const response = await apiClient.get(`${this.baseUrl}/location?${params.toString()}`);
+    const response = await apiClient.get(
+      `${this.baseUrl}/location?${params.toString()}`,
+    );
     return response.data.data;
   }
 
@@ -286,7 +291,7 @@ class WarehouseService {
     latitude: number,
     longitude: number,
     radiusKm: number = 50,
-    shopId?: string
+    shopId?: string,
   ): Promise<WarehouseDTO[]> {
     const params = new URLSearchParams({
       latitude: latitude.toString(),
@@ -296,7 +301,9 @@ class WarehouseService {
     if (shopId) {
       params.append("shopId", shopId);
     }
-    const response = await apiClient.get(`${this.baseUrl}/nearby?${params.toString()}`);
+    const response = await apiClient.get(
+      `${this.baseUrl}/nearby?${params.toString()}`,
+    );
     return response.data.data;
   }
 }
