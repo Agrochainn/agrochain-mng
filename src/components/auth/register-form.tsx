@@ -26,6 +26,8 @@ import { registerSuccess, clearError } from "@/lib/redux/auth-slice";
 import { handleApiError } from "@/lib/utils/error-handler";
 import Link from "next/link";
 
+import { RegistrationSuccessDialog } from "./registration-success-dialog";
+
 const formSchema = z
   .object({
     firstName: z.string().min(2, "First name must be at least 2 characters"),
@@ -44,6 +46,7 @@ export function RegisterForm() {
   const router = useRouter();
   const { toast } = useToast();
   const [showPassword, setShowPassword] = useState(false);
+  const [isSuccessDialogOpen, setIsSuccessDialogOpen] = useState(false);
   const dispatch = useAppDispatch();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -64,11 +67,11 @@ export function RegisterForm() {
     },
     onSuccess: (data) => {
       dispatch(registerSuccess(data));
+      setIsSuccessDialogOpen(true);
       toast({
         title: "Success",
         description: data.message || "Account created successfully",
       });
-      router.push("/auth?message=signup-success");
     },
     onError: (error) => {
       const errorMessage = handleApiError(error);
@@ -258,6 +261,11 @@ export function RegisterForm() {
           Sign in
         </Link>
       </div>
+
+      <RegistrationSuccessDialog
+        isOpen={isSuccessDialogOpen}
+        onClose={() => setIsSuccessDialogOpen(false)}
+      />
     </div>
   );
 }

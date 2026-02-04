@@ -2,10 +2,13 @@ import { useQuery } from "@tanstack/react-query";
 import apiClient from "@/lib/api-client";
 import { API_ENDPOINTS } from "@/lib/constants";
 
-async function getPendingReturnsCount(): Promise<number> {
+async function getPendingReturnsCount(shopId?: string): Promise<number> {
   try {
     const response = await apiClient.get<{ success: boolean; count: number }>(
-      API_ENDPOINTS.RETURNS.COUNT_PENDING
+      API_ENDPOINTS.RETURNS.COUNT_PENDING,
+      {
+        params: { shopId },
+      },
     );
     return response.data.count || 0;
   } catch (error) {
@@ -14,11 +17,12 @@ async function getPendingReturnsCount(): Promise<number> {
   }
 }
 
-export function usePendingReturnsCount() {
+export function usePendingReturnsCount(shopId?: string | null) {
   return useQuery({
-    queryKey: ["pending-returns-count"],
-    queryFn: getPendingReturnsCount,
+    queryKey: ["pending-returns-count", shopId],
+    queryFn: () => getPendingReturnsCount(shopId!),
     refetchInterval: 30000, // Refetch every 30 seconds
     staleTime: 25000, // Consider data stale after 25 seconds
+    enabled: !!shopId,
   });
 }

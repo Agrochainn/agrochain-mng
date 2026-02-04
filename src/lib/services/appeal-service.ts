@@ -173,13 +173,13 @@ class AppealService {
    */
   async getPendingAppealsCount(shopId?: string): Promise<number> {
     try {
-      const response = await apiClient.get<number>(
+      const response = await apiClient.get<{ success: boolean; count: number }>(
         `${this.baseUrl}/pending/count`,
         {
           params: { shopId },
         },
       );
-      return response.data;
+      return response.data.count || 0;
     } catch (error) {
       console.error("Error fetching pending appeals count:", error);
       return 0;

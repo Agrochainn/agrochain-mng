@@ -13,7 +13,7 @@ class OrderService {
   async getAllOrders(): Promise<AdminOrderDTO[]> {
     try {
       const response = await apiClient.get<AdminOrderListResponse>(
-        API_ENDPOINTS.ADMIN_ORDERS.ALL
+        API_ENDPOINTS.ADMIN_ORDERS.ALL,
       );
       return response.data.data;
     } catch (error) {
@@ -49,7 +49,7 @@ class OrderService {
       paymentMethod?: string;
       trackingNumber?: string;
       searchKeyword?: string;
-    } = {}
+    } = {},
   ): Promise<{
     data: AdminOrderDTO[];
     totalPaidAmount?: number;
@@ -75,7 +75,7 @@ class OrderService {
 
       const response = await apiClient.get<any>(
         API_ENDPOINTS.ADMIN_ORDERS.ALL,
-        { params: cleanParams }
+        { params: cleanParams },
       );
 
       return {
@@ -106,7 +106,7 @@ class OrderService {
   async getOrdersByStatus(status: string): Promise<AdminOrderDTO[]> {
     try {
       const response = await apiClient.get<AdminOrderListResponse>(
-        API_ENDPOINTS.ADMIN_ORDERS.BY_STATUS(status)
+        API_ENDPOINTS.ADMIN_ORDERS.BY_STATUS(status),
       );
       return response.data.data;
     } catch (error) {
@@ -121,7 +121,7 @@ class OrderService {
   async getOrderById(
     orderId: string,
     userId?: string,
-    shopId?: string
+    shopId?: string,
   ): Promise<AdminOrderDTO> {
     try {
       const params: any = {};
@@ -130,7 +130,7 @@ class OrderService {
 
       const response = await apiClient.get<ApiResponse<AdminOrderDTO>>(
         API_ENDPOINTS.ADMIN_ORDERS.BY_ID(orderId),
-        { params }
+        { params },
       );
       return response.data.data;
     } catch (error) {
@@ -144,12 +144,12 @@ class OrderService {
    */
   async updateOrderStatus(
     orderId: string,
-    status: string
+    status: string,
   ): Promise<AdminOrderDTO> {
     try {
       const response = await apiClient.put<ApiResponse<AdminOrderDTO>>(
         API_ENDPOINTS.ADMIN_ORDERS.UPDATE_STATUS(orderId),
-        { status }
+        { status },
       );
       return response.data.data;
     } catch (error) {
@@ -164,7 +164,7 @@ class OrderService {
   async updateOrderTracking(
     orderId: string,
     trackingNumber: string,
-    estimatedDelivery?: string
+    estimatedDelivery?: string,
   ): Promise<AdminOrderDTO> {
     try {
       const payload: { trackingNumber: string; estimatedDelivery?: string } = {
@@ -177,7 +177,7 @@ class OrderService {
 
       const response = await apiClient.put<ApiResponse<AdminOrderDTO>>(
         API_ENDPOINTS.ADMIN_ORDERS.UPDATE_TRACKING(orderId),
-        payload
+        payload,
       );
       return response.data.data;
     } catch (error) {
@@ -193,7 +193,7 @@ class OrderService {
     try {
       const response = await apiClient.post<ApiResponse<any>>(
         `/orders/delivery/verify/${pickupToken}`,
-        {}
+        {},
       );
       return response.data;
     } catch (error) {
@@ -205,16 +205,13 @@ class OrderService {
   /**
    * Verify pickup order by QR token (admin/vendor only)
    */
-  async verifyPickupOrder(
-    pickupToken: string,
-    shopId?: string
-  ): Promise<any> {
+  async verifyPickupOrder(pickupToken: string, shopId?: string): Promise<any> {
     try {
       const params = shopId ? { shopId } : {};
       const response = await apiClient.post<ApiResponse<any>>(
         API_ENDPOINTS.ADMIN_ORDERS.VERIFY_PICKUP,
         { pickupToken },
-        { params }
+        { params },
       );
       return response.data;
     } catch (error: any) {
@@ -223,7 +220,9 @@ class OrderService {
       if (error.response?.data) {
         const errorData = error.response.data;
         throw new Error(
-          errorData.details || errorData.message || "Failed to verify pickup order"
+          errorData.details ||
+            errorData.message ||
+            "Failed to verify pickup order",
         );
       }
       throw error;
@@ -233,10 +232,13 @@ class OrderService {
   /**
    * Get pending orders count
    */
-  async getPendingOrdersCount(): Promise<number> {
+  async getPendingOrdersCount(shopId?: string): Promise<number> {
     try {
       const response = await apiClient.get<{ success: boolean; count: number }>(
-        API_ENDPOINTS.ADMIN_ORDERS.COUNT_PENDING
+        API_ENDPOINTS.ADMIN_ORDERS.COUNT_PENDING,
+        {
+          params: { shopId },
+        },
       );
       return response.data.count || 0;
     } catch (error) {

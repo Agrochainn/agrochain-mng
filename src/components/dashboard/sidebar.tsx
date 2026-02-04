@@ -37,6 +37,8 @@ import { usePendingReturnsCount } from "@/hooks/use-pending-returns";
 import { useAppDispatch } from "@/lib/redux/hooks";
 import { logout } from "@/lib/redux/auth-slice";
 import { authService } from "@/lib/services/auth-service";
+import { shopService } from "@/lib/services/shop-service";
+import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { GiveFeedbackDialog } from "@/components/GiveFeedbackDialog";
 
@@ -53,12 +55,25 @@ export function Sidebar({ className }: SidebarProps) {
   const searchParams = useSearchParams();
   const shopSlug = searchParams.get("shopSlug");
   const dispatch = useAppDispatch();
+
+  // Fetch shop by slug to get shopId
+  const { data: shopData } = useQuery({
+    queryKey: ["shop", shopSlug],
+    queryFn: () => {
+      if (!shopSlug) throw new Error("Shop slug is required");
+      return shopService.getShopBySlug(shopSlug);
+    },
+    enabled: !!shopSlug,
+  });
+
+  const shopId = shopData?.shopId;
+
   const { data: pendingAppealsCount, isLoading: isLoadingAppeals } =
-    usePendingAppealsCount();
+    usePendingAppealsCount(shopId);
   const { data: pendingOrdersCount, isLoading: isLoadingOrders } =
-    usePendingOrdersCount();
+    usePendingOrdersCount(shopId);
   const { data: pendingReturnsCount, isLoading: isLoadingReturns } =
-    usePendingReturnsCount();
+    usePendingReturnsCount(shopId);
 
   // Helper function to append shopSlug to href if it exists
   const getHrefWithShopSlug = (href: string): string => {
@@ -98,7 +113,7 @@ export function Sidebar({ className }: SidebarProps) {
       className={cn(
         "flex h-full flex-col border-r bg-background transition-all duration-300",
         collapsed ? "w-16" : "w-64",
-        className
+        className,
       )}
     >
       <div className="flex h-14 items-center px-3 border-b bg-primary/5">
@@ -106,7 +121,7 @@ export function Sidebar({ className }: SidebarProps) {
           href={getHrefWithShopSlug("/dashboard")}
           className={cn(
             "flex items-center gap-2 font-semibold",
-            collapsed ? "justify-center" : "justify-start"
+            collapsed ? "justify-center" : "justify-start",
           )}
         >
           {!collapsed && (
@@ -119,7 +134,7 @@ export function Sidebar({ className }: SidebarProps) {
           size="icon"
           className={cn(
             "ml-auto h-8 w-8",
-            collapsed ? "rotate-180" : "rotate-0"
+            collapsed ? "rotate-180" : "rotate-0",
           )}
           onClick={toggleSidebar}
         >
@@ -290,7 +305,7 @@ function SidebarItem({
         isActive
           ? "bg-primary text-primary-foreground"
           : "text-muted-foreground hover:bg-primary hover:text-primary-foreground",
-        collapsed ? "justify-center" : "justify-start"
+        collapsed ? "justify-center" : "justify-start",
       )}
     >
       <Icon className={cn("h-5 w-5", collapsed ? "mr-0" : "mr-2")} />
@@ -320,7 +335,7 @@ function GiveFeedbackSidebarItem({
       className={cn(
         "flex h-10 w-full items-center rounded-lg px-3 py-2 transition-colors text-left",
         "text-muted-foreground hover:bg-primary hover:text-primary-foreground",
-        collapsed ? "justify-center" : "justify-start"
+        collapsed ? "justify-center" : "justify-start",
       )}
     >
       <Icon className={cn("h-5 w-5", collapsed ? "mr-0" : "mr-2")} />
@@ -347,7 +362,7 @@ function SidebarItemWithBadge({
         isActive
           ? "bg-primary text-primary-foreground"
           : "text-muted-foreground hover:bg-primary hover:text-primary-foreground",
-        collapsed ? "justify-center" : "justify-start"
+        collapsed ? "justify-center" : "justify-start",
       )}
     >
       <Icon className={cn("h-5 w-5", collapsed ? "mr-0" : "mr-2")} />
@@ -407,14 +422,14 @@ function LogoutButton({
         "flex h-10 items-center rounded-lg px-3 py-2 transition-colors w-full",
         "text-muted-foreground hover:bg-destructive hover:text-destructive-foreground",
         "disabled:opacity-50 disabled:cursor-not-allowed",
-        collapsed ? "justify-center" : "justify-start"
+        collapsed ? "justify-center" : "justify-start",
       )}
     >
       {isLoading ? (
         <div
           className={cn(
             "h-5 w-5 animate-spin rounded-full border-2 border-current border-t-transparent",
-            collapsed ? "mr-0" : "mr-2"
+            collapsed ? "mr-0" : "mr-2",
           )}
         />
       ) : (

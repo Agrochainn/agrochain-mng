@@ -232,7 +232,7 @@ const mockProduct = {
   slug: "organic-tomatoes",
   price: 4.99,
   compareAtPrice: 5.99,
-  costPrice: 2.50,
+  costPrice: 2.5,
   stockQuantity: 150,
   categoryId: 1,
   brandId: 1,
@@ -244,7 +244,8 @@ const mockProduct = {
   weightKg: 1.0,
   organic: true,
   // Agriculture-specific fields (product-level; harvest/expiry/grade/origin are on batches)
-  storageInstructions: "Keep refrigerated at 4°C. Best consumed within 7 days of purchase.",
+  storageInstructions:
+    "Keep refrigerated at 4°C. Best consumed within 7 days of purchase.",
   nutritionalInfo: "Calories: 18 per 100g, Vitamin C: 14mg, Fiber: 1.2g",
   images: [
     {
@@ -328,8 +329,6 @@ const productUpdateSchema = z.object({
   name: z.string().min(1, "Product name is required"),
   description: z.string().optional(),
   shortDescription: z.string().optional(),
-  sku: z.string().min(1, "SKU is required"),
-  slug: z.string().optional(),
   price: z.coerce.number().min(0.01, "Price must be greater than 0"),
   compareAtPrice: z.coerce.number().min(0.01).optional(),
   costPrice: z.coerce.number().min(0.01).optional(),
@@ -416,7 +415,7 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
   const [currentAttributeValue, setCurrentAttributeValue] = useState("");
   const [warehouses] = useState<any[]>(mockWarehouses);
   const [variantWarehouseStock, setVariantWarehouseStock] = useState<any>(
-    mockVariantWarehouseStock
+    mockVariantWarehouseStock,
   );
   const [currentWarehousePage, setCurrentWarehousePage] = useState<
     Record<string, number>
@@ -426,9 +425,10 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
   const [selectedVariantForWarehouse, setSelectedVariantForWarehouse] =
     useState<number | null>(null);
   const [isWarehouseModalOpen, setIsWarehouseModalOpen] = useState(false);
-  const [variantWarehouseStocksWithBatches, setVariantWarehouseStocksWithBatches] = useState<
-    WarehouseStockWithBatches[]
-  >([]);
+  const [
+    variantWarehouseStocksWithBatches,
+    setVariantWarehouseStocksWithBatches,
+  ] = useState<WarehouseStockWithBatches[]>([]);
   const [editingVariants, setEditingVariants] = useState<
     Record<number, Partial<ProductVariant>>
   >({});
@@ -441,7 +441,7 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
   const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [isAddVariantDialogOpen, setIsAddVariantDialogOpen] = useState(false);
   const [expandedVariants, setExpandedVariants] = useState<Set<number>>(
-    new Set()
+    new Set(),
   );
   const [variantImages, setVariantImages] = useState<Record<number, any[]>>({});
   const [newVariant, setNewVariant] = useState({
@@ -461,14 +461,17 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
   });
   const [attributeTypeName, setAttributeTypeName] = useState("");
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [variantToDelete, setVariantToDelete] = useState<ProductVariant | null>(null);
-  const [isUnassignWarehouseDialogOpen, setIsUnassignWarehouseDialogOpen] = useState(false);
+  const [variantToDelete, setVariantToDelete] = useState<ProductVariant | null>(
+    null,
+  );
+  const [isUnassignWarehouseDialogOpen, setIsUnassignWarehouseDialogOpen] =
+    useState(false);
   const [warehouseToUnassign, setWarehouseToUnassign] = useState<{
     warehouseId: number;
     warehouseName: string;
   } | null>(null);
   const [productWarehouseStocks, setProductWarehouseStocks] = useState<any[]>(
-    []
+    [],
   );
   const [
     productWarehouseStocksWithBatches,
@@ -488,10 +491,13 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
     nutritionalInfo?: string;
     [key: string]: any;
   }>({});
-  const [hasProductDetailsChanges, setHasProductDetailsChanges] = useState(false);
+  const [hasProductDetailsChanges, setHasProductDetailsChanges] =
+    useState(false);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
-  const [isUnsavedChangesModalOpen, setIsUnsavedChangesModalOpen] = useState(false);
-  const [isDeleteVariantModalOpen, setIsDeleteVariantModalOpen] = useState(false);
+  const [isUnsavedChangesModalOpen, setIsUnsavedChangesModalOpen] =
+    useState(false);
+  const [isDeleteVariantModalOpen, setIsDeleteVariantModalOpen] =
+    useState(false);
   const [attributeValue, setAttributeValue] = useState("");
   const [pendingAction, setPendingAction] = useState<(() => void) | null>(null);
   const [pricingUnit, setPricingUnit] = useState<UnitOption | null>(null);
@@ -504,8 +510,6 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
       name: "",
       description: "",
       shortDescription: "",
-      sku: "",
-      slug: "",
       price: 0,
       compareAtPrice: 0,
       costPrice: 0,
@@ -546,8 +550,6 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
           name: productData.productName,
           description: productData.description || "",
           shortDescription: productData.shortDescription || "",
-          sku: productData.sku,
-          slug: productData.slug,
           price: productData.price,
           compareAtPrice: productData.compareAtPrice || 0,
           costPrice: productData.costPrice || 0,
@@ -603,7 +605,7 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
         page,
         variantsSize,
         "id",
-        "asc"
+        "asc",
       );
       setVariantsResponse(response);
       setProductVariants(response.content);
@@ -764,12 +766,6 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
       if (currentFormData.description !== initialData.description) {
         changedFields.description = currentFormData.description;
       }
-      if (currentFormData.sku !== initialData.sku) {
-        changedFields.sku = currentFormData.sku;
-      }
-      if (currentFormData.slug !== initialData.slug) {
-        changedFields.slug = currentFormData.slug;
-      }
       if (currentFormData.price !== initialData.price) {
         changedFields.price = currentFormData.price;
       }
@@ -820,7 +816,7 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
       // Send update request
       const updatedProduct = await productService.updateProductBasicInfo(
         productId,
-        changedFields as ProductBasicInfoUpdate
+        changedFields as ProductBasicInfoUpdate,
       );
 
       // Update the product state with the response
@@ -954,7 +950,12 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
 
   // Fetch variants on initial load if tab is "variants"
   useEffect(() => {
-    if (productId && activeTab === "variants" && productVariants.length === 0 && !variantsLoading) {
+    if (
+      productId &&
+      activeTab === "variants" &&
+      productVariants.length === 0 &&
+      !variantsLoading
+    ) {
       fetchProductVariants();
     }
   }, [productId, activeTab]);
@@ -980,17 +981,22 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
   const removeImageById = async (imageId: number) => {
     try {
       // Find the image to check if it's a newly uploaded one (not yet saved to DB)
-      const imageToRemove = existingImages.find((img) => img.imageId === imageId);
-      
+      const imageToRemove = existingImages.find(
+        (img) => img.imageId === imageId,
+      );
+
       // Check if this is a newly uploaded image (has a 'file' property)
       // Newly uploaded images are only in frontend state and haven't been saved to DB yet
       const isNewlyUploaded = imageToRemove && imageToRemove.file;
-      
+
       if (isNewlyUploaded) {
         // For newly uploaded images, just remove from state without calling backend
-        console.log("Removing newly uploaded image (not yet saved to DB):", imageId);
+        console.log(
+          "Removing newly uploaded image (not yet saved to DB):",
+          imageId,
+        );
         setExistingImages((prev) =>
-          prev.filter((img) => img.imageId !== imageId)
+          prev.filter((img) => img.imageId !== imageId),
         );
         toast({
           title: "Image Removed",
@@ -1001,7 +1007,7 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
         console.log("Removing existing image from DB:", imageId);
         await productService.deleteProductImage(productId, imageId);
         setExistingImages((prev) =>
-          prev.filter((img) => img.imageId !== imageId)
+          prev.filter((img) => img.imageId !== imageId),
         );
         toast({
           title: "Image Removed",
@@ -1010,14 +1016,22 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
       }
     } catch (error: any) {
       console.error("Error removing image:", error);
-      
-      // If it's a NOT_FOUND error and the image has a file property, 
+
+      // If it's a NOT_FOUND error and the image has a file property,
       // it means it was a newly uploaded image that we should just remove from state
-      const imageToRemove = existingImages.find((img) => img.imageId === imageId);
-      if (error.response?.data?.errorCode === "NOT_FOUND" && imageToRemove?.file) {
-        console.log("Image not found in DB but has file property, removing from state:", imageId);
+      const imageToRemove = existingImages.find(
+        (img) => img.imageId === imageId,
+      );
+      if (
+        error.response?.data?.errorCode === "NOT_FOUND" &&
+        imageToRemove?.file
+      ) {
+        console.log(
+          "Image not found in DB but has file property, removing from state:",
+          imageId,
+        );
         setExistingImages((prev) =>
-          prev.filter((img) => img.imageId !== imageId)
+          prev.filter((img) => img.imageId !== imageId),
         );
         toast({
           title: "Image Removed",
@@ -1025,7 +1039,7 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
         });
         return;
       }
-      
+
       toast({
         title: "Error",
         description: error.response?.data?.message || "Failed to remove image",
@@ -1037,17 +1051,22 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
   const removeVideoById = async (videoId: number) => {
     try {
       // Find the video to check if it's a newly uploaded one (not yet saved to DB)
-      const videoToRemove = existingVideos.find((video) => video.videoId === videoId);
-      
+      const videoToRemove = existingVideos.find(
+        (video) => video.videoId === videoId,
+      );
+
       // Check if this is a newly uploaded video (has a 'file' property)
       // Newly uploaded videos are only in frontend state and haven't been saved to DB yet
       const isNewlyUploaded = videoToRemove && videoToRemove.file;
-      
+
       if (isNewlyUploaded) {
         // For newly uploaded videos, just remove from state without calling backend
-        console.log("Removing newly uploaded video (not yet saved to DB):", videoId);
+        console.log(
+          "Removing newly uploaded video (not yet saved to DB):",
+          videoId,
+        );
         setExistingVideos((prev) =>
-          prev.filter((video) => video.videoId !== videoId)
+          prev.filter((video) => video.videoId !== videoId),
         );
         toast({
           title: "Video Removed",
@@ -1058,7 +1077,7 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
         console.log("Removing existing video from DB:", videoId);
         await productService.deleteProductVideo(productId, videoId);
         setExistingVideos((prev) =>
-          prev.filter((video) => video.videoId !== videoId)
+          prev.filter((video) => video.videoId !== videoId),
         );
         toast({
           title: "Video Removed",
@@ -1067,14 +1086,22 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
       }
     } catch (error: any) {
       console.error("Error removing video:", error);
-      
-      // If it's a NOT_FOUND error and the video has a file property, 
+
+      // If it's a NOT_FOUND error and the video has a file property,
       // it means it was a newly uploaded video that we should just remove from state
-      const videoToRemove = existingVideos.find((video) => video.videoId === videoId);
-      if (error.response?.data?.errorCode === "NOT_FOUND" && videoToRemove?.file) {
-        console.log("Video not found in DB but has file property, removing from state:", videoId);
+      const videoToRemove = existingVideos.find(
+        (video) => video.videoId === videoId,
+      );
+      if (
+        error.response?.data?.errorCode === "NOT_FOUND" &&
+        videoToRemove?.file
+      ) {
+        console.log(
+          "Video not found in DB but has file property, removing from state:",
+          videoId,
+        );
         setExistingVideos((prev) =>
-          prev.filter((video) => video.videoId !== videoId)
+          prev.filter((video) => video.videoId !== videoId),
         );
         toast({
           title: "Video Removed",
@@ -1082,7 +1109,7 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
         });
         return;
       }
-      
+
       toast({
         title: "Error",
         description: error.response?.data?.message || "Failed to remove video",
@@ -1098,7 +1125,7 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
         prev.map((img) => ({
           ...img,
           isPrimary: img.imageId === imageId,
-        }))
+        })),
       );
       toast({
         title: "Primary Image Set",
@@ -1153,7 +1180,7 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
         if (file.size > maxSize) {
           const sizeMB = (file.size / (1024 * 1024)).toFixed(2);
           errors.push(
-            `"${file.name}" is too large (${sizeMB}MB). Maximum size is 100MB or 15 seconds video`
+            `"${file.name}" is too large (${sizeMB}MB). Maximum size is 100MB or 15 seconds video`,
           );
           continue;
         }
@@ -1161,7 +1188,7 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
         const duration = await getVideoDuration(file);
         if (duration > 15) {
           errors.push(
-            `"${file.name}" is too long (${duration.toFixed(1)}s). Maximum duration is 15 seconds`
+            `"${file.name}" is too long (${duration.toFixed(1)}s). Maximum duration is 15 seconds`,
           );
           continue;
         }
@@ -1176,9 +1203,7 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
         });
       } catch (error) {
         console.error(`Error processing video ${file.name}:`, error);
-        errors.push(
-          `"${file.name}" could not be processed. Please try again.`
-        );
+        errors.push(`"${file.name}" could not be processed. Please try again.`);
       }
     }
 
@@ -1198,7 +1223,9 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
         title: "Video Validation Errors",
         description: (
           <div className="space-y-1">
-            <p className="font-semibold">The following videos could not be added:</p>
+            <p className="font-semibold">
+              The following videos could not be added:
+            </p>
             <ul className="list-disc list-inside space-y-1 text-sm">
               {errors.map((error, index) => (
                 <li key={index}>{error}</li>
@@ -1266,7 +1293,7 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
 
   const removeVariant = (variantId: number) => {
     setVariants((prev) =>
-      prev.filter((variant) => variant.variantId !== variantId)
+      prev.filter((variant) => variant.variantId !== variantId),
     );
     toast({
       title: "Variant Removed",
@@ -1277,7 +1304,7 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
   const addAttributeToVariant = (
     variantId: number,
     attributeType: string,
-    attributeValue: string
+    attributeValue: string,
   ) => {
     setVariants((prev) =>
       prev.map((variant) => {
@@ -1289,26 +1316,27 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
           };
         }
         return variant;
-      })
+      }),
     );
   };
 
   const removeAttributeFromVariant = (
     variantId: number,
-    attributeIndex: number
+    attributeIndex: number,
   ) => {
     setVariants((prev) =>
       prev.map((variant) => {
         if (variant.variantId === variantId) {
           return {
             ...variant,
-            attributes: variant.attributes?.filter(
-              (_: any, index: number) => index !== attributeIndex
-            ) || [],
+            attributes:
+              variant.attributes?.filter(
+                (_: any, index: number) => index !== attributeIndex,
+              ) || [],
           };
         }
         return variant;
-      })
+      }),
     );
   };
 
@@ -1402,12 +1430,12 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
           return {
             ...variant,
             images: variant.images.filter(
-              (img: any) => img.imageId !== imageId
+              (img: any) => img.imageId !== imageId,
             ),
           };
         }
         return variant;
-      })
+      }),
     );
   };
 
@@ -1420,7 +1448,7 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
     variantId: number,
     warehouseId: string,
     field: string,
-    value: number
+    value: number,
   ) => {
     setVariantWarehouseStock((prev: any) => {
       const variantKey = `variant-${variantId}`;
@@ -1432,7 +1460,7 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
               [field]: value,
               lastUpdated: new Date().toISOString().split("T")[0],
             }
-          : stock
+          : stock,
       );
       return {
         ...prev,
@@ -1447,7 +1475,7 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
 
   const getWarehouseById = (warehouseId: string) => {
     return warehouses.find(
-      (warehouse) => warehouse.warehouseId === warehouseId
+      (warehouse) => warehouse.warehouseId === warehouseId,
     );
   };
 
@@ -1520,7 +1548,7 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
   const updateVariantField = (
     variantId: number,
     field: keyof ProductVariant,
-    value: any
+    value: any,
   ) => {
     setEditingVariants((prev) => ({
       ...prev,
@@ -1533,7 +1561,7 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
 
   const getVariantFieldValue = (
     variant: ProductVariant,
-    field: keyof ProductVariant
+    field: keyof ProductVariant,
   ) => {
     const editing = editingVariants[variant.variantId];
     return editing && editing[field] !== undefined
@@ -1599,7 +1627,7 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
       const uploadedImages = await productService.uploadVariantImages(
         productId,
         selectedVariantForImageUpload,
-        imageFiles
+        imageFiles,
       );
 
       setProductVariants((prev) =>
@@ -1609,8 +1637,8 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
                 ...variant,
                 images: [...variant.images, ...uploadedImages],
               }
-            : variant
-        )
+            : variant,
+        ),
       );
       setVariants((prev) =>
         prev.map((variant) =>
@@ -1619,8 +1647,8 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
                 ...variant,
                 images: [...variant.images, ...uploadedImages],
               }
-            : variant
-        )
+            : variant,
+        ),
       );
 
       toast({
@@ -1646,20 +1674,26 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
 
   const handleDeleteVariantImage = async (
     variantId: number,
-    imageId: number
+    imageId: number,
   ) => {
     try {
       // Find the variant and image to check if it's a newly uploaded one
-      const variant = productVariants.find((v) => v.variantId === variantId) ||
-                      variants.find((v) => v.variantId === variantId);
-      const imageToRemove = variant?.images?.find((img: any) => img.imageId === imageId);
-      
+      const variant =
+        productVariants.find((v) => v.variantId === variantId) ||
+        variants.find((v) => v.variantId === variantId);
+      const imageToRemove = variant?.images?.find(
+        (img: any) => img.imageId === imageId,
+      );
+
       // Check if this is a newly uploaded image (has a 'file' property)
       const isNewlyUploaded = imageToRemove && imageToRemove.file;
-      
+
       if (isNewlyUploaded) {
         // For newly uploaded images, just remove from state without calling backend
-        console.log("Removing newly uploaded variant image (not yet saved to DB):", imageId);
+        console.log(
+          "Removing newly uploaded variant image (not yet saved to DB):",
+          imageId,
+        );
         setProductVariants((prev) =>
           prev.map((v) =>
             v.variantId === variantId
@@ -1667,8 +1701,8 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
                   ...v,
                   images: v.images.filter((img) => img.imageId !== imageId),
                 }
-              : v
-          )
+              : v,
+          ),
         );
         setVariants((prev) =>
           prev.map((v) =>
@@ -1676,11 +1710,11 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
               ? {
                   ...v,
                   images: v.images.filter(
-                    (img: any) => img.imageId !== imageId
+                    (img: any) => img.imageId !== imageId,
                   ),
                 }
-              : v
-          )
+              : v,
+          ),
         );
         toast({
           title: "Image Removed",
@@ -1688,7 +1722,7 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
         });
         return;
       }
-      
+
       // For existing images from DB, call backend API to delete
       console.log("Removing existing variant image from DB:", imageId);
       await productService.deleteVariantImage(productId, variantId, imageId);
@@ -1700,8 +1734,8 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
                 ...variant,
                 images: variant.images.filter((img) => img.imageId !== imageId),
               }
-            : variant
-        )
+            : variant,
+        ),
       );
       setVariants((prev) =>
         prev.map((variant) =>
@@ -1709,11 +1743,11 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
             ? {
                 ...variant,
                 images: variant.images.filter(
-                  (img: any) => img.imageId !== imageId
+                  (img: any) => img.imageId !== imageId,
                 ),
               }
-            : variant
-        )
+            : variant,
+        ),
       );
 
       toast({
@@ -1722,15 +1756,24 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
       });
     } catch (error: any) {
       console.error("Error deleting variant image:", error);
-      
-      // If it's a NOT_FOUND error and the image has a file property, 
+
+      // If it's a NOT_FOUND error and the image has a file property,
       // it means it was a newly uploaded image that we should just remove from state
-      const variant = productVariants.find((v) => v.variantId === variantId) ||
-                      variants.find((v) => v.variantId === variantId);
-      const imageToRemove = variant?.images?.find((img: any) => img.imageId === imageId);
-      
-      if (error.response?.data?.errorCode === "NOT_FOUND" && imageToRemove?.file) {
-        console.log("Variant image not found in DB but has file property, removing from state:", imageId);
+      const variant =
+        productVariants.find((v) => v.variantId === variantId) ||
+        variants.find((v) => v.variantId === variantId);
+      const imageToRemove = variant?.images?.find(
+        (img: any) => img.imageId === imageId,
+      );
+
+      if (
+        error.response?.data?.errorCode === "NOT_FOUND" &&
+        imageToRemove?.file
+      ) {
+        console.log(
+          "Variant image not found in DB but has file property, removing from state:",
+          imageId,
+        );
         setProductVariants((prev) =>
           prev.map((v) =>
             v.variantId === variantId
@@ -1738,8 +1781,8 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
                   ...v,
                   images: v.images.filter((img) => img.imageId !== imageId),
                 }
-              : v
-          )
+              : v,
+          ),
         );
         setVariants((prev) =>
           prev.map((v) =>
@@ -1747,11 +1790,11 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
               ? {
                   ...v,
                   images: v.images.filter(
-                    (img: any) => img.imageId !== imageId
+                    (img: any) => img.imageId !== imageId,
                   ),
                 }
-              : v
-          )
+              : v,
+          ),
         );
         toast({
           title: "Image Removed",
@@ -1759,10 +1802,12 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
         });
         return;
       }
-      
+
       toast({
         title: "Delete Failed",
-        description: error.response?.data?.message || "Failed to delete image. Please try again.",
+        description:
+          error.response?.data?.message ||
+          "Failed to delete image. Please try again.",
         variant: "destructive",
       });
     }
@@ -1773,7 +1818,7 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
       await productService.setPrimaryVariantImage(
         productId,
         variantId,
-        imageId
+        imageId,
       );
 
       setProductVariants((prev) =>
@@ -1786,8 +1831,8 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
                   isPrimary: img.imageId === imageId,
                 })),
               }
-            : variant
-        )
+            : variant,
+        ),
       );
       setVariants((prev) =>
         prev.map((variant) =>
@@ -1799,8 +1844,8 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
                   isPrimary: img.imageId === imageId,
                 })),
               }
-            : variant
-        )
+            : variant,
+        ),
       );
 
       toast({
@@ -1834,14 +1879,14 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
       const updatedVariant = await productService.updateProductVariant(
         productId,
         variantId,
-        editedData
+        editedData,
       );
 
       setProductVariants((prev) =>
-        prev.map((v) => (v.variantId === variantId ? updatedVariant : v))
+        prev.map((v) => (v.variantId === variantId ? updatedVariant : v)),
       );
       setVariants((prev) =>
-        prev.map((v) => (v.variantId === variantId ? updatedVariant : v))
+        prev.map((v) => (v.variantId === variantId ? updatedVariant : v)),
       );
 
       setEditingVariants((prev) => {
@@ -1872,7 +1917,7 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
       await productService.deleteVariant(productId, variantId);
 
       setProductVariants((prev) =>
-        prev.filter((v) => v.variantId !== variantId)
+        prev.filter((v) => v.variantId !== variantId),
       );
       setVariants((prev) => prev.filter((v) => v.variantId !== variantId));
 
@@ -1902,7 +1947,7 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
       });
     }
   };
-  
+
   const fetchProductDetails = async () => {
     try {
       const details = await productService.getProductDetails(productId);
@@ -1923,7 +1968,7 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
       const stockData = await productService.getProductWarehouseStock(
         productId,
         0,
-        100
+        100,
       );
       setProductWarehouseStocks(stockData.content);
     } catch (error) {
@@ -1982,7 +2027,7 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
 
       const updatedDetails = await productService.updateProductDetails(
         productId,
-        updateData
+        updateData,
       );
       setProductDetails(updatedDetails);
       setInitialProductDetails(updatedDetails);
@@ -2013,7 +2058,10 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
     }
   };
 
-  const handleUnassignWarehouse = async (warehouseId: number, warehouseName: string) => {
+  const handleUnassignWarehouse = async (
+    warehouseId: number,
+    warehouseName: string,
+  ) => {
     try {
       setIsSubmitting(true);
 
@@ -2054,14 +2102,16 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
     setIsInventoryModalOpen(true);
   };
 
-  const handleSaveProductInventory = async (warehouseStocks: WarehouseStockWithBatches[]) => {
+  const handleSaveProductInventory = async (
+    warehouseStocks: WarehouseStockWithBatches[],
+  ) => {
     try {
       setIsSubmitting(true);
 
       // Always use batch-based inventory management
       await productService.assignProductStockWithBatches(
         productId,
-        warehouseStocks
+        warehouseStocks,
       );
 
       setProductWarehouseStocksWithBatches(warehouseStocks);
@@ -2087,13 +2137,13 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
 
   const handleRemoveVariantAttribute = async (
     variantId: number,
-    attributeValueId: number
+    attributeValueId: number,
   ) => {
     try {
       await productService.removeVariantAttribute(
         productId,
         variantId,
-        attributeValueId
+        attributeValueId,
       );
 
       setProductVariants((prev) =>
@@ -2101,24 +2151,26 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
           variant.variantId === variantId
             ? {
                 ...variant,
-                attributes: variant.attributes?.filter(
-                  (attr: any) => attr.attributeValueId !== attributeValueId
-                ) || [],
+                attributes:
+                  variant.attributes?.filter(
+                    (attr: any) => attr.attributeValueId !== attributeValueId,
+                  ) || [],
               }
-            : variant
-        )
+            : variant,
+        ),
       );
       setVariants((prev) =>
         prev.map((variant) =>
           variant.variantId === variantId
             ? {
                 ...variant,
-                attributes: variant.attributes?.filter(
-                  (attr: any) => attr.attributeValueId !== attributeValueId
-                ) || [],
+                attributes:
+                  variant.attributes?.filter(
+                    (attr: any) => attr.attributeValueId !== attributeValueId,
+                  ) || [],
               }
-            : variant
-        )
+            : variant,
+        ),
       );
 
       toast({
@@ -2137,13 +2189,13 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
 
   const handleAddVariantAttributes = async (
     variantId: number,
-    attributes: Array<{ attributeTypeName: string; attributeValue: string }>
+    attributes: Array<{ attributeTypeName: string; attributeValue: string }>,
   ) => {
     try {
       const addedAttributes = await productService.addVariantAttributes(
         productId,
         variantId,
-        attributes
+        attributes,
       );
 
       setProductVariants((prev) =>
@@ -2153,8 +2205,8 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
                 ...variant,
                 attributes: [...(variant.attributes || []), ...addedAttributes],
               }
-            : variant
-        )
+            : variant,
+        ),
       );
       setVariants((prev) =>
         prev.map((variant) =>
@@ -2163,8 +2215,8 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
                 ...variant,
                 attributes: [...(variant.attributes || []), ...addedAttributes],
               }
-            : variant
-        )
+            : variant,
+        ),
       );
 
       toast({
@@ -2185,7 +2237,7 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
 
   const handleAddVariant = () => {
     const shopSlug = searchParams.get("shopSlug");
-    const variantCreateUrl = shopSlug 
+    const variantCreateUrl = shopSlug
       ? `/dashboard/products/${productId}/variants/create?shopSlug=${shopSlug}`
       : `/dashboard/products/${productId}/variants/create`;
     router.push(variantCreateUrl);
@@ -2205,13 +2257,13 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
   };
 
   const handleAttributesFromBackend = (
-    attributes: Array<{ name: string; values: string[] }>
+    attributes: Array<{ name: string; values: string[] }>,
   ) => {
     const formattedAttributes = attributes.flatMap((attr) =>
       attr.values.map((value) => ({
         attributeTypeId: attr.name,
         attributeValueId: value,
-      }))
+      })),
     );
 
     setNewVariant((prev) => ({
@@ -2268,13 +2320,13 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
   // Warehouse removal function
   const removeWarehouseFromVariant = (
     variantId: number,
-    warehouseId: string
+    warehouseId: string,
   ) => {
     setVariantWarehouseStock((prev: any) => {
       const variantKey = `variant-${variantId}`;
       const currentStock = prev[variantKey] || [];
       const updatedStock = currentStock.filter(
-        (stock: any) => stock.warehouseId !== warehouseId
+        (stock: any) => stock.warehouseId !== warehouseId,
       );
       return {
         ...prev,
@@ -2360,7 +2412,7 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
                 if (hasUnsavedChanges) {
                   setIsUnsavedChangesModalOpen(true);
                   setPendingAction(
-                    () => () => router.push(`/dashboard/products/${productId}`)
+                    () => () => router.push(`/dashboard/products/${productId}`),
                   );
                 } else {
                   router.push(`/dashboard/products/${productId}`);
@@ -2442,26 +2494,6 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
                         {form.formState.errors.name.message}
                       </p>
                     )}
-                  </div>
-
-                  <div>
-                    <Label htmlFor="sku">SKU *</Label>
-                    <Input
-                      id="sku"
-                      placeholder="Enter SKU"
-                      {...form.register("sku")}
-                      className="border-primary/20 focus-visible:ring-primary mt-2"
-                    />
-                  </div>
-
-                  <div>
-                    <Label htmlFor="slug">Slug</Label>
-                    <Input
-                      id="slug"
-                      placeholder="Enter URL slug"
-                      {...form.register("slug")}
-                      className="border-primary/20 focus-visible:ring-primary mt-2"
-                    />
                   </div>
 
                   <div className="col-span-full">
@@ -2681,12 +2713,16 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
                       <TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger asChild>
-                            <button type="button" className="inline-flex text-muted-foreground hover:text-foreground">
+                            <button
+                              type="button"
+                              className="inline-flex text-muted-foreground hover:text-foreground"
+                            >
                               <HelpCircle className="h-4 w-4" />
                             </button>
                           </TooltipTrigger>
                           <TooltipContent side="right" className="max-w-xs">
-                            The selling price per unit (e.g. per kg or per piece). Shown to customers.
+                            The selling price per unit (e.g. per kg or per
+                            piece). Shown to customers.
                           </TooltipContent>
                         </Tooltip>
                       </TooltipProvider>
@@ -2707,12 +2743,16 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
                       <TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger asChild>
-                            <button type="button" className="inline-flex text-muted-foreground hover:text-foreground">
+                            <button
+                              type="button"
+                              className="inline-flex text-muted-foreground hover:text-foreground"
+                            >
                               <HelpCircle className="h-4 w-4" />
                             </button>
                           </TooltipTrigger>
                           <TooltipContent side="right" className="max-w-xs">
-                            Original price before discount. Shown crossed out next to the current price to show savings.
+                            Original price before discount. Shown crossed out
+                            next to the current price to show savings.
                           </TooltipContent>
                         </Tooltip>
                       </TooltipProvider>
@@ -2733,12 +2773,16 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
                       <TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger asChild>
-                            <button type="button" className="inline-flex text-muted-foreground hover:text-foreground">
+                            <button
+                              type="button"
+                              className="inline-flex text-muted-foreground hover:text-foreground"
+                            >
                               <HelpCircle className="h-4 w-4" />
                             </button>
                           </TooltipTrigger>
                           <TooltipContent side="right" className="max-w-xs">
-                            Your cost per unit. Used for profit calculation only; not shown to customers.
+                            Your cost per unit. Used for profit calculation
+                            only; not shown to customers.
                           </TooltipContent>
                         </Tooltip>
                       </TooltipProvider>
@@ -2760,14 +2804,17 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
                     value={form.watch("unitId") ?? undefined}
                     selectedUnit={pricingUnit}
                     onChange={(unitId, unit) => {
-                      form.setValue("unitId", unitId ?? undefined, { shouldDirty: true });
+                      form.setValue("unitId", unitId ?? undefined, {
+                        shouldDirty: true,
+                      });
                       setPricingUnit(unit);
                       setHasUnsavedChanges(true);
                     }}
                     placeholder="Select unit (e.g. kg, pc)"
                   />
                   <p className="text-xs text-muted-foreground">
-                    How this product is sold (e.g. per kilogram, per piece). Price above is per one unit.
+                    How this product is sold (e.g. per kilogram, per piece).
+                    Price above is per one unit.
                   </p>
                 </div>
               </CardContent>
@@ -2812,7 +2859,7 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
                     // Call the API to update pricing
                     await productService.updateProductPricing(
                       productId,
-                      pricingUpdateData
+                      pricingUpdateData,
                     );
 
                     // Update the initial form data to reflect the saved state
@@ -2928,7 +2975,7 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
                           <div className="absolute top-0 left-0 bg-black/50 text-white text-xs p-1 rounded-br-md">
                             {image.file
                               ? `${(image.file.size / 1024 / 1024).toFixed(
-                                  1
+                                  1,
                                 )}MB`
                               : ""}
                           </div>
@@ -3061,7 +3108,7 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
 
                     const newImages = existingImages.filter((img) => img.file);
                     const newVideos = existingVideos.filter(
-                      (video) => video.file
+                      (video) => video.file,
                     );
 
                     if (newImages.length > 0) {
@@ -3069,7 +3116,7 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
                       const uploadedImages =
                         await productService.uploadProductImages(
                           productId,
-                          imageFiles
+                          imageFiles,
                         );
 
                       setExistingImages((prev) => [
@@ -3083,7 +3130,7 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
                       const uploadedVideos =
                         await productService.uploadProductVideos(
                           productId,
-                          videoFiles
+                          videoFiles,
                         );
 
                       setExistingVideos((prev) => [
@@ -3188,7 +3235,7 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
                     <div className="space-y-6">
                       {productVariants.map((variant, index) => {
                         const isExpanded = expandedVariants.has(
-                          variant.variantId
+                          variant.variantId,
                         );
                         return (
                           <Card
@@ -3220,13 +3267,13 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
                                         checked={
                                           getVariantFieldValue(
                                             variant,
-                                            "isActive"
+                                            "isActive",
                                           ) as boolean
                                         }
                                         onCheckedChange={(checked) => {
                                           toggleVariantStatus(
                                             variant.variantId,
-                                            checked
+                                            checked,
                                           );
                                         }}
                                         className="data-[state=checked]:bg-green-600"
@@ -3260,19 +3307,25 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
                                       {variant.variantName || "Unnamed Variant"}
                                     </div>
                                     {/* Display variant attributes */}
-                                    {variant.attributes && variant.attributes.length > 0 && (
-                                      <div className="flex flex-wrap gap-1.5">
-                                        {variant.attributes.map((attr, idx) => (
-                                          <Badge
-                                            key={attr.attributeValueId || idx}
-                                            variant="secondary"
-                                            className="text-xs font-normal"
-                                          >
-                                            {attr.attributeType}: {attr.attributeValue}
-                                          </Badge>
-                                        ))}
-                                      </div>
-                                    )}
+                                    {variant.attributes &&
+                                      variant.attributes.length > 0 && (
+                                        <div className="flex flex-wrap gap-1.5">
+                                          {variant.attributes.map(
+                                            (attr, idx) => (
+                                              <Badge
+                                                key={
+                                                  attr.attributeValueId || idx
+                                                }
+                                                variant="secondary"
+                                                className="text-xs font-normal"
+                                              >
+                                                {attr.attributeType}:{" "}
+                                                {attr.attributeValue}
+                                              </Badge>
+                                            ),
+                                          )}
+                                        </div>
+                                      )}
                                   </div>
                                 </div>
                                 <div className="flex items-center gap-2">
@@ -3296,12 +3349,12 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
                                     onClick={(e) => {
                                       e.stopPropagation();
                                       setSelectedVariantForWarehouse(
-                                        variant.variantId
+                                        variant.variantId,
                                       );
                                       setIsWarehouseModalOpen(true);
                                       const currentStocks =
                                         getVariantWarehouseStocks(
-                                          variant.variantId
+                                          variant.variantId,
                                         );
                                       // setVariantWarehouseStocks(currentStocks); // Removed - using batch version
                                     }}
@@ -3357,14 +3410,14 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
                                           value={
                                             getVariantFieldValue(
                                               variant,
-                                              "variantName"
+                                              "variantName",
                                             ) as string
                                           }
                                           onChange={(e) => {
                                             updateVariantField(
                                               variant.variantId,
                                               "variantName",
-                                              e.target.value
+                                              e.target.value,
                                             );
                                           }}
                                           className="h-8 text-sm"
@@ -3382,14 +3435,14 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
                                           value={
                                             getVariantFieldValue(
                                               variant,
-                                              "variantSku"
+                                              "variantSku",
                                             ) as string
                                           }
                                           onChange={(e) => {
                                             updateVariantField(
                                               variant.variantId,
                                               "variantSku",
-                                              e.target.value
+                                              e.target.value,
                                             );
                                           }}
                                           className="h-8 text-sm font-mono"
@@ -3418,14 +3471,14 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
                                           value={
                                             getVariantFieldValue(
                                               variant,
-                                              "price"
+                                              "price",
                                             ) as number
                                           }
                                           onChange={(e) => {
                                             updateVariantField(
                                               variant.variantId,
                                               "price",
-                                              parseFloat(e.target.value) || 0
+                                              parseFloat(e.target.value) || 0,
                                             );
                                           }}
                                           className="h-8 text-sm"
@@ -3445,14 +3498,15 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
                                           value={
                                             (getVariantFieldValue(
                                               variant,
-                                              "salePrice"
+                                              "salePrice",
                                             ) as number) || ""
                                           }
                                           onChange={(e) => {
                                             updateVariantField(
                                               variant.variantId,
                                               "salePrice",
-                                              parseFloat(e.target.value) || null
+                                              parseFloat(e.target.value) ||
+                                                null,
                                             );
                                           }}
                                           className="h-8 text-sm"
@@ -3473,14 +3527,15 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
                                           value={
                                             (getVariantFieldValue(
                                               variant,
-                                              "costPrice"
+                                              "costPrice",
                                             ) as number) || ""
                                           }
                                           onChange={(e) => {
                                             updateVariantField(
                                               variant.variantId,
                                               "costPrice",
-                                              parseFloat(e.target.value) || null
+                                              parseFloat(e.target.value) ||
+                                                null,
                                             );
                                           }}
                                           className="h-8 text-sm"
@@ -3506,7 +3561,7 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
                                         size="sm"
                                         onClick={() =>
                                           handleVariantImageUpload(
-                                            variant.variantId
+                                            variant.variantId,
                                           )
                                         }
                                       >
@@ -3543,7 +3598,7 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
                                                 onClick={() => {
                                                   handleSetPrimaryImage(
                                                     variant.variantId,
-                                                    image.imageId
+                                                    image.imageId,
                                                   );
                                                 }}
                                               >
@@ -3558,7 +3613,7 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
                                                 onClick={() => {
                                                   handleDeleteVariantImage(
                                                     variant.variantId,
-                                                    image.imageId
+                                                    image.imageId,
                                                   );
                                                 }}
                                               >
@@ -3584,7 +3639,8 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
                                     <div className="flex items-center justify-between mb-3">
                                       <h5 className="font-medium flex items-center gap-2">
                                         <Package className="w-4 h-4" />
-                                        Attributes ({variant.attributes?.length || 0})
+                                        Attributes (
+                                        {variant.attributes?.length || 0})
                                       </h5>
                                       <Button
                                         type="button"
@@ -3592,7 +3648,7 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
                                         size="sm"
                                         onClick={() => {
                                           setSelectedVariantForAttributes(
-                                            variant.variantId
+                                            variant.variantId,
                                           );
                                           setIsAttributeModalOpen(true);
                                         }}
@@ -3601,7 +3657,8 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
                                         Manage
                                       </Button>
                                     </div>
-                                    {variant.attributes && variant.attributes.length > 0 ? (
+                                    {variant.attributes &&
+                                    variant.attributes.length > 0 ? (
                                       <div className="space-y-2">
                                         {variant.attributes.map((attr) => (
                                           <div
@@ -3624,7 +3681,7 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
                                               onClick={() => {
                                                 handleRemoveVariantAttribute(
                                                   variant.variantId,
-                                                  attr.attributeValueId
+                                                  attr.attributeValueId,
                                                 );
                                               }}
                                             >
@@ -3657,12 +3714,12 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
                                       size="sm"
                                       onClick={() => {
                                         setSelectedVariantForWarehouse(
-                                          variant.variantId
+                                          variant.variantId,
                                         );
                                         setIsWarehouseModalOpen(true);
                                         const currentStocks =
                                           getVariantWarehouseStocks(
-                                            variant.variantId
+                                            variant.variantId,
                                           );
                                         // setVariantWarehouseStocks(currentStocks); // Removed - using batch version
                                       }}
@@ -3672,12 +3729,14 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
                                       Manage Stock
                                     </Button>
                                   </div>
-                                  
+
                                   {variant.warehouseStocks &&
                                   variant.warehouseStocks.length > 0 ? (
                                     <WarehouseStockBatchDisplay
                                       variantId={variant.variantId}
-                                      variantName={variant.variantName || "Unnamed Variant"}
+                                      variantName={
+                                        variant.variantName || "Unnamed Variant"
+                                      }
                                       warehouseStocks={variant.warehouseStocks}
                                     />
                                   ) : (
@@ -3692,12 +3751,12 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
                                         size="sm"
                                         onClick={() => {
                                           setSelectedVariantForWarehouse(
-                                            variant.variantId
+                                            variant.variantId,
                                           );
                                           setIsWarehouseModalOpen(true);
                                           const currentStocks =
                                             getVariantWarehouseStocks(
-                                              variant.variantId
+                                              variant.variantId,
                                             );
                                           // setVariantWarehouseStocks(currentStocks); // Removed - using batch version
                                         }}
@@ -3719,7 +3778,7 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
                                       </span>
                                       <div className="font-medium">
                                         {new Date(
-                                          variant.createdAt
+                                          variant.createdAt,
                                         ).toLocaleDateString()}
                                       </div>
                                     </div>
@@ -3729,7 +3788,7 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
                                       </span>
                                       <div className="font-medium">
                                         {new Date(
-                                          variant.updatedAt
+                                          variant.updatedAt,
                                         ).toLocaleDateString()}
                                       </div>
                                     </div>
@@ -3851,7 +3910,7 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
                       onClick={() => {
                         // Scroll to variants tab
                         const variantsTab = document.querySelector(
-                          '[value="variants"]'
+                          '[value="variants"]',
                         ) as HTMLElement;
                         if (variantsTab) {
                           variantsTab.click();
@@ -3919,7 +3978,7 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
                                 onClick={() => {
                                   setWarehouseToUnassign({
                                     warehouseId: stock.warehouseId,
-                                    warehouseName: stock.warehouseName
+                                    warehouseName: stock.warehouseName,
                                   });
                                   setIsUnassignWarehouseDialogOpen(true);
                                 }}
@@ -4184,7 +4243,7 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
             <p className="text-muted-foreground mb-4">
               Select warehouses for variant:{" "}
               {productVariants.find(
-                (v) => v.variantId === selectedVariantForWarehouse
+                (v) => v.variantId === selectedVariantForWarehouse,
               )?.variantName || "Unknown"}
             </p>
             <div className="space-y-2 max-h-60 overflow-y-auto">
@@ -4197,16 +4256,16 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
                     type="checkbox"
                     id={`warehouse-${warehouse.warehouseId}`}
                     checked={getVariantWarehouseStocks(
-                      selectedVariantForWarehouse
+                      selectedVariantForWarehouse,
                     ).some(
                       (stock: any) =>
-                        stock.warehouseId === warehouse.warehouseId
+                        stock.warehouseId === warehouse.warehouseId,
                     )}
                     onChange={(e) => {
                       const warehouseIds = e.target.checked
                         ? [
                             ...getVariantWarehouseStocks(
-                              selectedVariantForWarehouse
+                              selectedVariantForWarehouse,
                             ).map((s: any) => s.warehouseId),
                             warehouse.warehouseId,
                           ]
@@ -4215,15 +4274,16 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
                             .filter((id: any) => id !== warehouse.warehouseId);
 
                       // Convert warehouse IDs to WarehouseStock format
-                      const warehouseStocks: any[] =
-                        warehouseIds.map((id: any) => ({
+                      const warehouseStocks: any[] = warehouseIds.map(
+                        (id: any) => ({
                           warehouseId: parseInt(id.replace("wh-", "")),
                           stockQuantity: 0,
                           lowStockThreshold: 10,
                           warehouseName:
                             warehouses.find((w: any) => w.warehouseId === id)
                               ?.name || "Unknown",
-                        }));
+                        }),
+                      );
 
                       handleWarehouseAssignment(warehouseStocks);
                     }}
@@ -4277,7 +4337,7 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
                   Upload images for variant:{" "}
                   <span className="font-semibold">
                     {productVariants.find(
-                      (v) => v.variantId === selectedVariantForImageUpload
+                      (v) => v.variantId === selectedVariantForImageUpload,
                     )?.variantName || "Unknown"}
                   </span>
                 </>
@@ -4332,7 +4392,7 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
                           className="h-5 w-5 p-0"
                           onClick={() => {
                             setImageFiles((prev) =>
-                              prev.filter((_, i) => i !== index)
+                              prev.filter((_, i) => i !== index),
                             );
                           }}
                         >
@@ -4397,7 +4457,7 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
                   Manage attributes for variant:{" "}
                   <span className="font-semibold">
                     {productVariants.find(
-                      (v) => v.variantId === selectedVariantForAttributes
+                      (v) => v.variantId === selectedVariantForAttributes,
                     )?.variantName || "Unknown"}
                   </span>
                 </>
@@ -4420,12 +4480,12 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
                     attr.values.map((value) => ({
                       attributeTypeName: attr.name,
                       attributeValue: value,
-                    }))
+                    })),
                   );
 
                   await handleAddVariantAttributes(
                     selectedVariantForAttributes,
-                    attributeRequests
+                    attributeRequests,
                   );
                 }}
               />
@@ -4479,7 +4539,7 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
                         attributeTypeName: attributeTypeName.trim(),
                         attributeValue: attributeValue.trim(),
                       },
-                    ]
+                    ],
                   );
 
                   setAttributeTypeName("");
@@ -4519,7 +4579,7 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
                           onClick={() => {
                             handleRemoveVariantAttribute(
                               selectedVariantForAttributes!,
-                              attr.attributeValueId
+                              attr.attributeValueId,
                             );
                           }}
                         >
@@ -4563,7 +4623,7 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
                   Manage stock for variant:{" "}
                   <span className="font-semibold">
                     {productVariants.find(
-                      (v) => v.variantId === selectedVariantForWarehouse
+                      (v) => v.variantId === selectedVariantForWarehouse,
                     )?.variantName || "Unknown"}
                   </span>
                 </>
@@ -4597,7 +4657,10 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
             </Button>
             <Button
               onClick={async () => {
-                if (!selectedVariantForWarehouse || variantWarehouseStocksWithBatches.length === 0) {
+                if (
+                  !selectedVariantForWarehouse ||
+                  variantWarehouseStocksWithBatches.length === 0
+                ) {
                   toast({
                     title: "No Changes",
                     description: "Please add warehouse stocks before saving.",
@@ -4608,29 +4671,35 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
 
                 try {
                   setIsSubmitting(true);
-                  
+
                   await productService.assignVariantStockWithBatches(
                     productId,
                     selectedVariantForWarehouse,
-                    variantWarehouseStocksWithBatches
+                    variantWarehouseStocksWithBatches,
                   );
 
                   toast({
                     title: "Success",
-                    description: "Variant warehouse stocks have been updated successfully.",
+                    description:
+                      "Variant warehouse stocks have been updated successfully.",
                   });
 
                   setIsWarehouseModalOpen(false);
                   setSelectedVariantForWarehouse(null);
                   setVariantWarehouseStocksWithBatches([]);
-                  
+
                   // Refresh variant data
                   await fetchProductVariants();
                 } catch (error: any) {
-                  console.error("Error saving variant warehouse stocks:", error);
+                  console.error(
+                    "Error saving variant warehouse stocks:",
+                    error,
+                  );
                   toast({
                     title: "Error",
-                    description: error.message || "Failed to save variant warehouse stocks. Please try again.",
+                    description:
+                      error.message ||
+                      "Failed to save variant warehouse stocks. Please try again.",
                     variant: "destructive",
                   });
                 } finally {
@@ -4939,9 +5008,10 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
                           onClick={() => {
                             setNewVariant((prev) => ({
                               ...prev,
-                              attributes: prev.attributes?.filter(
-                                (_, i) => i !== index
-                              ) || [],
+                              attributes:
+                                prev.attributes?.filter(
+                                  (_, i) => i !== index,
+                                ) || [],
                             }));
                           }}
                         >
@@ -5009,7 +5079,7 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
                                   setNewVariant((prev) => ({
                                     ...prev,
                                     images: prev.images.filter(
-                                      (_, i) => i !== index
+                                      (_, i) => i !== index,
                                     ),
                                   }));
                                 }}
@@ -5119,13 +5189,20 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
                   ⚠️ Warning: This action will permanently:
                 </p>
                 <ul className="text-sm text-amber-700 space-y-1 ml-4">
-                  <li>• Remove all stock assignments for warehouse "{warehouseToUnassign?.warehouseName}"</li>
-                  <li>• Delete all batches stored in this warehouse for this product</li>
+                  <li>
+                    • Remove all stock assignments for warehouse "
+                    {warehouseToUnassign?.warehouseName}"
+                  </li>
+                  <li>
+                    • Delete all batches stored in this warehouse for this
+                    product
+                  </li>
                   <li>• This action cannot be undone</li>
                 </ul>
               </div>
               <p className="text-sm text-gray-600">
-                Are you sure you want to continue with unassigning this warehouse?
+                Are you sure you want to continue with unassigning this
+                warehouse?
               </p>
             </AlertDialogDescription>
           </AlertDialogHeader>
@@ -5144,7 +5221,7 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
                 if (warehouseToUnassign) {
                   handleUnassignWarehouse(
                     warehouseToUnassign.warehouseId,
-                    warehouseToUnassign.warehouseName
+                    warehouseToUnassign.warehouseName,
                   );
                   setIsUnassignWarehouseDialogOpen(false);
                   setWarehouseToUnassign(null);
@@ -5200,7 +5277,6 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-
     </div>
   );
 }

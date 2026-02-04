@@ -4,7 +4,7 @@ import { ThemeProvider } from "next-themes";
 import localFont from "next/font/local";
 import ReduxProvider from "@/lib/redux/provider";
 import QueryProvider from "@/lib/tanstack/query-provider";
-import { Toaster } from "@/components/ui/toaster";
+import { Toaster } from "@/components/ui/sonner";
 import { AuthChecker } from "@/components/auth/auth-checker";
 
 const geistSans = localFont({
