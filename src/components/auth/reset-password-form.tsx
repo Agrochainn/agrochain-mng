@@ -124,9 +124,9 @@ export function ResetPasswordForm() {
         <p className="text-sm text-muted-foreground">
           This password reset link is invalid or has expired.
         </p>
-        <Link href="/auth/forgot-password" asChild>
-          <Button className="w-full">Request a new link</Button>
-        </Link>
+        <Button asChild className="w-full">
+          <Link href="/auth/forgot-password">Request a new link</Link>
+        </Button>
         <Link
           href="/auth"
           className="flex items-center justify-center text-sm text-primary hover:underline"

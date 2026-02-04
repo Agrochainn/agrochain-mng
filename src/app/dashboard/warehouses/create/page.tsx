@@ -47,8 +47,6 @@ export default function CreateWarehousePage() {
     description: "",
     address: "",
     city: "",
-    state: "",
-    zipCode: "",
     country: "",
     phone: "",
     email: "",
@@ -135,8 +133,6 @@ export default function CreateWarehousePage() {
       !formData.name ||
       !formData.address ||
       !formData.city ||
-      !formData.state ||
-      !formData.zipCode ||
       !formData.country
     ) {
       toast({
@@ -269,7 +265,7 @@ export default function CreateWarehousePage() {
                 required
               />
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="city">City *</Label>
                 <Input
@@ -277,26 +273,6 @@ export default function CreateWarehousePage() {
                   value={formData.city}
                   onChange={(e) => handleInputChange("city", e.target.value)}
                   placeholder="Enter city"
-                  required
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="state">State *</Label>
-                <Input
-                  id="state"
-                  value={formData.state}
-                  onChange={(e) => handleInputChange("state", e.target.value)}
-                  placeholder="Enter state"
-                  required
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="zipCode">Zip Code *</Label>
-                <Input
-                  id="zipCode"
-                  value={formData.zipCode}
-                  onChange={(e) => handleInputChange("zipCode", e.target.value)}
-                  placeholder="Enter zip code"
                   required
                 />
               </div>

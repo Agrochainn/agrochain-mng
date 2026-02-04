@@ -58,17 +58,21 @@ export default function WarehousesPage() {
   const router = useRouter();
   const queryClient = useQueryClient();
   const searchParams = useSearchParams();
-  
+
   // Extract shopSlug from URL
   const shopSlug = searchParams.get("shopSlug");
-  
+
   // Fetch shop by slug to get shopId
-  const { data: shopData, isLoading: isLoadingShop, isError: isErrorShop } = useQuery({
+  const {
+    data: shopData,
+    isLoading: isLoadingShop,
+    isError: isErrorShop,
+  } = useQuery({
     queryKey: ["shop", shopSlug],
     queryFn: () => shopService.getShopBySlug(shopSlug!),
     enabled: !!shopSlug,
   });
-  
+
   const shopId = shopData?.shopId;
 
   // Redirect to shops page if shopSlug is missing or shop fetch fails
@@ -97,7 +101,12 @@ export default function WarehousesPage() {
     queryKey: ["warehouses", page, size, searchQuery, shopId],
     queryFn: () => {
       if (searchQuery.trim()) {
-        return warehouseService.searchWarehouses(searchQuery, page, size, shopId);
+        return warehouseService.searchWarehouses(
+          searchQuery,
+          page,
+          size,
+          shopId,
+        );
       }
       return warehouseService.getWarehouses(page, size, shopId);
     },
@@ -132,12 +141,12 @@ export default function WarehousesPage() {
   };
 
   const handleViewProducts = (warehouse: WarehouseDTO) => {
-    const url = `/dashboard/warehouses/${warehouse.id}/products${shopSlug ? `?shopSlug=${shopSlug}` : ''}`;
+    const url = `/dashboard/warehouses/${warehouse.id}/products${shopSlug ? `?shopSlug=${shopSlug}` : ""}`;
     router.push(url);
   };
 
   const handleEdit = (warehouse: WarehouseDTO) => {
-    const url = `/dashboard/warehouses/${warehouse.id}/edit${shopSlug ? `?shopSlug=${shopSlug}` : ''}`;
+    const url = `/dashboard/warehouses/${warehouse.id}/edit${shopSlug ? `?shopSlug=${shopSlug}` : ""}`;
     router.push(url);
   };
 
@@ -146,7 +155,7 @@ export default function WarehousesPage() {
   };
 
   const formatAddress = (warehouse: WarehouseDTO) => {
-    return `${warehouse.address}, ${warehouse.city}, ${warehouse.state} ${warehouse.zipCode}, ${warehouse.country}`;
+    return `${warehouse.address}, ${warehouse.city}, ${warehouse.country}`;
   };
 
   // Show loading state while fetching shop data
@@ -181,8 +190,12 @@ export default function WarehousesPage() {
             Manage your warehouse locations and inventory
           </p>
         </div>
-        <Button 
-          onClick={() => router.push(`/dashboard/warehouses/create${shopSlug ? `?shopSlug=${shopSlug}` : ''}`)}
+        <Button
+          onClick={() =>
+            router.push(
+              `/dashboard/warehouses/create${shopSlug ? `?shopSlug=${shopSlug}` : ""}`,
+            )
+          }
           disabled={isLoadingShop || (shopSlug && !shopId)}
         >
           <Plus className="h-4 w-4 mr-2" />
@@ -242,7 +255,7 @@ export default function WarehousesPage() {
             <div className="text-2xl font-bold">
               {warehousesData?.content?.reduce(
                 (sum, w) => sum + w.productCount,
-                0
+                0,
               ) || 0}
             </div>
           </CardContent>
@@ -279,8 +292,12 @@ export default function WarehousesPage() {
                 ? "No warehouses match your search criteria."
                 : "Get started by creating your first warehouse."}
             </p>
-            <Button 
-              onClick={() => router.push(`/dashboard/warehouses/create${shopSlug ? `?shopSlug=${shopSlug}` : ''}`)}
+            <Button
+              onClick={() =>
+                router.push(
+                  `/dashboard/warehouses/create${shopSlug ? `?shopSlug=${shopSlug}` : ""}`,
+                )
+              }
               disabled={isLoadingShop || (shopSlug && !shopId)}
             >
               <Plus className="h-4 w-4 mr-2" />
