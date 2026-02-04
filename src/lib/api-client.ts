@@ -56,6 +56,9 @@ apiClient.interceptors.response.use(
       error.config?.url?.includes("/auth/register");
     const currentPath = window.location.pathname;
 
+    // Support skipping global toast via config
+    const skipToast = (error.config as any)?.skipToast;
+
     let errorMessage = "An unexpected error occurred. Please try again.";
 
     if (error.response?.data) {
@@ -65,12 +68,17 @@ apiClient.interceptors.response.use(
         errorMessage;
     } else if (error.message) {
       errorMessage = error.message;
+      if (errorMessage === "Network Error") {
+        errorMessage =
+          "Failed to connect to the server. Please check your internet connection.";
+      }
     }
 
     // Don't show toast for 401 on /me (initial auth check)
-    if (!(status === 401 && isAuthMeRequest)) {
+    // Also skip for auth requests (login/register) as they have local error handling
+    if (!(status === 401 && isAuthMeRequest) && !isAuthRequest && !skipToast) {
       toast({
-        title: "Error",
+        title: status === undefined ? "Network Error" : "Error",
         description: errorMessage,
         variant: "destructive",
       });

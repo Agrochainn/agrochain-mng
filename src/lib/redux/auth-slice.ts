@@ -83,6 +83,12 @@ export const authSlice = createSlice({
       state.signupResponse = action.payload;
       state.isLoading = false;
       state.error = null;
+      // Clear any old token to prevent issues
+      state.isAuthenticated = false;
+      state.user = null;
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("authToken");
+      }
     },
     clearSignupResponse: (state) => {
       state.signupResponse = null;
