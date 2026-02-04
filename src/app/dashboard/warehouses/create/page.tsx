@@ -68,16 +68,12 @@ export default function CreateWarehousePage() {
       });
       queryClient.invalidateQueries({ queryKey: ["warehouses"] });
       router.push(
-        `/dashboard/warehouses${shopSlug ? `?shopSlug=${shopSlug}` : ""}`
+        `/dashboard/warehouses${shopSlug ? `?shopSlug=${shopSlug}` : ""}`,
       );
     },
     onError: (error: any) => {
-      toast({
-        title: "Error",
-        description:
-          error.response?.data?.message || "Failed to create warehouse",
-        variant: "destructive",
-      });
+      // Error is handled globally in api-client.ts
+      console.error("Failed to create warehouse:", error);
     },
   });
 
@@ -105,7 +101,7 @@ export default function CreateWarehousePage() {
 
   const handleInputChange = (
     field: keyof CreateWarehouseDTO,
-    value: string | number | boolean
+    value: string | number | boolean,
   ) => {
     setFormData((prev) => ({
       ...prev,
@@ -258,7 +254,8 @@ export default function CreateWarehousePage() {
           <CardHeader>
             <CardTitle>Address Information</CardTitle>
             <CardDescription>
-              Enter the warehouse address details (Google Maps is currently disabled).
+              Enter the warehouse address details (Google Maps is currently
+              disabled).
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -356,7 +353,8 @@ export default function CreateWarehousePage() {
             <Alert>
               <AlertTriangle className="h-4 w-4" />
               <AlertDescription>
-                Google Maps is currently disabled. We’ll use a mocked latitude/longitude on create if none is set.
+                Google Maps is currently disabled. We’ll use a mocked
+                latitude/longitude on create if none is set.
               </AlertDescription>
             </Alert>
           </CardContent>

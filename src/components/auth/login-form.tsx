@@ -136,12 +136,6 @@ export function LoginForm() {
     onError: (error) => {
       const errorMessage = handleApiError(error);
       dispatch(loginFailure(errorMessage));
-
-      toast({
-        title: "Login Failed",
-        description: errorMessage,
-        variant: "destructive",
-      });
     },
   });
 
