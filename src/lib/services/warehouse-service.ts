@@ -135,7 +135,7 @@ class WarehouseService {
 
   async getWarehouseById(id: number): Promise<WarehouseDTO> {
     const response = await apiClient.get(`${this.baseUrl}/${id}`);
-    return response.data.data;
+    return response.data;
   }
 
   async createWarehouse(
@@ -159,7 +159,7 @@ class WarehouseService {
         "Content-Type": "multipart/form-data",
       },
     });
-    return response.data.data;
+    return response.data;
   }
 
   async updateWarehouse(
@@ -184,7 +184,14 @@ class WarehouseService {
         "Content-Type": "multipart/form-data",
       },
     });
-    return response.data.data;
+    return response.data;
+  }
+
+  async removeImageFromWarehouse(
+    warehouseId: number,
+    imageId: number,
+  ): Promise<void> {
+    await apiClient.delete(`${this.baseUrl}/${warehouseId}/images/${imageId}`);
   }
 
   async deleteWarehouse(id: number): Promise<void> {
