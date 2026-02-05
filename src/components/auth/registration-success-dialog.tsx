@@ -41,49 +41,61 @@ export function RegistrationSuccessDialog({
         }
       }}
     >
-      <DialogContent className="sm:max-w-md border-primary/20 bg-gradient-to-b from-primary/5 to-background shadow-2xl rounded-2xl">
-        <DialogHeader className="text-center pt-4">
-          <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-primary/10 text-primary animate-in zoom-in duration-500">
-            <CheckCircle2 className="h-10 w-10" />
+      <DialogContent className="sm:max-w-md border-2 border-green-500 bg-white shadow-[0_20px_50px_rgba(0,0,0,0.1)] rounded-3xl p-8">
+        <DialogHeader className="text-center">
+          <div className="mx-auto mb-6 flex h-24 w-24 items-center justify-center rounded-full bg-green-50 text-green-600 animate-in zoom-in duration-500 border-4 border-green-500/10">
+            <CheckCircle2 className="h-12 w-12" />
           </div>
-          <DialogTitle className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/60">
-            Registration Successful!
+          <DialogTitle className="text-3xl font-black text-black tracking-tight">
+            Account Created!
           </DialogTitle>
-          <DialogDescription className="text-base text-muted-foreground mt-2">
+          <DialogDescription className="text-base text-gray-600 font-medium mt-3">
             {message ||
-              "Your account has been created successfully. You can now log in to the management dashboard."}
+              "Your management account has been created successfully. You're ready to start your journey."}
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-6 mt-6 pb-4">
-          <div className="rounded-xl bg-card border border-border p-4 shadow-sm space-y-3">
-            <div className="flex items-center gap-3 text-sm">
-              <div className="h-2 w-2 rounded-full bg-green-500" />
-              <span className="font-medium">Account verified and active</span>
+        <div className="space-y-6 mt-8">
+          <div className="rounded-2xl bg-gray-50 border-2 border-gray-100 p-5 space-y-4">
+            <div className="flex items-center gap-4 transition-all hover:translate-x-1">
+              <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-green-500 text-white shadow-sm">
+                <CheckCircle2 className="h-4 w-4" />
+              </div>
+              <span className="font-bold text-black text-sm uppercase tracking-wide">
+                Identity Verified
+              </span>
             </div>
-            <div className="flex items-center gap-3 text-sm">
-              <div className="h-2 w-2 rounded-full bg-green-500" />
-              <span className="font-medium">Dashboard access granted</span>
+            <div className="flex items-center gap-4 transition-all hover:translate-x-1">
+              <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-green-500 text-white shadow-sm">
+                <CheckCircle2 className="h-4 w-4" />
+              </div>
+              <span className="font-bold text-black text-sm uppercase tracking-wide">
+                Dashboard Access Enabled
+              </span>
             </div>
           </div>
 
           <Button
             onClick={handleGoToLogin}
             disabled={isRedirecting}
-            className="w-full h-12 text-base font-semibold transition-all duration-300 hover:shadow-lg active:scale-95"
+            className="w-full h-14 text-lg font-bold bg-green-600 hover:bg-black text-white rounded-2xl transition-all duration-300 shadow-lg hover:shadow-green-500/20 active:scale-[0.98] group"
           >
             {isRedirecting ? (
               <>
-                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                Redirecting to Login...
+                <Loader2 className="mr-2 h-6 w-6 animate-spin text-white" />
+                Validating...
               </>
             ) : (
-              <>
-                Proceed to Login
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </>
+              <span className="flex items-center justify-center w-full">
+                Enter Dashboard
+                <ArrowRight className="ml-3 h-6 w-6 transition-transform group-hover:translate-x-1" />
+              </span>
             )}
           </Button>
+
+          <p className="text-center text-[10px] text-gray-400 font-bold uppercase tracking-[0.2em]">
+            Agrochain Management Portal
+          </p>
         </div>
       </DialogContent>
     </Dialog>
