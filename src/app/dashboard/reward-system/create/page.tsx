@@ -56,7 +56,9 @@ function CreateRewardSystemPageContent() {
           description: "Shop slug is required",
           variant: "destructive",
         });
-        router.push(`/dashboard/reward-system${shopSlug ? `?shopSlug=${shopSlug}` : ""}`);
+        router.push(
+          `/dashboard/reward-system${shopSlug ? `?shopSlug=${shopSlug}` : ""}`,
+        );
         return;
       }
 
@@ -75,7 +77,9 @@ function CreateRewardSystemPageContent() {
           description: "Failed to load shop information",
           variant: "destructive",
         });
-        router.push(`/dashboard/reward-system${shopSlug ? `?shopSlug=${shopSlug}` : ""}`);
+        router.push(
+          `/dashboard/reward-system${shopSlug ? `?shopSlug=${shopSlug}` : ""}`,
+        );
       } finally {
         setShopLoading(false);
       }
@@ -107,12 +111,12 @@ function CreateRewardSystemPageContent() {
   const updateRange = (
     tempId: string,
     field: keyof RewardRangeDTO,
-    value: any
+    value: any,
   ) => {
     setRanges((prev) =>
       prev.map((range) =>
-        range.tempId === tempId ? { ...range, [field]: value } : range
-      )
+        range.tempId === tempId ? { ...range, [field]: value } : range,
+      ),
     );
   };
 
@@ -140,7 +144,7 @@ function CreateRewardSystemPageContent() {
 
       const savedSystem = await rewardSystemService.saveRewardSystem(
         systemToSave,
-        shopIdRef.current
+        shopIdRef.current,
       );
 
       toast({
@@ -148,7 +152,9 @@ function CreateRewardSystemPageContent() {
         description: "Reward system created successfully",
       });
 
-      router.push(`/dashboard/reward-system${shopSlug ? `?shopSlug=${shopSlug}` : ""}`);
+      router.push(
+        `/dashboard/reward-system${shopSlug ? `?shopSlug=${shopSlug}` : ""}`,
+      );
     } catch (error: any) {
       console.error("Failed to create reward system:", error);
       toast({
@@ -183,7 +189,11 @@ function CreateRewardSystemPageContent() {
         <div className="text-center">
           <p className="text-muted-foreground">Shop not found</p>
           <Button
-            onClick={() => router.push(`/dashboard/reward-system${shopSlug ? `?shopSlug=${shopSlug}` : ""}`)}
+            onClick={() =>
+              router.push(
+                `/dashboard/reward-system${shopSlug ? `?shopSlug=${shopSlug}` : ""}`,
+              )
+            }
             className="mt-4"
           >
             Back to Reward Systems
@@ -226,7 +236,7 @@ function CreateRewardSystemPageContent() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="pointValue">Point Value ($)</Label>
+                <Label htmlFor="pointValue">point value (RWF)</Label>
                 <Input
                   id="pointValue"
                   type="number"
@@ -236,7 +246,7 @@ function CreateRewardSystemPageContent() {
                   onChange={(e) =>
                     handleInputChange(
                       "pointValue",
-                      parseFloat(e.target.value) || 0.01
+                      parseFloat(e.target.value) || 0.01,
                     )
                   }
                   placeholder="0.01"
@@ -310,7 +320,7 @@ function CreateRewardSystemPageContent() {
                     onChange={(e) =>
                       handleInputChange(
                         "reviewPointsAmount",
-                        parseInt(e.target.value) || 0
+                        parseInt(e.target.value) || 0,
                       )
                     }
                     placeholder="10"
@@ -406,7 +416,7 @@ function CreateRewardSystemPageContent() {
                         onChange={(e) =>
                           handleInputChange(
                             "percentageRate",
-                            parseFloat(e.target.value) || 0.01
+                            parseFloat(e.target.value) || 0.01,
                           )
                         }
                         placeholder="1.00"
@@ -458,7 +468,7 @@ function CreateRewardSystemPageContent() {
                               updateRange(
                                 range.tempId,
                                 "minValue",
-                                parseFloat(e.target.value) || 0
+                                parseFloat(e.target.value) || 0,
                               )
                             }
                             className="w-20"
@@ -475,7 +485,7 @@ function CreateRewardSystemPageContent() {
                                 "maxValue",
                                 e.target.value
                                   ? parseFloat(e.target.value)
-                                  : undefined
+                                  : undefined,
                               )
                             }
                             className="w-20"
@@ -489,7 +499,7 @@ function CreateRewardSystemPageContent() {
                               updateRange(
                                 range.tempId,
                                 "points",
-                                parseInt(e.target.value) || 0
+                                parseInt(e.target.value) || 0,
                               )
                             }
                             className="w-20"
@@ -540,7 +550,7 @@ function CreateRewardSystemPageContent() {
                               updateRange(
                                 range.tempId,
                                 "minValue",
-                                parseFloat(e.target.value) || 0
+                                parseFloat(e.target.value) || 0,
                               )
                             }
                             className="w-24"
@@ -558,7 +568,7 @@ function CreateRewardSystemPageContent() {
                                 "maxValue",
                                 e.target.value
                                   ? parseFloat(e.target.value)
-                                  : undefined
+                                  : undefined,
                               )
                             }
                             className="w-24"
@@ -572,7 +582,7 @@ function CreateRewardSystemPageContent() {
                               updateRange(
                                 range.tempId,
                                 "points",
-                                parseInt(e.target.value) || 0
+                                parseInt(e.target.value) || 0,
                               )
                             }
                             className="w-20"

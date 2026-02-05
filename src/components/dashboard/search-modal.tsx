@@ -1,8 +1,10 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect, useRef, useMemo } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useQuery } from "@tanstack/react-query";
 import { productService } from "@/lib/services/product-service";
+import { shopService } from "@/lib/services/shop-service";
 import {
   Dialog,
   DialogContent,
@@ -30,6 +32,10 @@ import {
   Percent,
   Plus,
   Command,
+  Undo2,
+  AlertCircle,
+  MessageSquare,
+  Globe,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -58,9 +64,27 @@ export function SearchModal({
   onCreateBrand,
 }: SearchModalProps) {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const shopSlug = useMemo(
+    () => searchParams.get("shopSlug") || "",
+    [searchParams],
+  );
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  // Fetch shop by slug to get shopId
+  const { data: shopData } = useQuery({
+    queryKey: ["shop", shopSlug],
+    queryFn: () => shopService.getShopBySlug(shopSlug!),
+    enabled: !!shopSlug,
+  });
+
+  const shopId = shopData?.shopId;
+
+  const getHref = (path: string) => {
+    return shopSlug ? `${path}?shopSlug=${shopSlug}` : path;
+  };
 
   // Define all searchable items
   const searchItems: SearchItem[] = [
@@ -70,7 +94,7 @@ export function SearchModal({
       title: "Dashboard",
       description: "Main dashboard overview",
       icon: Home,
-      href: "/dashboard",
+      href: getHref("/dashboard"),
       category: "Navigation",
       keywords: ["dashboard", "home", "overview", "main"],
     },
@@ -79,7 +103,7 @@ export function SearchModal({
       title: "Products",
       description: "Manage products and inventory",
       icon: Package,
-      href: "/dashboard/products",
+      href: getHref("/dashboard/products"),
       category: "Navigation",
       keywords: ["products", "inventory", "items", "manage"],
     },
@@ -88,7 +112,7 @@ export function SearchModal({
       title: "Orders",
       description: "View and manage orders",
       icon: ShoppingCart,
-      href: "/dashboard/orders",
+      href: getHref("/dashboard/orders"),
       category: "Navigation",
       keywords: ["orders", "purchases", "transactions"],
     },
@@ -97,16 +121,25 @@ export function SearchModal({
       title: "Invitations",
       description: "Manage admin invitations",
       icon: Mail,
-      href: "/dashboard/invitations",
+      href: getHref("/dashboard/invitations"),
       category: "Navigation",
       keywords: ["invitations", "invite", "admin", "users"],
+    },
+    {
+      id: "members",
+      title: "Members",
+      description: "Manage shop members",
+      icon: Users,
+      href: getHref("/dashboard/members"),
+      category: "Navigation",
+      keywords: ["members", "staff", "employees", "users"],
     },
     {
       id: "categories",
       title: "Categories",
       description: "Manage product categories",
       icon: TagIcon,
-      href: "/dashboard/categories",
+      href: getHref("/dashboard/categories"),
       category: "Navigation",
       keywords: ["categories", "tags", "classification"],
     },
@@ -115,7 +148,7 @@ export function SearchModal({
       title: "Discounts",
       description: "Manage discounts and promotions",
       icon: Percent,
-      href: "/dashboard/discounts",
+      href: getHref("/dashboard/discounts"),
       category: "Navigation",
       keywords: ["discounts", "promotions", "sales", "offers"],
     },
@@ -124,7 +157,7 @@ export function SearchModal({
       title: "Warehouses",
       description: "Manage warehouse locations",
       icon: Warehouse,
-      href: "/dashboard/warehouses",
+      href: getHref("/dashboard/warehouses"),
       category: "Navigation",
       keywords: ["warehouses", "storage", "locations"],
     },
@@ -133,16 +166,52 @@ export function SearchModal({
       title: "Shipping Costs",
       description: "Manage shipping rates",
       icon: Truck,
-      href: "/dashboard/shipping-costs",
+      href: getHref("/dashboard/shipping-costs"),
       category: "Navigation",
       keywords: ["shipping", "delivery", "costs", "rates"],
+    },
+    {
+      id: "delivery-groups",
+      title: "Delivery Groups",
+      description: "Manage delivery groups and routes",
+      icon: Layers,
+      href: getHref("/dashboard/delivery-groups"),
+      category: "Navigation",
+      keywords: ["delivery", "groups", "routes", "logistics"],
+    },
+    {
+      id: "delivery-areas",
+      title: "Delivery Areas",
+      description: "Manage service areas",
+      icon: MapPin,
+      href: getHref("/dashboard/delivery-areas"),
+      category: "Navigation",
+      keywords: ["delivery", "areas", "zones", "locations"],
+    },
+    {
+      id: "returns",
+      title: "Returns",
+      description: "Manage product returns",
+      icon: Undo2,
+      href: getHref("/dashboard/returns"),
+      category: "Navigation",
+      keywords: ["returns", "refunds", "back"],
+    },
+    {
+      id: "appeals",
+      title: "Appeals",
+      description: "Manage disputes and appeals",
+      icon: AlertCircle,
+      href: getHref("/dashboard/appeals"),
+      category: "Navigation",
+      keywords: ["appeals", "disputes", "claims"],
     },
     {
       id: "reward-system",
       title: "Reward System",
       description: "Manage customer rewards",
       icon: Gift,
-      href: "/dashboard/reward-system",
+      href: getHref("/dashboard/reward-system"),
       category: "Navigation",
       keywords: ["rewards", "points", "loyalty", "gifts"],
     },
@@ -151,7 +220,7 @@ export function SearchModal({
       title: "Analytics",
       description: "View analytics and reports",
       icon: BarChart3,
-      href: "/dashboard/analytics",
+      href: getHref("/dashboard/analytics"),
       category: "Navigation",
       keywords: ["analytics", "reports", "statistics", "data"],
     },
@@ -160,9 +229,18 @@ export function SearchModal({
       title: "Settings",
       description: "System and user settings",
       icon: Settings,
-      href: "/dashboard/settings",
+      href: getHref("/dashboard/settings"),
       category: "Navigation",
       keywords: ["settings", "configuration", "preferences"],
+    },
+    {
+      id: "shop-landing",
+      title: "Visualise Shop",
+      description: "View shop publicly",
+      icon: Globe,
+      href: `/stores/${shopSlug || ""}`,
+      category: "Navigation",
+      keywords: ["shop", "public", "view", "landing"],
     },
 
     // Quick Actions
@@ -173,10 +251,15 @@ export function SearchModal({
       icon: Plus,
       action: async () => {
         try {
-          const response = await productService.createEmptyProduct(
-            "New Product"
+          if (!shopId) {
+            console.error("Shop ID is required to create a product");
+            return;
+          }
+          const response =
+            await productService.createEmptyProduct("New Product", shopId);
+          router.push(
+            getHref(`/dashboard/products/${response.productId}/update`),
           );
-          router.push(`/dashboard/products/${response.productId}/update`);
         } catch (error) {
           console.error("Error creating product:", error);
         }
@@ -220,13 +303,16 @@ export function SearchModal({
   });
 
   // Group items by category
-  const groupedItems = filteredItems.reduce((acc, item) => {
-    if (!acc[item.category]) {
-      acc[item.category] = [];
-    }
-    acc[item.category].push(item);
-    return acc;
-  }, {} as Record<string, SearchItem[]>);
+  const groupedItems = filteredItems.reduce(
+    (acc, item) => {
+      if (!acc[item.category]) {
+        acc[item.category] = [];
+      }
+      acc[item.category].push(item);
+      return acc;
+    },
+    {} as Record<string, SearchItem[]>,
+  );
 
   // Focus input when modal opens
   useEffect(() => {
@@ -315,7 +401,7 @@ export function SearchModal({
                     <div className="space-y-1">
                       {items.map((item, index) => {
                         const globalIndex = filteredItems.findIndex(
-                          (filteredItem) => filteredItem.id === item.id
+                          (filteredItem) => filteredItem.id === item.id,
                         );
                         const isSelected = globalIndex === selectedIndex;
 
@@ -325,7 +411,7 @@ export function SearchModal({
                             variant="ghost"
                             className={cn(
                               "w-full justify-start h-auto p-3",
-                              isSelected && "bg-accent"
+                              isSelected && "bg-accent",
                             )}
                             onClick={() => handleItemClick(item)}
                           >
