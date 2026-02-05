@@ -40,6 +40,7 @@ import {
   CheckCircle,
   XCircle,
   AlertTriangle,
+  Trash2,
 } from "lucide-react";
 import { toast } from "sonner";
 import adminInvitationService, {
@@ -48,15 +49,30 @@ import adminInvitationService, {
 } from "@/lib/services/admin-invitation-service";
 import { shopService } from "@/lib/services/shop-service";
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+
 export default function InvitationsPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const shopSlug = useMemo(() => searchParams.get("shopSlug") || "", [searchParams]);
+  const shopSlug = useMemo(
+    () => searchParams.get("shopSlug") || "",
+    [searchParams],
+  );
 
   const [shopId, setShopId] = useState<string | null>(null);
   const [invitations, setInvitations] = useState<AdminInvitationDTO[]>([]);
   const [loading, setLoading] = useState(true);
   const [isInviteDialogOpen, setIsInviteDialogOpen] = useState(false);
+  const [deleteId, setDeleteId] = useState<string | null>(null);
 
   // Form states
   const [inviteEmail, setInviteEmail] = useState("");
@@ -119,7 +135,7 @@ export default function InvitationsPage() {
         50,
         "createdAt",
         "desc",
-        shopId
+        shopId,
       );
 
       if (response.success && response.data) {
@@ -179,7 +195,7 @@ export default function InvitationsPage() {
 
       const response = await adminInvitationService.createInvitation(
         invitationData,
-        shopId
+        shopId,
       );
 
       if (response.success) {
@@ -195,6 +211,28 @@ export default function InvitationsPage() {
       console.error("Error creating invitation:", error);
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const confirmDelete = async () => {
+    if (!deleteId) return;
+
+    try {
+      const response = await adminInvitationService.deleteInvitation(deleteId);
+      if (response.success) {
+        toast.success("Invitation deleted successfully");
+        // Optimistically update the list
+        setInvitations((prev) =>
+          prev.filter((inv) => inv.invitationId !== deleteId),
+        );
+      } else {
+        toast.error(response.message || "Failed to delete invitation");
+      }
+    } catch (error) {
+      toast.error("An error occurred deleting the invitation");
+      console.error(error);
+    } finally {
+      setDeleteId(null);
     }
   };
 
@@ -294,6 +332,7 @@ export default function InvitationsPage() {
                   <TableHead>Invited By</TableHead>
                   <TableHead>Created</TableHead>
                   <TableHead>Expires</TableHead>
+                  <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -318,6 +357,24 @@ export default function InvitationsPage() {
                     </TableCell>
                     <TableCell>{formatDate(invitation.createdAt)}</TableCell>
                     <TableCell>{formatDate(invitation.expiresAt)}</TableCell>
+                    <TableCell className="text-right">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                        onClick={() => setDeleteId(invitation.invitationId)}
+                        disabled={invitation.status === "ACCEPTED"}
+                        title={
+                          invitation.status === "ACCEPTED"
+                            ? "Cannot delete accepted invitation"
+                            : "Delete invitation"
+                        }
+                      >
+                        <Trash2
+                          className={`h-4 w-4 ${invitation.status === "ACCEPTED" ? "opacity-30" : ""}`}
+                        />
+                      </Button>
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -339,6 +396,31 @@ export default function InvitationsPage() {
           )}
         </CardContent>
       </Card>
+
+      <AlertDialog
+        open={!!deleteId}
+        onOpenChange={(open) => !open && setDeleteId(null)}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will permanently delete this invitation. The invitation token
+              will become invalid immediately, and the user will not be able to
+              accept it.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={confirmDelete}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Delete Invitation
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       {/* Create Invitation Dialog */}
       <Dialog open={isInviteDialogOpen} onOpenChange={setIsInviteDialogOpen}>
@@ -384,7 +466,9 @@ export default function InvitationsPage() {
                     <SelectContent>
                       <SelectItem value="VENDOR">Vendor</SelectItem>
                       <SelectItem value="EMPLOYEE">Employee</SelectItem>
-                      <SelectItem value="DELIVERY_AGENT">Delivery Agent</SelectItem>
+                      <SelectItem value="DELIVERY_AGENT">
+                        Delivery Agent
+                      </SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
