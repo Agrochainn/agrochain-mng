@@ -26,6 +26,7 @@ import {
   PackageCheck,
   Navigation,
   MessageSquare,
+  Store,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -34,13 +35,14 @@ import { Badge } from "@/components/ui/badge";
 import { usePendingAppealsCount } from "@/hooks/use-pending-appeals";
 import { usePendingOrdersCount } from "@/hooks/use-pending-orders";
 import { usePendingReturnsCount } from "@/hooks/use-pending-returns";
-import { useAppDispatch } from "@/lib/redux/hooks";
+import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import { logout } from "@/lib/redux/auth-slice";
 import { authService } from "@/lib/services/auth-service";
 import { shopService } from "@/lib/services/shop-service";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { GiveFeedbackDialog } from "@/components/GiveFeedbackDialog";
+import { UserRole } from "@/lib/constants";
 
 interface SidebarProps {
   className?: string;
@@ -55,6 +57,7 @@ export function Sidebar({ className }: SidebarProps) {
   const searchParams = useSearchParams();
   const shopSlug = searchParams.get("shopSlug");
   const dispatch = useAppDispatch();
+  const { user } = useAppSelector((state) => state.auth);
 
   // Fetch shop by slug to get shopId
   const { data: shopData } = useQuery({
@@ -120,14 +123,22 @@ export function Sidebar({ className }: SidebarProps) {
         <Link
           href={getHrefWithShopSlug("/dashboard")}
           className={cn(
-            "flex items-center gap-2 font-semibold",
+            "flex items-center gap-2 font-semibold overflow-hidden",
             collapsed ? "justify-center" : "justify-start",
           )}
         >
-          {!collapsed && (
-            <span className="text-xl font-bold text-primary">Agrochain</span>
+          {collapsed ? (
+             <Layers className="h-6 w-6 text-primary flex-shrink-0" />
+          ) : (
+             <div className="flex flex-col min-w-0">
+                <span className="text-xl font-bold text-primary truncate">Agrochain</span>
+                {shopData?.name && user && (user.role === UserRole.EMPLOYEE || user.role === UserRole.VENDOR || user.role === UserRole.DELIVERY_AGENT) && (
+                   <span className="text-xs text-muted-foreground truncate" title={shopData.name}>
+                      {shopData.name}
+                   </span>
+                )}
+             </div>
           )}
-          {collapsed && <Layers className="h-6 w-6 text-primary" />}
         </Link>
         <Button
           variant="ghost"
@@ -263,6 +274,18 @@ export function Sidebar({ className }: SidebarProps) {
             collapsed={collapsed}
             isActive={pathname === "/dashboard/settings"}
           />
+          <Separator className="my-2" />
+          {user &&
+            (user.role === UserRole.VENDOR ||
+              user.role === UserRole.EMPLOYEE) && (
+              <SidebarItem
+                href="/shops"
+                icon={Store}
+                label="View my shops"
+                collapsed={collapsed}
+                isActive={pathname === "/shops"}
+              />
+            )}
           <LogoutButton
             icon={LogOut}
             label="Logout"

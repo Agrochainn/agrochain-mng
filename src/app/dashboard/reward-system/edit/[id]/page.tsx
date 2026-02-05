@@ -43,7 +43,7 @@ export default function EditRewardSystemPage() {
   const [shopLoading, setShopLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [rewardSystem, setRewardSystem] = useState<RewardSystemDTO | null>(
-    null
+    null,
   );
   const [rewardRanges, setRewardRanges] = useState<RewardRangeDTO[]>([]);
   const { toast } = useToast();
@@ -57,7 +57,9 @@ export default function EditRewardSystemPage() {
           description: "Shop slug is required",
           variant: "destructive",
         });
-        router.push(`/dashboard/reward-system${shopSlug ? `?shopSlug=${shopSlug}` : ""}`);
+        router.push(
+          `/dashboard/reward-system${shopSlug ? `?shopSlug=${shopSlug}` : ""}`,
+        );
         return;
       }
 
@@ -76,7 +78,9 @@ export default function EditRewardSystemPage() {
           description: "Failed to load shop information",
           variant: "destructive",
         });
-        router.push(`/dashboard/reward-system${shopSlug ? `?shopSlug=${shopSlug}` : ""}`);
+        router.push(
+          `/dashboard/reward-system${shopSlug ? `?shopSlug=${shopSlug}` : ""}`,
+        );
       } finally {
         setShopLoading(false);
       }
@@ -98,7 +102,7 @@ export default function EditRewardSystemPage() {
       setLoading(true);
       const system = await rewardSystemService.getRewardSystemById(
         parseInt(systemId),
-        shopIdRef.current
+        shopIdRef.current,
       );
       setRewardSystem(system);
       setRewardRanges(system.rewardRanges || []);
@@ -109,7 +113,9 @@ export default function EditRewardSystemPage() {
         description: "Failed to load reward system",
         variant: "destructive",
       });
-      router.push(`/dashboard/reward-system${shopSlug ? `?shopSlug=${shopSlug}` : ""}`);
+      router.push(
+        `/dashboard/reward-system${shopSlug ? `?shopSlug=${shopSlug}` : ""}`,
+      );
     } finally {
       setLoading(false);
     }
@@ -173,7 +179,7 @@ export default function EditRewardSystemPage() {
 
       const saved = await rewardSystemService.saveRewardSystem(
         updatedSystem,
-        shopIdRef.current
+        shopIdRef.current,
       );
 
       toast({
@@ -181,7 +187,9 @@ export default function EditRewardSystemPage() {
         description: "Reward system updated successfully",
       });
 
-      router.push(`/dashboard/reward-system${shopSlug ? `?shopSlug=${shopSlug}` : ""}`);
+      router.push(
+        `/dashboard/reward-system${shopSlug ? `?shopSlug=${shopSlug}` : ""}`,
+      );
     } catch (error: any) {
       console.error("Failed to save reward system:", error);
       toast({
@@ -206,7 +214,7 @@ export default function EditRewardSystemPage() {
           updatedSystem = await rewardSystemService.toggleSystemEnabled(
             rewardSystem.id,
             shopIdRef.current,
-            value
+            value,
           );
           break;
         case "isReviewPointsEnabled":
@@ -214,28 +222,28 @@ export default function EditRewardSystemPage() {
             rewardSystem.id,
             shopIdRef.current,
             value,
-            rewardSystem.reviewPointsAmount
+            rewardSystem.reviewPointsAmount,
           );
           break;
         case "isPurchasePointsEnabled":
           updatedSystem = await rewardSystemService.togglePurchasePoints(
             rewardSystem.id,
             shopIdRef.current,
-            value
+            value,
           );
           break;
         case "isQuantityBasedEnabled":
           updatedSystem = await rewardSystemService.toggleQuantityBased(
             rewardSystem.id,
             shopIdRef.current,
-            value
+            value,
           );
           break;
         case "isAmountBasedEnabled":
           updatedSystem = await rewardSystemService.toggleAmountBased(
             rewardSystem.id,
             shopIdRef.current,
-            value
+            value,
           );
           break;
         case "isPercentageBasedEnabled":
@@ -243,7 +251,7 @@ export default function EditRewardSystemPage() {
             rewardSystem.id,
             shopIdRef.current,
             value,
-            rewardSystem.percentageRate
+            rewardSystem.percentageRate,
           );
           break;
         default:
@@ -272,7 +280,7 @@ export default function EditRewardSystemPage() {
     try {
       const updatedSystem = await rewardSystemService.activateRewardSystem(
         rewardSystem.id,
-        shopIdRef.current
+        shopIdRef.current,
       );
       setRewardSystem(updatedSystem);
       toast({
@@ -306,7 +314,7 @@ export default function EditRewardSystemPage() {
   const updateRewardRange = (
     index: number,
     field: keyof RewardRangeDTO,
-    value: any
+    value: any,
   ) => {
     const updatedRanges = [...rewardRanges];
     updatedRanges[index] = { ...updatedRanges[index], [field]: value };
@@ -323,7 +331,9 @@ export default function EditRewardSystemPage() {
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
           <p className="text-muted-foreground">
-            {shopLoading ? "Loading shop information..." : "Loading reward system..."}
+            {shopLoading
+              ? "Loading shop information..."
+              : "Loading reward system..."}
           </p>
         </div>
       </div>
@@ -335,7 +345,11 @@ export default function EditRewardSystemPage() {
       <div className="text-center py-8">
         <p className="text-muted-foreground">Shop not found</p>
         <Button
-          onClick={() => router.push(`/dashboard/reward-system${shopSlug ? `?shopSlug=${shopSlug}` : ""}`)}
+          onClick={() =>
+            router.push(
+              `/dashboard/reward-system${shopSlug ? `?shopSlug=${shopSlug}` : ""}`,
+            )
+          }
           className="mt-4"
         >
           Back to Reward Systems
@@ -428,7 +442,7 @@ export default function EditRewardSystemPage() {
           <CardContent className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="pointValue">Point Value ($)</Label>
+                <Label htmlFor="pointValue">point value (RWF)</Label>
                 <Input
                   id="pointValue"
                   type="number"
@@ -694,7 +708,7 @@ export default function EditRewardSystemPage() {
                               updateRewardRange(
                                 index,
                                 "rangeType",
-                                e.target.value
+                                e.target.value,
                               )
                             }
                             className="w-full p-2 border rounded-lg"
@@ -715,7 +729,7 @@ export default function EditRewardSystemPage() {
                               updateRewardRange(
                                 index,
                                 "minValue",
-                                parseFloat(e.target.value) || 0
+                                parseFloat(e.target.value) || 0,
                               )
                             }
                             placeholder="0"
@@ -733,7 +747,7 @@ export default function EditRewardSystemPage() {
                               updateRewardRange(
                                 index,
                                 "maxValue",
-                                parseFloat(e.target.value) || 0
+                                parseFloat(e.target.value) || 0,
                               )
                             }
                             placeholder="∞"
@@ -751,7 +765,7 @@ export default function EditRewardSystemPage() {
                               updateRewardRange(
                                 index,
                                 "points",
-                                parseInt(e.target.value) || 0
+                                parseInt(e.target.value) || 0,
                               )
                             }
                             placeholder="10"
@@ -770,7 +784,7 @@ export default function EditRewardSystemPage() {
                             updateRewardRange(
                               index,
                               "description",
-                              e.target.value
+                              e.target.value,
                             )
                           }
                           placeholder="Range description"

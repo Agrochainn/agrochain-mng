@@ -46,7 +46,7 @@ export function RewardSystemConfig({
           updatedSystem = await rewardSystemService.toggleSystemEnabled(
             rewardSystem.id,
             shopId,
-            value
+            value,
           );
           break;
         case "isReviewPointsEnabled":
@@ -54,28 +54,28 @@ export function RewardSystemConfig({
             rewardSystem.id,
             shopId,
             value,
-            config.reviewPointsAmount
+            config.reviewPointsAmount,
           );
           break;
         case "isPurchasePointsEnabled":
           updatedSystem = await rewardSystemService.togglePurchasePoints(
             rewardSystem.id,
             shopId,
-            value
+            value,
           );
           break;
         case "isQuantityBasedEnabled":
           updatedSystem = await rewardSystemService.toggleQuantityBased(
             rewardSystem.id,
             shopId,
-            value
+            value,
           );
           break;
         case "isAmountBasedEnabled":
           updatedSystem = await rewardSystemService.toggleAmountBased(
             rewardSystem.id,
             shopId,
-            value
+            value,
           );
           break;
         case "isPercentageBasedEnabled":
@@ -83,7 +83,7 @@ export function RewardSystemConfig({
             rewardSystem.id,
             shopId,
             value,
-            config.percentageRate
+            config.percentageRate,
           );
           break;
         default:
@@ -112,7 +112,10 @@ export function RewardSystemConfig({
   const handleSave = async () => {
     try {
       setLoading(true);
-      const updatedSystem = await rewardSystemService.saveRewardSystem(config, shopId);
+      const updatedSystem = await rewardSystemService.saveRewardSystem(
+        config,
+        shopId,
+      );
       setConfig(updatedSystem);
       onUpdate(updatedSystem);
       toast({
@@ -139,7 +142,7 @@ export function RewardSystemConfig({
       setLoading(true);
       const updatedSystem = await rewardSystemService.activateRewardSystem(
         rewardSystem.id,
-        shopId
+        shopId,
       );
       setConfig(updatedSystem);
       onUpdate(updatedSystem);
@@ -174,7 +177,7 @@ export function RewardSystemConfig({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <Label htmlFor="pointValue">Point Value ($)</Label>
+                <Label htmlFor="pointValue">point value (RWF)</Label>
                 <Input
                   id="pointValue"
                   type="number"
