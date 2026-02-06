@@ -21,8 +21,10 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useToast } from "@/hooks/use-toast";
-import { deliveryGroupsService } from "@/lib/services/delivery-groups-service";
-import { DeliveryGroupDTO } from "@/lib/types/delivery-groups";
+import {
+  deliveryGroupsService,
+  DeliveryGroupDTO,
+} from "@/lib/services/delivery-groups-service";
 import { useQuery } from "@tanstack/react-query";
 import { shopService } from "@/lib/services/shop-service";
 import { formatCurrency } from "@/lib/utils";
@@ -92,7 +94,7 @@ export default function DeliveryGroupDetailsPage() {
       const response = await deliveryGroupsService.getOrdersForGroup(
         groupId,
         currentPage,
-        pageSize
+        pageSize,
       );
       setOrders(response.content);
       setTotalPages(response.totalPages);
@@ -229,7 +231,7 @@ export default function DeliveryGroupDetailsPage() {
                 router.push(
                   `/dashboard/delivery-groups${
                     shopSlug ? `?shopSlug=${shopSlug}` : ""
-                  }`
+                  }`,
                 )
               }
             >
@@ -254,7 +256,7 @@ export default function DeliveryGroupDetailsPage() {
               router.push(
                 `/dashboard/delivery-groups${
                   shopSlug ? `?shopSlug=${shopSlug}` : ""
-                }`
+                }`,
               )
             }
             className="mb-2"
@@ -316,11 +318,6 @@ export default function DeliveryGroupDetailsPage() {
                   {group.delivererEmail}
                 </p>
               )}
-              {group.delivererPhone && (
-                <p className="text-sm text-muted-foreground">
-                  {group.delivererPhone}
-                </p>
-              )}
             </div>
 
             {/* Total Orders */}
@@ -330,7 +327,7 @@ export default function DeliveryGroupDetailsPage() {
                 Total Orders
               </label>
               <p className="text-base font-semibold mt-1">
-                {group.totalOrders || 0} orders
+                {group.orderCount || 0} orders
               </p>
             </div>
 
@@ -514,7 +511,7 @@ export default function DeliveryGroupDetailsPage() {
                     size="sm"
                     onClick={() =>
                       setCurrentPage((prev) =>
-                        Math.min(totalPages - 1, prev + 1)
+                        Math.min(totalPages - 1, prev + 1),
                       )
                     }
                     disabled={currentPage >= totalPages - 1 || ordersLoading}

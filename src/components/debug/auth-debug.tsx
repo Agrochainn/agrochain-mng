@@ -22,14 +22,22 @@ export function AuthDebug() {
             setDebugInfo({ token: !!token, user, error: null });
           } catch (error) {
             console.log("Debug - Auth error:", error);
-            setDebugInfo({ token: !!token, user: null, error: error.message });
+            setDebugInfo({
+              token: !!token,
+              user: null,
+              error: error instanceof Error ? error.message : String(error),
+            });
           }
         } else {
           setDebugInfo({ token: false, user: null, error: "No token" });
         }
       } catch (error) {
         console.log("Debug - General error:", error);
-        setDebugInfo({ token: false, user: null, error: error.message });
+        setDebugInfo({
+          token: false,
+          user: null,
+          error: error instanceof Error ? error.message : String(error),
+        });
       } finally {
         setIsLoading(false);
       }

@@ -34,7 +34,7 @@ interface RewardRangesProps {
 export function RewardRanges({ rewardSystem, onUpdate }: RewardRangesProps) {
   const [loading, setLoading] = useState(false);
   const [ranges, setRanges] = useState<RewardRangeDTO[]>(
-    rewardSystem.rewardRanges || []
+    rewardSystem.rewardRanges || [],
   );
   const [showForm, setShowForm] = useState(false);
   const { toast } = useToast();
@@ -97,10 +97,13 @@ export function RewardRanges({ rewardSystem, onUpdate }: RewardRangesProps) {
         rewardSystemId: rewardSystem.id,
       };
 
-      const updatedSystem = await rewardSystemService.saveRewardSystem({
-        ...rewardSystem,
-        rewardRanges: [...ranges, rangeToAdd],
-      });
+      const updatedSystem = await rewardSystemService.saveRewardSystem(
+        {
+          ...rewardSystem,
+          rewardRanges: [...ranges, rangeToAdd],
+        },
+        rewardSystem.shopId!,
+      );
 
       setRanges(updatedSystem.rewardRanges || []);
       onUpdate(updatedSystem);
@@ -147,10 +150,13 @@ export function RewardRanges({ rewardSystem, onUpdate }: RewardRangesProps) {
       setLoading(true);
       const updatedRanges = ranges.filter((range) => range.id !== rangeId);
 
-      const updatedSystem = await rewardSystemService.saveRewardSystem({
-        ...rewardSystem,
-        rewardRanges: updatedRanges,
-      });
+      const updatedSystem = await rewardSystemService.saveRewardSystem(
+        {
+          ...rewardSystem,
+          rewardRanges: updatedRanges,
+        },
+        rewardSystem.shopId!,
+      );
 
       setRanges(updatedSystem.rewardRanges || []);
       onUpdate(updatedSystem);
@@ -350,7 +356,7 @@ export function RewardRanges({ rewardSystem, onUpdate }: RewardRangesProps) {
                             {range.minValue} {getRangeTypeUnit(range.rangeType)}
                             {range.maxValue &&
                               ` - ${range.maxValue} ${getRangeTypeUnit(
-                                range.rangeType
+                                range.rangeType,
                               )}`}
                             {!range.maxValue && "+"}
                           </span>

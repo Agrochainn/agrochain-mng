@@ -55,9 +55,9 @@ export default function DeliveryAgentSettings() {
   useEffect(() => {
     if (user) {
       setProfileData({
-        firstName: user.username || "",
+        firstName: user.firstName || "",
         lastName: "",
-        email: user.email || "",
+        email: user.userEmail || "",
         phoneNumber: "",
         address: "",
         city: "",
@@ -141,12 +141,12 @@ export default function DeliveryAgentSettings() {
                 <div className="flex items-center gap-4">
                   <Avatar className="h-20 w-20">
                     <AvatarFallback className="text-lg">
-                      {user?.username?.charAt(0) || "D"}
+                      {user?.firstName?.charAt(0) || "D"}
                     </AvatarFallback>
                   </Avatar>
                   <div>
                     <h3 className="text-lg font-medium">
-                      {user?.username || "Delivery Agent"}
+                      {user?.firstName || "Delivery Agent"}
                     </h3>
                     <p className="text-sm text-muted-foreground">
                       Delivery Agent

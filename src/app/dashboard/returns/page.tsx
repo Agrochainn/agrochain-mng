@@ -93,19 +93,23 @@ function ReturnRequestsPageContent() {
   const router = useRouter();
 
   // Fetch shop by slug to get shopId
-  const { data: shopData } = useQuery({
+  const { data: shopData, error: shopError } = useQuery({
     queryKey: ["shop", shopSlug],
     queryFn: () => {
       if (!shopSlug) return null;
       return shopService.getShopBySlug(shopSlug);
     },
     enabled: !!shopSlug,
-    onError: (error) => {
-      console.error("Failed to fetch shop:", error);
+  });
+
+  // Handle shop fetch error
+  useEffect(() => {
+    if (shopError) {
+      console.error("Failed to fetch shop:", shopError);
       toast.error("Shop not found or access denied");
       router.push("/shops");
-    },
-  });
+    }
+  }, [shopError, router]);
 
   useEffect(() => {
     if (shopData) {
@@ -530,7 +534,9 @@ function ReturnRequestsPageContent() {
                         Refund Amount
                       </TableHead>
                       <TableHead className="min-w-[100px]">Status</TableHead>
-                      <TableHead className="min-w-[140px]">Delivery Agent</TableHead>
+                      <TableHead className="min-w-[140px]">
+                        Delivery Agent
+                      </TableHead>
                       <TableHead className="min-w-[160px]">Submitted</TableHead>
                       <TableHead className="min-w-[120px]">Actions</TableHead>
                     </TableRow>
@@ -582,10 +588,14 @@ function ReturnRequestsPageContent() {
                           {returnRequest.deliveryAgentName ? (
                             <div className="flex items-center gap-2">
                               <Truck className="h-4 w-4 text-muted-foreground shrink-0" />
-                              <span className="text-sm font-medium">{returnRequest.deliveryAgentName}</span>
+                              <span className="text-sm font-medium">
+                                {returnRequest.deliveryAgentName}
+                              </span>
                             </div>
                           ) : (
-                            <span className="text-sm text-muted-foreground">—</span>
+                            <span className="text-sm text-muted-foreground">
+                              —
+                            </span>
                           )}
                         </TableCell>
                         <TableCell>

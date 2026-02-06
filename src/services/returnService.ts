@@ -14,7 +14,7 @@ class ReturnService {
    * Get all return requests with comprehensive filtering (Admin/Employee only)
    */
   async getAllReturnRequests(
-    params: ReturnRequestSearchParams = {}
+    params: ReturnRequestSearchParams = {},
   ): Promise<ReturnRequestsResponse> {
     const {
       page = 0,
@@ -56,7 +56,7 @@ class ReturnService {
     }
 
     const response = await apiClient.get(
-      `${API_ENDPOINTS.RETURNS.ADMIN_ALL}?${queryParams}`
+      `${API_ENDPOINTS.RETURNS.ADMIN_ALL}?${queryParams}`,
     );
     const result = response.data;
     // Normalize response to handle both custom Map and standard Page formats
@@ -75,7 +75,7 @@ class ReturnService {
    */
   async getReturnRequestsByStatus(
     status: ReturnStatus,
-    params: ReturnRequestSearchParams = {}
+    params: ReturnRequestSearchParams = {},
   ): Promise<ReturnRequestsResponse> {
     const {
       page = 0,
@@ -95,7 +95,7 @@ class ReturnService {
     }
 
     const response = await apiClient.get(
-      `${API_ENDPOINTS.RETURNS.ADMIN_BY_STATUS(status)}?${queryParams}`
+      `${API_ENDPOINTS.RETURNS.ADMIN_BY_STATUS(status)}?${queryParams}`,
     );
     const result = response.data;
     return {
@@ -112,7 +112,7 @@ class ReturnService {
    * Get guest return requests (Admin/Employee only)
    */
   async getGuestReturnRequests(
-    params: ReturnRequestSearchParams = {}
+    params: ReturnRequestSearchParams = {},
   ): Promise<ReturnRequestsResponse> {
     const {
       page = 0,
@@ -132,7 +132,7 @@ class ReturnService {
     }
 
     const response = await apiClient.get(
-      `${API_ENDPOINTS.RETURNS.ADMIN_GUEST}?${queryParams}`
+      `${API_ENDPOINTS.RETURNS.ADMIN_GUEST}?${queryParams}`,
     );
     const result = response.data;
     return {
@@ -158,21 +158,17 @@ class ReturnService {
    */
   async reviewReturnRequest(
     decision: ReturnDecisionDTO,
-    refundScreenshot?: File
+    refundScreenshot?: File,
   ): Promise<ReturnRequestDTO> {
     // Backend expects multipart/form-data because it accepts file uploads
     const formData = new FormData();
     formData.append("returnRequestId", String(decision.returnRequestId));
     formData.append("decision", decision.decision);
-    
+
     if (decision.decisionNotes) {
       formData.append("decisionNotes", decision.decisionNotes);
     }
-    
-    if (decision.refundNotes) {
-      formData.append("refundNotes", decision.refundNotes);
-    }
-    
+
     if (refundScreenshot) {
       formData.append("refundScreenshot", refundScreenshot);
     }
@@ -184,7 +180,7 @@ class ReturnService {
         headers: {
           "Content-Type": "multipart/form-data",
         },
-      }
+      },
     );
     return response.data;
   }

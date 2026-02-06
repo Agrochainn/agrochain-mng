@@ -43,6 +43,10 @@ import {
   shopCategoryService,
   ShopCategory,
 } from "@/lib/services/shop-category-service";
+import {
+  capabilityTransitionService,
+  PendingOperationsCount,
+} from "@/lib/services/capability-transition-service";
 import { ShopCapability } from "@/lib/services/subscription-service";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { cn } from "@/lib/utils";
@@ -120,7 +124,7 @@ export function BasicInfoTab({
   const [categorySearchQuery, setCategorySearchQuery] = useState("");
   const [primaryCapability, setPrimaryCapability] = useState<
     ShopCapability | undefined
-  >(shop?.primaryCapability);
+  >(shop?.primaryCapability as ShopCapability | undefined);
 
   const [logoInputMethod, setLogoInputMethod] = useState<LogoInputMethod>(null);
   const [logoUrl, setLogoUrl] = useState(shop?.logoUrl || "");
@@ -133,13 +137,8 @@ export function BasicInfoTab({
   const [showCapabilityDialog, setShowCapabilityDialog] = useState(false);
   const [pendingCapabilityChange, setPendingCapabilityChange] =
     useState<ShopCapability | null>(null);
-  const [pendingOperations, setPendingOperations] = useState<{
-    pendingOrders: number;
-    pendingReturns: number;
-    pendingAppeals: number;
-    pendingDeliveries: number;
-    total: number;
-  } | null>(null);
+  const [pendingOperations, setPendingOperations] =
+    useState<PendingOperationsCount | null>(null);
   const [isLoadingPendingOps, setIsLoadingPendingOps] = useState(false);
   const [showErrorDialog, setShowErrorDialog] = useState(false);
   const [errorDialogTitle, setErrorDialogTitle] = useState("Error");
@@ -157,7 +156,9 @@ export function BasicInfoTab({
       setLogoUrl(shop.logoUrl || "");
       setLogoPreview(shop.logoUrl || null);
       setCategoryName(shop.shopCategoryName || shop.category || "");
-      setPrimaryCapability(shop.primaryCapability);
+      setPrimaryCapability(
+        shop.primaryCapability as ShopCapability | undefined,
+      );
     }
   }, [shop]);
 
@@ -271,7 +272,9 @@ export function BasicInfoTab({
         lowerMessage.includes("plan")
       ) {
         // Revert to original capability
-        setPrimaryCapability(shop?.primaryCapability);
+        setPrimaryCapability(
+          shop?.primaryCapability as ShopCapability | undefined,
+        );
         setShowCapabilityDialog(false);
         setPendingCapabilityChange(null);
         setPendingOperations(null);
@@ -689,23 +692,43 @@ export function BasicInfoTab({
                     setIsLoadingPendingOps(true);
                     try {
                       const ops =
-                        await shopService.getPendingOperationsForTransition(
+                        await capabilityTransitionService.getPendingOperations(
                           shop.shopId,
                           newCapability,
                         );
-                      setPendingOperations(ops);
-                      setPendingCapabilityChange(newCapability);
-                      setShowCapabilityDialog(true);
+
+                      if (ops.total > 0) {
+                        setPendingOperations(ops);
+                        setPendingCapabilityChange(newCapability);
+                        setShowCapabilityDialog(true);
+                      } else {
+                        // If no pending operations, we can request transition directly
+                        // which might change it immediately on backend
+                        await capabilityTransitionService.requestTransition(
+                          shop.shopId,
+                          newCapability,
+                        );
+                        setPrimaryCapability(newCapability);
+                        toast({
+                          title: "Capability Updated",
+                          description: `Shop capability has been updated to ${newCapability.replace(/_/g, " ")}.`,
+                        });
+                      }
                     } catch (error: any) {
                       const { title, message } = extractErrorMessage(error);
-
-                      // Show error in dialog instead of toast
-                      setErrorDialogTitle(title);
-                      setErrorDialogMessage(message);
                       setShowErrorDialog(true);
-
-                      // Revert to original capability
-                      setPrimaryCapability(shop.primaryCapability);
+                      if (
+                        message.toLowerCase().includes("subscription") ||
+                        message.toLowerCase().includes("capability") ||
+                        message.toLowerCase().includes("plan")
+                      ) {
+                        setPrimaryCapability(
+                          shop?.primaryCapability as ShopCapability | undefined,
+                        );
+                        setShowCapabilityDialog(false);
+                        setPendingCapabilityChange(null);
+                        setPendingOperations(null);
+                      }
                     } finally {
                       setIsLoadingPendingOps(false);
                     }
@@ -998,36 +1021,49 @@ export function BasicInfoTab({
             setPendingOperations(null);
           }
         }}
-        onConfirm={() => {
-          if (pendingCapabilityChange && shop) {
-            // Update the capability and proceed with form submission
-            setPrimaryCapability(pendingCapabilityChange);
+        onConfirm={async () => {
+          if (!shop || !pendingCapabilityChange) return;
+
+          try {
+            setIsLoadingPendingOps(true);
+            const result = await capabilityTransitionService.requestTransition(
+              shop.shopId,
+              pendingCapabilityChange,
+            );
+
             setShowCapabilityDialog(false);
 
-            // Automatically submit the form with the new capability
-            const shopData: Partial<ShopDTO> = {
-              name: name.trim(),
-              description: description.trim() || undefined,
-              contactEmail: contactEmail.trim(),
-              contactPhone: contactPhone.trim(),
-              address: address.trim(),
-              isActive: isActive,
-              logoUrl:
-                logoInputMethod === "url" && logoUrl ? logoUrl : undefined,
-              shopCategoryName: categoryName.trim() || undefined,
-              primaryCapability: pendingCapabilityChange,
-            };
-
-            updateShopMutation.mutate({
-              shopId: shop.shopId,
-              shopData,
-            });
+            if ("status" in result && result.status === "PENDING") {
+              toast({
+                title: "Transition Requested",
+                description:
+                  "A capability transition has been requested. It will complete once all pending operations are resolved.",
+              });
+            } else {
+              setPrimaryCapability(pendingCapabilityChange);
+              toast({
+                title: "Capability Updated",
+                description: "Shop capability has been updated successfully.",
+              });
+            }
 
             setPendingCapabilityChange(null);
             setPendingOperations(null);
+          } catch (error: any) {
+            const { title, message } = extractErrorMessage(error);
+            toast({
+              title: title || "Transition Failed",
+              description:
+                message || "Failed to request capability transition.",
+              variant: "destructive",
+            });
+          } finally {
+            setIsLoadingPendingOps(false);
           }
         }}
-        currentCapability={shop?.primaryCapability}
+        currentCapability={
+          shop?.primaryCapability as ShopCapability | undefined
+        }
         newCapability={pendingCapabilityChange || "VISUALIZATION_ONLY"}
         pendingOperations={
           pendingOperations || {
