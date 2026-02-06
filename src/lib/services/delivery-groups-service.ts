@@ -7,12 +7,15 @@ export interface DeliveryGroupDTO {
   deliveryGroupDescription?: string;
   delivererId?: string;
   delivererName?: string;
+  delivererEmail?: string;
   orderIds?: string[];
   orderCount: number;
   createdAt: string;
   scheduledAt?: string;
   hasDeliveryStarted: boolean;
   deliveryStartedAt?: string;
+  hasDeliveryFinished?: boolean;
+  deliveryFinishedAt?: string;
 }
 
 export interface DeliveryGroupPaginationResponse {

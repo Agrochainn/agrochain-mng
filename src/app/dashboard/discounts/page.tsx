@@ -67,7 +67,7 @@ export default function DiscountsPage() {
   const { toast } = useToast();
   const shopSlug = searchParams.get("shopSlug");
   const shopIdRef = useRef<string | null>(null);
-  
+
   const [discounts, setDiscounts] = useState<DiscountDTO[]>([]);
   const [loading, setLoading] = useState(true);
   const [shopLoading, setShopLoading] = useState(true);
@@ -81,17 +81,17 @@ export default function DiscountsPage() {
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedDiscount, setSelectedDiscount] = useState<DiscountDTO | null>(
-    null
+    null,
   );
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [discountToDelete, setDiscountToDelete] = useState<DiscountDTO | null>(
-    null
+    null,
   );
   const [discountToUpdate, setDiscountToUpdate] = useState<DiscountDTO | null>(
-    null
+    null,
   );
 
   // Fetch shopId from shopSlug
@@ -145,7 +145,7 @@ export default function DiscountsPage() {
         pageSize,
         sortBy,
         sortDirection,
-        activeOnly
+        activeOnly,
       );
       setDiscounts(response.content);
       setTotalPages(response.totalPages);
@@ -219,7 +219,10 @@ export default function DiscountsPage() {
     if (!discountToDelete || !shopIdRef.current) return;
 
     try {
-      await discountService.deleteDiscount(discountToDelete.discountId, shopIdRef.current);
+      await discountService.deleteDiscount(
+        discountToDelete.discountId,
+        shopIdRef.current,
+      );
       toast({
         title: "Success",
         description: "Discount deleted successfully",
@@ -265,7 +268,11 @@ export default function DiscountsPage() {
     if (!discountToUpdate || !shopIdRef.current) return;
 
     try {
-      await discountService.updateDiscount(discountToUpdate.discountId, shopIdRef.current, data);
+      await discountService.updateDiscount(
+        discountToUpdate.discountId,
+        shopIdRef.current,
+        data,
+      );
       toast({
         title: "Success",
         description: "Discount updated successfully",
@@ -337,7 +344,7 @@ export default function DiscountsPage() {
         label: "Expired",
         variant: "destructive" as const,
         icon: <XCircle className="h-3 w-3 mr-1" />,
-        description: `Ended ${formatDate(discount.endDate)}`,
+        description: `Ended ${formatDate(endDate.toISOString())}`,
       };
     }
 
@@ -347,7 +354,7 @@ export default function DiscountsPage() {
       variant: "default" as const,
       icon: <CheckCircle2 className="h-3 w-3 mr-1" />,
       description: endDate
-        ? `Until ${formatDate(discount.endDate)}`
+        ? `Until ${formatDate(endDate.toISOString())}`
         : "No end date",
     };
   };
@@ -429,8 +436,8 @@ export default function DiscountsPage() {
               </DialogDescription>
             </DialogHeader>
             {shopIdRef.current && (
-              <CreateDiscountForm 
-                onSubmit={handleCreateDiscount} 
+              <CreateDiscountForm
+                onSubmit={handleCreateDiscount}
                 shopId={shopIdRef.current}
               />
             )}
@@ -472,7 +479,9 @@ export default function DiscountsPage() {
             <div className="text-2xl font-bold text-green-600">
               {statusCounts.scheduled}
             </div>
-            <p className="text-xs text-muted-foreground mt-1">Not started yet</p>
+            <p className="text-xs text-muted-foreground mt-1">
+              Not started yet
+            </p>
           </CardContent>
         </Card>
 
@@ -492,7 +501,9 @@ export default function DiscountsPage() {
             <div className="text-2xl font-bold text-green-600">
               {statusCounts.active}
             </div>
-            <p className="text-xs text-muted-foreground mt-1">Currently running</p>
+            <p className="text-xs text-muted-foreground mt-1">
+              Currently running
+            </p>
           </CardContent>
         </Card>
 
@@ -532,7 +543,9 @@ export default function DiscountsPage() {
             <div className="text-2xl font-bold text-gray-600">
               {statusCounts.inactive}
             </div>
-            <p className="text-xs text-muted-foreground mt-1">Manually disabled</p>
+            <p className="text-xs text-muted-foreground mt-1">
+              Manually disabled
+            </p>
           </CardContent>
         </Card>
       </div>
@@ -625,15 +638,16 @@ export default function DiscountsPage() {
                     ({filteredDiscounts.length} of {totalElements})
                   </span>
                 ) : (
-                  <span className="text-muted-foreground"> ({totalElements})</span>
+                  <span className="text-muted-foreground">
+                    {" "}
+                    ({totalElements})
+                  </span>
                 )}
               </CardTitle>
               <CardDescription>
                 Manage your discount codes and promotional offers
                 {(statusFilter !== "all" || searchTerm) && (
-                  <span className="ml-2 text-primary">
-                    • Filters active
-                  </span>
+                  <span className="ml-2 text-primary">• Filters active</span>
                 )}
               </CardDescription>
             </div>
@@ -655,7 +669,9 @@ export default function DiscountsPage() {
           {shopLoading || loading ? (
             <div className="flex items-center justify-center py-8">
               <div className="text-muted-foreground">
-                {shopLoading ? "Loading shop information..." : "Loading discounts..."}
+                {shopLoading
+                  ? "Loading shop information..."
+                  : "Loading discounts..."}
               </div>
             </div>
           ) : !shopIdRef.current ? (

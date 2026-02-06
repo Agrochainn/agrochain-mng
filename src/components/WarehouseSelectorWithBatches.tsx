@@ -152,12 +152,13 @@ export function WarehouseSelectorWithBatches({
           searchTerm.trim(),
           currentPage,
           pageSize,
-          shopId
+          shopId,
         );
       }
       return warehouseService.getWarehouses(currentPage, pageSize, shopId);
     },
-    enabled: isDialogOpen && !!shopSlug && !isLoadingShop && !!shopId && !isErrorShop,
+    enabled:
+      isDialogOpen && !!shopSlug && !isLoadingShop && !!shopId && !isErrorShop,
   });
 
   const handleAddBatch = () => {
@@ -180,18 +181,18 @@ export function WarehouseSelectorWithBatches({
     const updatedBatches = [...batches];
     updatedBatches[index] = { ...updatedBatches[index], [field]: value };
     setBatches(updatedBatches);
-    
+
     // Clear validation errors for this field
     if (validationErrors.batches?.[index]) {
       const updatedErrors = { ...validationErrors };
       if (updatedErrors.batches) {
         updatedErrors.batches[index] = {
           ...updatedErrors.batches[index],
-          [field]: undefined
+          [field]: undefined,
         };
-        
+
         // Also clear related date validation errors
-        if (field === 'manufactureDate' || field === 'expiryDate') {
+        if (field === "manufactureDate" || field === "expiryDate") {
           // Clear both date errors when either date changes as they depend on each other
           updatedErrors.batches[index].manufactureDate = undefined;
           updatedErrors.batches[index].expiryDate = undefined;
@@ -203,73 +204,79 @@ export function WarehouseSelectorWithBatches({
 
   const validateForm = () => {
     const errors: typeof validationErrors = {};
-    
+
     // Validate warehouse selection
     if (!selectedWarehouse) {
       errors.warehouse = "Please select a warehouse";
     }
-    
+
     // Validate batches
     if (batches.length === 0) {
       errors.warehouse = errors.warehouse || "Please add at least one batch";
     } else {
       errors.batches = [];
       batches.forEach((batch, index) => {
-        const batchErrors: { 
-          batchNumber?: string; 
-          quantity?: string; 
-          manufactureDate?: string; 
-          expiryDate?: string; 
+        const batchErrors: {
+          batchNumber?: string;
+          quantity?: string;
+          manufactureDate?: string;
+          expiryDate?: string;
         } = {};
-        
+
         if (!batch.batchNumber.trim()) {
           batchErrors.batchNumber = "Batch number is required";
         }
-        
+
         if (batch.quantity <= 0) {
           batchErrors.quantity = "Quantity must be greater than 0";
         }
-        
+
         // Validate manufacture date
         if (batch.manufactureDate) {
           const mfgDate = new Date(batch.manufactureDate);
           const now = new Date();
-          
+
           if (mfgDate > now) {
-            batchErrors.manufactureDate = "Manufacture date cannot be in the future";
+            batchErrors.manufactureDate =
+              "Manufacture date cannot be in the future";
           }
         }
-        
+
         // Validate expiry date
         if (batch.expiryDate) {
           const expDate = new Date(batch.expiryDate);
           const now = new Date();
-          
+
           if (expDate < now) {
             batchErrors.expiryDate = "Expiry date cannot be in the past";
           }
-          
+
           // If both dates are provided, ensure expiry is after manufacture
           if (batch.manufactureDate) {
             const mfgDate = new Date(batch.manufactureDate);
             if (expDate <= mfgDate) {
-              batchErrors.expiryDate = "Expiry date must be after manufacture date";
+              batchErrors.expiryDate =
+                "Expiry date must be after manufacture date";
             }
           }
         }
-        
+
         errors.batches![index] = batchErrors;
       });
     }
-    
+
     setValidationErrors(errors);
-    
+
     // Check if there are any errors
     const hasWarehouseError = !!errors.warehouse;
-    const hasBatchErrors = errors.batches?.some(batchError => 
-      batchError.batchNumber || batchError.quantity || batchError.manufactureDate || batchError.expiryDate
+    const hasBatchErrors = errors.batches?.some(
+      (batchError) =>
+        batchError.batchNumber ||
+        batchError.quantity ||
+        batchError.manufactureDate ||
+        batchError.expiryDate,
     );
-    
+
     return !hasWarehouseError && !hasBatchErrors;
   };
 
@@ -280,7 +287,7 @@ export function WarehouseSelectorWithBatches({
 
     // Check if warehouse is already added (selectedWarehouse is guaranteed to be non-null by validation)
     const existingStock = warehouseStocks.find(
-      (stock) => stock.warehouseId === selectedWarehouse!.id
+      (stock) => stock.warehouseId === selectedWarehouse!.id,
     );
 
     if (existingStock) {
@@ -293,10 +300,10 @@ export function WarehouseSelectorWithBatches({
               lowStockThreshold,
               stockQuantity: batches.reduce(
                 (sum, batch) => sum + batch.quantity,
-                0
+                0,
               ),
             }
-          : stock
+          : stock,
       );
       onWarehouseStocksChange(updatedStocks);
     } else {
@@ -321,19 +328,19 @@ export function WarehouseSelectorWithBatches({
 
   const handleRemoveWarehouse = (warehouseId: number) => {
     const updatedStocks = warehouseStocks.filter(
-      (stock) => stock.warehouseId !== warehouseId
+      (stock) => stock.warehouseId !== warehouseId,
     );
     onWarehouseStocksChange(updatedStocks);
   };
 
   const totalStock = warehouseStocks.reduce(
     (sum, stock) => sum + stock.stockQuantity,
-    0
+    0,
   );
 
   const totalBatches = warehouseStocks.reduce(
     (sum, stock) => sum + stock.batches.length,
-    0
+    0,
   );
 
   return (
@@ -448,9 +455,9 @@ export function WarehouseSelectorWithBatches({
                                 setSelectedWarehouse(warehouse);
                                 // Clear warehouse validation error when selecting
                                 if (validationErrors.warehouse) {
-                                  setValidationErrors(prev => ({
+                                  setValidationErrors((prev) => ({
                                     ...prev,
-                                    warehouse: undefined
+                                    warehouse: undefined,
                                   }));
                                 }
                               }}
@@ -466,9 +473,7 @@ export function WarehouseSelectorWithBatches({
                                 )}
                               </TableCell>
                               <TableCell>
-                                <div className="text-sm">
-                                  {warehouse.city}, {warehouse.state}
-                                </div>
+                                <div className="text-sm">{warehouse.city}</div>
                                 <div className="text-sm text-muted-foreground">
                                   {warehouse.country}
                                 </div>
@@ -491,9 +496,9 @@ export function WarehouseSelectorWithBatches({
                                     setSelectedWarehouse(warehouse);
                                     // Clear warehouse validation error when selecting
                                     if (validationErrors.warehouse) {
-                                      setValidationErrors(prev => ({
+                                      setValidationErrors((prev) => ({
                                         ...prev,
-                                        warehouse: undefined
+                                        warehouse: undefined,
                                       }));
                                     }
                                   }}
@@ -507,7 +512,7 @@ export function WarehouseSelectorWithBatches({
                       </Table>
                     )}
                   </div>
-                  
+
                   {/* Warehouse validation error */}
                   {validationErrors.warehouse && (
                     <div className="text-sm text-destructive mt-2">
@@ -524,8 +529,7 @@ export function WarehouseSelectorWithBatches({
                         Selected: {selectedWarehouse.name}
                       </Label>
                       <p className="text-sm text-muted-foreground">
-                        {selectedWarehouse.city}, {selectedWarehouse.state},{" "}
-                        {selectedWarehouse.country}
+                        {selectedWarehouse.city}, {selectedWarehouse.country}
                       </p>
                     </div>
 
@@ -603,16 +607,25 @@ export function WarehouseSelectorWithBatches({
                                       handleBatchChange(
                                         index,
                                         "batchNumber",
-                                        e.target.value
+                                        e.target.value,
                                       )
                                     }
                                     placeholder="Enter batch number"
                                     required
-                                    className={validationErrors.batches?.[index]?.batchNumber ? "border-destructive" : ""}
+                                    className={
+                                      validationErrors.batches?.[index]
+                                        ?.batchNumber
+                                        ? "border-destructive"
+                                        : ""
+                                    }
                                   />
-                                  {validationErrors.batches?.[index]?.batchNumber && (
+                                  {validationErrors.batches?.[index]
+                                    ?.batchNumber && (
                                     <div className="text-sm text-destructive mt-1">
-                                      {validationErrors.batches[index].batchNumber}
+                                      {
+                                        validationErrors.batches[index]
+                                          .batchNumber
+                                      }
                                     </div>
                                   )}
                                 </div>
@@ -629,14 +642,20 @@ export function WarehouseSelectorWithBatches({
                                       handleBatchChange(
                                         index,
                                         "quantity",
-                                        Number(e.target.value)
+                                        Number(e.target.value),
                                       )
                                     }
                                     placeholder="Enter quantity"
                                     required
-                                    className={validationErrors.batches?.[index]?.quantity ? "border-destructive" : ""}
+                                    className={
+                                      validationErrors.batches?.[index]
+                                        ?.quantity
+                                        ? "border-destructive"
+                                        : ""
+                                    }
                                   />
-                                  {validationErrors.batches?.[index]?.quantity && (
+                                  {validationErrors.batches?.[index]
+                                    ?.quantity && (
                                     <div className="text-sm text-destructive mt-1">
                                       {validationErrors.batches[index].quantity}
                                     </div>
@@ -654,14 +673,14 @@ export function WarehouseSelectorWithBatches({
                                           className={cn(
                                             "w-full justify-start text-left font-normal",
                                             !batch.manufactureDate &&
-                                              "text-muted-foreground"
+                                              "text-muted-foreground",
                                           )}
                                         >
                                           <CalendarIcon className="mr-2 h-4 w-4" />
                                           {batch.manufactureDate ? (
                                             format(
                                               new Date(batch.manufactureDate),
-                                              "PPP 'at' p"
+                                              "PPP 'at' p",
                                             )
                                           ) : (
                                             <span>Pick a date (optional)</span>
@@ -679,15 +698,26 @@ export function WarehouseSelectorWithBatches({
                                           onSelect={(date) => {
                                             if (date) {
                                               // Keep existing time if available, otherwise set to current time
-                                              const existingDateTime = batch.manufactureDate ? new Date(batch.manufactureDate) : new Date();
-                                              const newDateTime = new Date(date);
-                                              newDateTime.setHours(existingDateTime.getHours());
-                                              newDateTime.setMinutes(existingDateTime.getMinutes());
-                                              
+                                              const existingDateTime =
+                                                batch.manufactureDate
+                                                  ? new Date(
+                                                      batch.manufactureDate,
+                                                    )
+                                                  : new Date();
+                                              const newDateTime = new Date(
+                                                date,
+                                              );
+                                              newDateTime.setHours(
+                                                existingDateTime.getHours(),
+                                              );
+                                              newDateTime.setMinutes(
+                                                existingDateTime.getMinutes(),
+                                              );
+
                                               handleBatchChange(
                                                 index,
                                                 "manufactureDate",
-                                                newDateTime.toISOString()
+                                                newDateTime.toISOString(),
                                               );
                                             }
                                           }}
@@ -701,22 +731,29 @@ export function WarehouseSelectorWithBatches({
                                         placeholder="Select time"
                                         value={
                                           batch.manufactureDate
-                                            ? format(new Date(batch.manufactureDate), "HH:mm")
+                                            ? format(
+                                                new Date(batch.manufactureDate),
+                                                "HH:mm",
+                                              )
                                             : ""
                                         }
                                         onChange={(e) => {
                                           if (e.target.value) {
                                             // If no date is selected, use today's date
-                                            const date = batch.manufactureDate 
-                                              ? new Date(batch.manufactureDate) 
+                                            const date = batch.manufactureDate
+                                              ? new Date(batch.manufactureDate)
                                               : new Date();
-                                            const [hours, minutes] = e.target.value.split(':');
-                                            date.setHours(parseInt(hours), parseInt(minutes));
-                                            
+                                            const [hours, minutes] =
+                                              e.target.value.split(":");
+                                            date.setHours(
+                                              parseInt(hours),
+                                              parseInt(minutes),
+                                            );
+
                                             handleBatchChange(
                                               index,
                                               "manufactureDate",
-                                              date.toISOString()
+                                              date.toISOString(),
                                             );
                                           }
                                         }}
@@ -731,7 +768,7 @@ export function WarehouseSelectorWithBatches({
                                             handleBatchChange(
                                               index,
                                               "manufactureDate",
-                                              undefined
+                                              undefined,
                                             );
                                           }}
                                         >
@@ -740,9 +777,13 @@ export function WarehouseSelectorWithBatches({
                                       )}
                                     </div>
                                   </div>
-                                  {validationErrors.batches?.[index]?.manufactureDate && (
+                                  {validationErrors.batches?.[index]
+                                    ?.manufactureDate && (
                                     <div className="text-sm text-destructive mt-1">
-                                      {validationErrors.batches[index].manufactureDate}
+                                      {
+                                        validationErrors.batches[index]
+                                          .manufactureDate
+                                      }
                                     </div>
                                   )}
                                 </div>
@@ -758,14 +799,14 @@ export function WarehouseSelectorWithBatches({
                                           className={cn(
                                             "w-full justify-start text-left font-normal",
                                             !batch.expiryDate &&
-                                              "text-muted-foreground"
+                                              "text-muted-foreground",
                                           )}
                                         >
                                           <CalendarIcon className="mr-2 h-4 w-4" />
                                           {batch.expiryDate ? (
                                             format(
                                               new Date(batch.expiryDate),
-                                              "PPP 'at' p"
+                                              "PPP 'at' p",
                                             )
                                           ) : (
                                             <span>Pick a date (optional)</span>
@@ -783,20 +824,29 @@ export function WarehouseSelectorWithBatches({
                                           onSelect={(date) => {
                                             if (date) {
                                               // Keep existing time if available, otherwise set to end of day
-                                              const existingDateTime = batch.expiryDate ? new Date(batch.expiryDate) : new Date();
-                                              const newDateTime = new Date(date);
+                                              const existingDateTime =
+                                                batch.expiryDate
+                                                  ? new Date(batch.expiryDate)
+                                                  : new Date();
+                                              const newDateTime = new Date(
+                                                date,
+                                              );
                                               if (batch.expiryDate) {
-                                                newDateTime.setHours(existingDateTime.getHours());
-                                                newDateTime.setMinutes(existingDateTime.getMinutes());
+                                                newDateTime.setHours(
+                                                  existingDateTime.getHours(),
+                                                );
+                                                newDateTime.setMinutes(
+                                                  existingDateTime.getMinutes(),
+                                                );
                                               } else {
                                                 // Default to end of day for expiry
                                                 newDateTime.setHours(23, 59);
                                               }
-                                              
+
                                               handleBatchChange(
                                                 index,
                                                 "expiryDate",
-                                                newDateTime.toISOString()
+                                                newDateTime.toISOString(),
                                               );
                                             }
                                           }}
@@ -810,22 +860,29 @@ export function WarehouseSelectorWithBatches({
                                         placeholder="Select time"
                                         value={
                                           batch.expiryDate
-                                            ? format(new Date(batch.expiryDate), "HH:mm")
+                                            ? format(
+                                                new Date(batch.expiryDate),
+                                                "HH:mm",
+                                              )
                                             : ""
                                         }
                                         onChange={(e) => {
                                           if (e.target.value) {
                                             // If no date is selected, use today's date
-                                            const date = batch.expiryDate 
-                                              ? new Date(batch.expiryDate) 
+                                            const date = batch.expiryDate
+                                              ? new Date(batch.expiryDate)
                                               : new Date();
-                                            const [hours, minutes] = e.target.value.split(':');
-                                            date.setHours(parseInt(hours), parseInt(minutes));
-                                            
+                                            const [hours, minutes] =
+                                              e.target.value.split(":");
+                                            date.setHours(
+                                              parseInt(hours),
+                                              parseInt(minutes),
+                                            );
+
                                             handleBatchChange(
                                               index,
                                               "expiryDate",
-                                              date.toISOString()
+                                              date.toISOString(),
                                             );
                                           }
                                         }}
@@ -840,7 +897,7 @@ export function WarehouseSelectorWithBatches({
                                             handleBatchChange(
                                               index,
                                               "expiryDate",
-                                              undefined
+                                              undefined,
                                             );
                                           }}
                                         >
@@ -849,9 +906,13 @@ export function WarehouseSelectorWithBatches({
                                       )}
                                     </div>
                                   </div>
-                                  {validationErrors.batches?.[index]?.expiryDate && (
+                                  {validationErrors.batches?.[index]
+                                    ?.expiryDate && (
                                     <div className="text-sm text-destructive mt-1">
-                                      {validationErrors.batches[index].expiryDate}
+                                      {
+                                        validationErrors.batches[index]
+                                          .expiryDate
+                                      }
                                     </div>
                                   )}
                                 </div>
@@ -866,7 +927,7 @@ export function WarehouseSelectorWithBatches({
                                       handleBatchChange(
                                         index,
                                         "supplierName",
-                                        e.target.value
+                                        e.target.value,
                                       )
                                     }
                                     placeholder="Enter supplier name"
@@ -885,7 +946,7 @@ export function WarehouseSelectorWithBatches({
                                       handleBatchChange(
                                         index,
                                         "supplierBatchNumber",
-                                        e.target.value
+                                        e.target.value,
                                       )
                                     }
                                     placeholder="Enter supplier batch number"

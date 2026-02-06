@@ -100,7 +100,7 @@ export default function ShippingCostsPage() {
           filters.search,
           page,
           size,
-          shopId!
+          shopId!,
         );
       }
       return shippingCostService.getAllShippingCosts(page, size, shopId!);
@@ -110,7 +110,8 @@ export default function ShippingCostsPage() {
 
   // Delete mutation
   const deleteMutation = useMutation({
-    mutationFn: (id: number) => shippingCostService.deleteShippingCost(id, shopId!),
+    mutationFn: (id: number) =>
+      shippingCostService.deleteShippingCost(id, shopId!),
     onSuccess: () => {
       toast({
         title: "Success",
@@ -131,7 +132,8 @@ export default function ShippingCostsPage() {
 
   // Toggle active status mutation
   const toggleActiveMutation = useMutation({
-    mutationFn: (id: number) => shippingCostService.toggleShippingCostStatus(id, shopId!),
+    mutationFn: (id: number) =>
+      shippingCostService.toggleShippingCostStatus(id, shopId!),
     onSuccess: () => {
       toast({
         title: "Success",
@@ -153,7 +155,6 @@ export default function ShippingCostsPage() {
     setFilters((prev) => ({ ...prev, search }));
     setPage(0);
   };
-
 
   const handleStatusFilter = (isActive: string) => {
     setFilters((prev) => ({
@@ -244,7 +245,9 @@ export default function ShippingCostsPage() {
       <Alert>
         <AlertTriangle className="h-4 w-4" />
         <AlertDescription>
-          Only one shipping cost configuration can be active at a time. Activating a new configuration will automatically deactivate the currently active one.
+          Only one shipping cost configuration can be active at a time.
+          Activating a new configuration will automatically deactivate the
+          currently active one.
         </AlertDescription>
       </Alert>
 
@@ -274,8 +277,8 @@ export default function ShippingCostsPage() {
                 filters.isActive === undefined
                   ? "all"
                   : filters.isActive
-                  ? "active"
-                  : "inactive"
+                    ? "active"
+                    : "inactive"
               }
               onValueChange={handleStatusFilter}
             >
@@ -330,13 +333,16 @@ export default function ShippingCostsPage() {
                           {formatCurrencyDisplay(shippingCost.baseFee)}
                         </TableCell>
                         <TableCell>
-                          {formatCurrencyDisplay(shippingCost.distanceKmCost)}/km
+                          {formatCurrencyDisplay(shippingCost.distanceKmCost)}
+                          /km
                         </TableCell>
                         <TableCell>
-                          {formatCurrency(shippingCost.weightKgCost)}/kg
+                          {formatCurrencyDisplay(shippingCost.weightKgCost)}/kg
                         </TableCell>
                         <TableCell>
-                          {formatCurrencyDisplay(shippingCost.freeShippingThreshold)}
+                          {formatCurrencyDisplay(
+                            shippingCost.freeShippingThreshold,
+                          )}
                         </TableCell>
                         <TableCell>
                           <div className="flex items-center gap-2">
@@ -386,7 +392,7 @@ export default function ShippingCostsPage() {
                     Showing {page * size + 1} to{" "}
                     {Math.min(
                       (page + 1) * size,
-                      shippingCostsData.totalElements
+                      shippingCostsData.totalElements,
                     )}{" "}
                     of {shippingCostsData.totalElements} results
                   </div>

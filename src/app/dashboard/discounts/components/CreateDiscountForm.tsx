@@ -44,13 +44,13 @@ const createDiscountSchema = z.object({
     .string()
     .max(50, "Discount code cannot exceed 50 characters")
     .optional(),
-  startDate: z.date({
-    required_error: "Start date is required",
+  startDate: z.date().refine((date) => date != null, {
+    message: "Start date is required",
   }),
   endDate: z.date().optional(),
-  isActive: z.boolean().default(true),
+  isActive: z.boolean(),
   usageLimit: z.number().min(1, "Usage limit must be at least 1").optional(),
-  discountType: z.string().default("PERCENTAGE"),
+  discountType: z.string(),
 });
 
 type CreateDiscountFormData = z.infer<typeof createDiscountSchema>;
@@ -60,7 +60,10 @@ interface CreateDiscountFormProps {
   shopId: string;
 }
 
-export function CreateDiscountForm({ onSubmit, shopId }: CreateDiscountFormProps) {
+export function CreateDiscountForm({
+  onSubmit,
+  shopId,
+}: CreateDiscountFormProps) {
   const [startDate, setStartDate] = useState<Date>();
   const [endDate, setEndDate] = useState<Date>();
   const [startTime, setStartTime] = useState<string>("09:00");
@@ -218,7 +221,7 @@ export function CreateDiscountForm({ onSubmit, shopId }: CreateDiscountFormProps
                   variant="outline"
                   className={cn(
                     "w-full justify-start text-left font-normal",
-                    !watchedStartDate && "text-muted-foreground"
+                    !watchedStartDate && "text-muted-foreground",
                   )}
                 >
                   <CalendarIcon className="mr-2 h-4 w-4" />
@@ -267,7 +270,7 @@ export function CreateDiscountForm({ onSubmit, shopId }: CreateDiscountFormProps
                   variant="outline"
                   className={cn(
                     "w-full justify-start text-left font-normal",
-                    !watchedEndDate && "text-muted-foreground"
+                    !watchedEndDate && "text-muted-foreground",
                   )}
                 >
                   <CalendarIcon className="mr-2 h-4 w-4" />

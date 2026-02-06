@@ -30,14 +30,14 @@ import {
   DeliveryGroupDto,
   OrderDTO,
 } from "@/lib/services/delivery-agent-service";
-import { DeliveryAgentDashboard } from "@/lib/services/delivery-agent-service";
+import { type DeliveryAgentDashboard } from "@/lib/services/delivery-agent-service";
 
 export default function DeliveryAgentDashboard() {
   const [dashboardData, setDashboardData] =
     useState<DeliveryAgentDashboard | null>(null);
   const [expandedGroupId, setExpandedGroupId] = useState<number | null>(null);
   const [groupOrders, setGroupOrders] = useState<Record<number, OrderDTO[]>>(
-    {}
+    {},
   );
   const [loading, setLoading] = useState(true);
   const [loadingOrders, setLoadingOrders] = useState<number | null>(null);
@@ -402,7 +402,7 @@ export default function DeliveryAgentDashboard() {
                               </div>
                               <div className="flex items-center gap-1">
                                 <MapPin className="h-3 w-3" />
-                                {order.shippingAddress.street},{" "}
+                                {order.shippingAddress.streetAddress},{" "}
                                 {order.shippingAddress.city}
                               </div>
                             </div>

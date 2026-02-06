@@ -196,7 +196,7 @@ export default function WarehousesPage() {
               `/dashboard/warehouses/create${shopSlug ? `?shopSlug=${shopSlug}` : ""}`,
             )
           }
-          disabled={isLoadingShop || (shopSlug && !shopId)}
+          disabled={isLoadingShop || (shopSlug ? !shopId : false)}
         >
           <Plus className="h-4 w-4 mr-2" />
           Add Warehouse
@@ -298,7 +298,7 @@ export default function WarehousesPage() {
                   `/dashboard/warehouses/create${shopSlug ? `?shopSlug=${shopSlug}` : ""}`,
                 )
               }
-              disabled={isLoadingShop || (shopSlug && !shopId)}
+              disabled={isLoadingShop || (shopSlug ? !shopId : false)}
             >
               <Plus className="h-4 w-4 mr-2" />
               Create Warehouse

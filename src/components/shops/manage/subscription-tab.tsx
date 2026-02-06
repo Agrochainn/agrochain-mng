@@ -3,7 +3,13 @@
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -52,26 +58,30 @@ export function SubscriptionTab({ shop }: SubscriptionTabProps) {
   const queryClient = useQueryClient();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [subscribingPlanId, setSubscribingPlanId] = useState<number | null>(null);
+  const [subscribingPlanId, setSubscribingPlanId] = useState<number | null>(
+    null,
+  );
   const [showCancelDialog, setShowCancelDialog] = useState(false);
 
   // Fetch available plans filtered by shop's capability
   // getActivePlansForShop already filters by shop's primaryCapability and includes freemiumConsumed status
-  const { 
-    data: matchingPlans, 
+  const {
+    data: matchingPlans,
     isLoading: plansLoading,
-    isFetching: plansFetching
+    isFetching: plansFetching,
   } = useQuery({
-    queryKey: ["subscription-plans", "active", shop.shopId, shop.primaryCapability],
+    queryKey: [
+      "subscription-plans",
+      "active",
+      shop.shopId,
+      shop.primaryCapability,
+    ],
     queryFn: () => subscriptionService.getAllPlans(true, shop.shopId),
     enabled: !!shop.shopId, // Only fetch if shop exists
   });
 
   // Fetch all other active plans (for "Discover other plans" section)
-  const { 
-    data: allActivePlans,
-    isLoading: allPlansLoading 
-  } = useQuery({
+  const { data: allActivePlans, isLoading: allPlansLoading } = useQuery({
     queryKey: ["subscription-plans", "all-active"],
     queryFn: () => subscriptionService.getAllPlans(true),
     enabled: !!shop.shopId && !!shop.primaryCapability,
@@ -81,13 +91,14 @@ export function SubscriptionTab({ shop }: SubscriptionTabProps) {
   // Only set plans after data has been fetched (not undefined)
   const plans = matchingPlans ?? [];
   const otherPlans = (allActivePlans ?? []).filter(
-    (plan) => plan.capability !== shop.primaryCapability
+    (plan) => plan.capability !== shop.primaryCapability,
   );
-  
+
   // Determine if we should show loading state
   // Show loading if: query is loading OR data hasn't been fetched yet (undefined)
   // Use isLoading for initial load, isFetching for refetches
-  const isPlansLoading = plansLoading || (plansFetching && matchingPlans === undefined);
+  const isPlansLoading =
+    plansLoading || (plansFetching && matchingPlans === undefined);
   const hasPlansData = matchingPlans !== undefined; // Data has been fetched at least once
 
   // Fetch current subscription
@@ -105,20 +116,22 @@ export function SubscriptionTab({ shop }: SubscriptionTabProps) {
   // Note: freemiumConsumed is now included in plans data from backend
 
   // Check if subscription system is enabled
-  const { 
-    data: isSystemEnabled, 
-    isLoading: systemStatusLoading 
-  } = useQuery({
+  const { data: isSystemEnabled, isLoading: systemStatusLoading } = useQuery({
     queryKey: ["subscription-system-status"],
     queryFn: subscriptionService.isSystemEnabled,
   });
 
   // Payment verification mutation
   const verifyPaymentMutation = useMutation({
-    mutationFn: (sessionId: string) => subscriptionService.verifyPayment(sessionId),
+    mutationFn: (sessionId: string) =>
+      subscriptionService.verifyPayment(sessionId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["shop-subscription", shop.shopId] });
-      queryClient.invalidateQueries({ queryKey: ["shop-subscription-history", shop.shopId] });
+      queryClient.invalidateQueries({
+        queryKey: ["shop-subscription", shop.shopId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["shop-subscription-history", shop.shopId],
+      });
       queryClient.invalidateQueries({ queryKey: ["shop", shop.shopId] });
       toast({
         title: "Payment Successful",
@@ -130,7 +143,10 @@ export function SubscriptionTab({ shop }: SubscriptionTabProps) {
     onError: (error: any) => {
       toast({
         title: "Payment Verification Failed",
-        description: error?.response?.data || error?.message || "Failed to verify payment. Please contact support.",
+        description:
+          error?.response?.data ||
+          error?.message ||
+          "Failed to verify payment. Please contact support.",
         variant: "destructive",
       });
     },
@@ -145,10 +161,16 @@ export function SubscriptionTab({ shop }: SubscriptionTabProps) {
     mutationFn: ({ planId }: { planId: number }) =>
       subscriptionService.subscribeShop(shop.shopId, planId, false),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["shop-subscription", shop.shopId] });
-      queryClient.invalidateQueries({ queryKey: ["shop-subscription-history", shop.shopId] });
+      queryClient.invalidateQueries({
+        queryKey: ["shop-subscription", shop.shopId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["shop-subscription-history", shop.shopId],
+      });
       queryClient.invalidateQueries({ queryKey: ["shop", shop.shopId] });
-      queryClient.invalidateQueries({ queryKey: ["shop-freemium-consumed", shop.shopId] });
+      queryClient.invalidateQueries({
+        queryKey: ["shop-freemium-consumed", shop.shopId],
+      });
       toast({
         title: "Free Trial Started",
         description: "Your free trial has been activated successfully!",
@@ -159,7 +181,7 @@ export function SubscriptionTab({ shop }: SubscriptionTabProps) {
       // Extract error message from backend response
       let errorMessage = "Failed to start free trial. Please try again.";
       let errorTitle = "Subscription Failed";
-      
+
       if (error?.response?.data) {
         // Backend returns error message as string or in a message field
         if (typeof error.response.data === "string") {
@@ -172,17 +194,21 @@ export function SubscriptionTab({ shop }: SubscriptionTabProps) {
       } else if (error?.message) {
         errorMessage = error.message;
       }
-      
+
       // Check error type for appropriate title
-      if (errorMessage.toLowerCase().includes("capability") || 
-          errorMessage.toLowerCase().includes("compatible")) {
+      if (
+        errorMessage.toLowerCase().includes("capability") ||
+        errorMessage.toLowerCase().includes("compatible")
+      ) {
         errorTitle = "Capability Mismatch";
-      } else if (errorMessage.toLowerCase().includes("free trial") || 
-          errorMessage.toLowerCase().includes("freemium") ||
-          errorMessage.toLowerCase().includes("already used")) {
+      } else if (
+        errorMessage.toLowerCase().includes("free trial") ||
+        errorMessage.toLowerCase().includes("freemium") ||
+        errorMessage.toLowerCase().includes("already used")
+      ) {
         errorTitle = "Free Trial Unavailable";
       }
-      
+
       toast({
         title: errorTitle,
         description: errorMessage,
@@ -202,9 +228,12 @@ export function SubscriptionTab({ shop }: SubscriptionTabProps) {
       window.location.href = checkoutUrl;
     },
     onError: (error: any) => {
-      let errorMessage = error?.response?.data || error?.message || "Failed to create checkout session. Please try again.";
+      let errorMessage =
+        error?.response?.data ||
+        error?.message ||
+        "Failed to create checkout session. Please try again.";
       let errorTitle = "Checkout Failed";
-      
+
       // Extract error message properly
       if (error?.response?.data) {
         if (typeof error.response.data === "string") {
@@ -215,13 +244,15 @@ export function SubscriptionTab({ shop }: SubscriptionTabProps) {
           errorMessage = error.response.data.error;
         }
       }
-      
+
       // Check if it's a capability mismatch error
-      if (errorMessage.toLowerCase().includes("capability") || 
-          errorMessage.toLowerCase().includes("compatible")) {
+      if (
+        errorMessage.toLowerCase().includes("capability") ||
+        errorMessage.toLowerCase().includes("compatible")
+      ) {
         errorTitle = "Capability Mismatch";
       }
-      
+
       toast({
         title: errorTitle,
         description: errorMessage,
@@ -236,8 +267,12 @@ export function SubscriptionTab({ shop }: SubscriptionTabProps) {
   const cancelMutation = useMutation({
     mutationFn: () => subscriptionService.cancelSubscription(shop.shopId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["shop-subscription", shop.shopId] });
-      queryClient.invalidateQueries({ queryKey: ["shop-subscription-history", shop.shopId] });
+      queryClient.invalidateQueries({
+        queryKey: ["shop-subscription", shop.shopId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["shop-subscription-history", shop.shopId],
+      });
       queryClient.invalidateQueries({ queryKey: ["shop", shop.shopId] });
       toast({
         title: "Subscription Cancelled",
@@ -248,7 +283,10 @@ export function SubscriptionTab({ shop }: SubscriptionTabProps) {
     onError: (error: any) => {
       toast({
         title: "Cancellation Failed",
-        description: error?.response?.data || error?.message || "Failed to cancel subscription. Please try again.",
+        description:
+          error?.response?.data ||
+          error?.message ||
+          "Failed to cancel subscription. Please try again.",
         variant: "destructive",
       });
     },
@@ -256,9 +294,12 @@ export function SubscriptionTab({ shop }: SubscriptionTabProps) {
 
   // Toggle auto-renew mutation
   const toggleAutoRenewMutation = useMutation({
-    mutationFn: (autoRenew: boolean) => subscriptionService.toggleAutoRenew(shop.shopId, autoRenew),
+    mutationFn: (autoRenew: boolean) =>
+      subscriptionService.toggleAutoRenew(shop.shopId, autoRenew),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["shop-subscription", shop.shopId] });
+      queryClient.invalidateQueries({
+        queryKey: ["shop-subscription", shop.shopId],
+      });
       toast({
         title: "Auto-Renew Updated",
         description: "Your auto-renewal setting has been updated.",
@@ -267,7 +308,10 @@ export function SubscriptionTab({ shop }: SubscriptionTabProps) {
     onError: (error: any) => {
       toast({
         title: "Update Failed",
-        description: error?.response?.data || error?.message || "Failed to update auto-renew. Please try again.",
+        description:
+          error?.response?.data ||
+          error?.message ||
+          "Failed to update auto-renew. Please try again.",
         variant: "destructive",
       });
     },
@@ -288,14 +332,15 @@ export function SubscriptionTab({ shop }: SubscriptionTabProps) {
     if (!shop.primaryCapability) {
       toast({
         title: "Shop Capability Required",
-        description: "Please set your shop capability first before subscribing to a plan.",
+        description:
+          "Please set your shop capability first before subscribing to a plan.",
         variant: "destructive",
       });
       return;
     }
 
     setSubscribingPlanId(plan.id);
-    
+
     if (plan.isFreemium) {
       // Handle freemium subscription
       freemiumMutation.mutate({ planId: plan.id });
@@ -320,7 +365,9 @@ export function SubscriptionTab({ shop }: SubscriptionTabProps) {
         <CardContent className="pt-6">
           <div className="flex flex-col items-center justify-center py-12">
             <Loader2 className="h-8 w-8 animate-spin text-muted-foreground mb-4" />
-            <p className="text-sm text-muted-foreground">Checking subscription system status...</p>
+            <p className="text-sm text-muted-foreground">
+              Checking subscription system status...
+            </p>
           </div>
         </CardContent>
       </Card>
@@ -333,8 +380,13 @@ export function SubscriptionTab({ shop }: SubscriptionTabProps) {
     const freemiumConsumed = plan.freemiumConsumed || false;
     const isCurrentPlan = activeSubscription?.planId === plan.id;
     const hasActiveSubscription = activeSubscription?.status === "ACTIVE";
-    const canSubscribe = !isCurrentPlan && !hasActiveSubscription && !freemiumConsumed && isMatching;
-    const capabilityMismatch = !isMatching && plan.capability !== shop.primaryCapability;
+    const canSubscribe =
+      !isCurrentPlan &&
+      !hasActiveSubscription &&
+      !freemiumConsumed &&
+      isMatching;
+    const capabilityMismatch =
+      !isMatching && plan.capability !== shop.primaryCapability;
 
     return (
       <Card key={plan.id} className="flex flex-col">
@@ -343,11 +395,9 @@ export function SubscriptionTab({ shop }: SubscriptionTabProps) {
             <div>
               <CardTitle className="text-xl">{plan.name}</CardTitle>
               <CardDescription className="mt-1">
-                {isFreemium ? (
-                  "Free Trial"
-                ) : (
-                  `${plan.currency} ${plan.price.toFixed(2)} / ${plan.durationInDays} days`
-                )}
+                {isFreemium
+                  ? "Free Trial"
+                  : `${plan.currency} ${plan.price.toFixed(2)} / ${plan.durationInDays} days`}
               </CardDescription>
             </div>
             <div className="flex flex-col gap-1 items-end">
@@ -374,26 +424,31 @@ export function SubscriptionTab({ shop }: SubscriptionTabProps) {
             <div className="flex items-center gap-2">
               <Package className="h-4 w-4 opacity-70" />
               <span>
-                Products: {plan.maxProducts === -1 ? "Unlimited" : plan.maxProducts}
+                Products:{" "}
+                {plan.maxProducts === -1 ? "Unlimited" : plan.maxProducts}
               </span>
             </div>
             <div className="flex items-center gap-2">
               <Warehouse className="h-4 w-4 opacity-70" />
               <span>
-                Warehouses: {plan.maxWarehouses === -1 ? "Unlimited" : plan.maxWarehouses}
+                Warehouses:{" "}
+                {plan.maxWarehouses === -1 ? "Unlimited" : plan.maxWarehouses}
               </span>
             </div>
             <div className="flex items-center gap-2">
               <Users className="h-4 w-4 opacity-70" />
               <span>
-                Employees: {plan.maxEmployees === -1 ? "Unlimited" : plan.maxEmployees}
+                Employees:{" "}
+                {plan.maxEmployees === -1 ? "Unlimited" : plan.maxEmployees}
               </span>
             </div>
             <div className="flex items-center gap-2">
               <Truck className="h-4 w-4 opacity-70" />
               <span>
                 Delivery Agents:{" "}
-                {plan.maxDeliveryAgents === -1 ? "Unlimited" : plan.maxDeliveryAgents}
+                {plan.maxDeliveryAgents === -1
+                  ? "Unlimited"
+                  : plan.maxDeliveryAgents}
               </span>
             </div>
           </div>
@@ -402,7 +457,8 @@ export function SubscriptionTab({ shop }: SubscriptionTabProps) {
             <div className="bg-orange-50 border border-orange-200 rounded-lg p-3 text-sm text-orange-800">
               <p className="font-medium">Capability Mismatch</p>
               <p className="text-xs mt-1">
-                This plan is for {plan.capability.replace(/_/g, " ")} shops. Update your shop capability to subscribe.
+                This plan is for {plan.capability.replace(/_/g, " ")} shops.
+                Update your shop capability to subscribe.
               </p>
             </div>
           )}
@@ -410,14 +466,18 @@ export function SubscriptionTab({ shop }: SubscriptionTabProps) {
           {freemiumConsumed && isFreemium && (
             <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 text-sm text-yellow-800">
               <p className="font-medium">Free trial already used</p>
-              <p className="text-xs mt-1">You can only use one free trial per shop.</p>
+              <p className="text-xs mt-1">
+                You can only use one free trial per shop.
+              </p>
             </div>
           )}
 
           {hasActiveSubscription && !isCurrentPlan && (
             <div className="bg-green-50 border border-green-200 rounded-lg p-3 text-sm text-green-800">
               <p className="font-medium">Active subscription required</p>
-              <p className="text-xs mt-1">Cancel your current subscription to switch plans.</p>
+              <p className="text-xs mt-1">
+                Cancel your current subscription to switch plans.
+              </p>
             </div>
           )}
 
@@ -469,9 +529,12 @@ export function SubscriptionTab({ shop }: SubscriptionTabProps) {
         <CardContent className="pt-6">
           <div className="text-center py-12">
             <CreditCard className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
-            <h3 className="text-xl font-semibold mb-2">Subscription System Disabled</h3>
+            <h3 className="text-xl font-semibold mb-2">
+              Subscription System Disabled
+            </h3>
             <p className="text-muted-foreground">
-              The subscription system is currently disabled. Please contact support for more information.
+              The subscription system is currently disabled. Please contact
+              support for more information.
             </p>
           </div>
         </CardContent>
@@ -485,7 +548,9 @@ export function SubscriptionTab({ shop }: SubscriptionTabProps) {
       <Card>
         <CardHeader>
           <CardTitle>Current Subscription</CardTitle>
-          <CardDescription>Your active subscription plan and status</CardDescription>
+          <CardDescription>
+            Your active subscription plan and status
+          </CardDescription>
         </CardHeader>
         <CardContent>
           {activeLoading ? (
@@ -494,9 +559,14 @@ export function SubscriptionTab({ shop }: SubscriptionTabProps) {
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="text-lg font-semibold">{activeSubscription.planName}</h3>
+                  <h3 className="text-lg font-semibold">
+                    {activeSubscription.planName}
+                  </h3>
                   <p className="text-sm text-muted-foreground">
-                    {activeSubscription.planId && (matchingPlans || [])?.find((p) => p.id === activeSubscription.planId)?.description}
+                    {activeSubscription.planId &&
+                      (matchingPlans || [])?.find(
+                        (p) => p.id === activeSubscription.planId,
+                      )?.description}
                   </p>
                 </div>
                 <Badge
@@ -504,8 +574,8 @@ export function SubscriptionTab({ shop }: SubscriptionTabProps) {
                     activeSubscription.status === "ACTIVE"
                       ? "bg-green-500"
                       : activeSubscription.status === "EXPIRED"
-                      ? "bg-gray-500"
-                      : "bg-red-500"
+                        ? "bg-gray-500"
+                        : "bg-red-500"
                   }
                 >
                   {activeSubscription.status}
@@ -515,19 +585,25 @@ export function SubscriptionTab({ shop }: SubscriptionTabProps) {
                 <div>
                   <span className="text-muted-foreground">Start Date:</span>
                   <p className="font-medium">
-                    {format(new Date(activeSubscription.startDate), "MMM dd, yyyy")}
+                    {format(
+                      new Date(activeSubscription.startDate),
+                      "MMM dd, yyyy",
+                    )}
                   </p>
                 </div>
                 <div>
                   <span className="text-muted-foreground">End Date:</span>
                   <p className="font-medium">
-                    {format(new Date(activeSubscription.endDate), "MMM dd, yyyy")}
+                    {format(
+                      new Date(activeSubscription.endDate),
+                      "MMM dd, yyyy",
+                    )}
                   </p>
                 </div>
                 <div>
                   <span className="text-muted-foreground">Amount Paid:</span>
                   <p className="font-medium">
-                    {activeSubscription.currency || "USD"} {activeSubscription.amountPaid?.toFixed(2) || "0.00"}
+                    USD {activeSubscription.amountPaid?.toFixed(2) || "0.00"}
                   </p>
                 </div>
                 <div>
@@ -597,7 +673,7 @@ export function SubscriptionTab({ shop }: SubscriptionTabProps) {
         <CardHeader>
           <CardTitle>Available Plans</CardTitle>
           <CardDescription>
-            {shop.primaryCapability 
+            {shop.primaryCapability
               ? `Plans compatible with your shop capability: ${shop.primaryCapability.replace(/_/g, " ")}`
               : "Choose a subscription plan for your shop"}
           </CardDescription>
@@ -607,7 +683,9 @@ export function SubscriptionTab({ shop }: SubscriptionTabProps) {
             <div className="space-y-4">
               <div className="flex flex-col items-center justify-center py-12">
                 <Loader2 className="h-8 w-8 animate-spin text-muted-foreground mb-4" />
-                <p className="text-sm text-muted-foreground">Loading subscription plans...</p>
+                <p className="text-sm text-muted-foreground">
+                  Loading subscription plans...
+                </p>
               </div>
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                 <Skeleton className="h-64 w-full" />
@@ -618,9 +696,11 @@ export function SubscriptionTab({ shop }: SubscriptionTabProps) {
           ) : hasPlansData && plans.length === 0 ? (
             <div className="text-center py-12">
               <CreditCard className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-              <p className="text-muted-foreground font-medium mb-2">No Plans Available</p>
+              <p className="text-muted-foreground font-medium mb-2">
+                No Plans Available
+              </p>
               <p className="text-sm text-muted-foreground">
-                {shop.primaryCapability 
+                {shop.primaryCapability
                   ? `No subscription plans are currently available for ${shop.primaryCapability.replace(/_/g, " ")} shops. Please contact support or update your shop capability.`
                   : "No subscription plans are available. Please set your shop capability first."}
               </p>
@@ -639,7 +719,8 @@ export function SubscriptionTab({ shop }: SubscriptionTabProps) {
           <CardHeader>
             <CardTitle>Discover Other Plans</CardTitle>
             <CardDescription>
-              Plans for different shop capabilities. Update your shop capability to subscribe to these plans.
+              Plans for different shop capabilities. Update your shop capability
+              to subscribe to these plans.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -647,7 +728,9 @@ export function SubscriptionTab({ shop }: SubscriptionTabProps) {
               <div className="space-y-4">
                 <div className="flex flex-col items-center justify-center py-8">
                   <Loader2 className="h-6 w-6 animate-spin text-muted-foreground mb-2" />
-                  <p className="text-xs text-muted-foreground">Loading other plans...</p>
+                  <p className="text-xs text-muted-foreground">
+                    Loading other plans...
+                  </p>
                 </div>
                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                   <Skeleton className="h-64 w-full" />
@@ -671,7 +754,9 @@ export function SubscriptionTab({ shop }: SubscriptionTabProps) {
       <Card>
         <CardHeader>
           <CardTitle>Subscription History</CardTitle>
-          <CardDescription>Past and present subscriptions for this shop</CardDescription>
+          <CardDescription>
+            Past and present subscriptions for this shop
+          </CardDescription>
         </CardHeader>
         <CardContent>
           {historyLoading ? (
@@ -691,8 +776,8 @@ export function SubscriptionTab({ shop }: SubscriptionTabProps) {
                           sub.status === "ACTIVE"
                             ? "default"
                             : sub.status === "EXPIRED"
-                            ? "secondary"
-                            : "destructive"
+                              ? "secondary"
+                              : "destructive"
                         }
                       >
                         {sub.status}
@@ -707,7 +792,7 @@ export function SubscriptionTab({ shop }: SubscriptionTabProps) {
                         </span>
                       </div>
                       <div>
-                        Amount: {sub.currency || "USD"} {sub.amountPaid?.toFixed(2) || "0.00"}
+                        Amount: USD {sub.amountPaid?.toFixed(2) || "0.00"}
                       </div>
                     </div>
                   </div>
@@ -728,7 +813,9 @@ export function SubscriptionTab({ shop }: SubscriptionTabProps) {
           <AlertDialogHeader>
             <AlertDialogTitle>Cancel Subscription</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to cancel your subscription? Your subscription will remain active until the end of the current billing period, but it will not auto-renew.
+              Are you sure you want to cancel your subscription? Your
+              subscription will remain active until the end of the current
+              billing period, but it will not auto-renew.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

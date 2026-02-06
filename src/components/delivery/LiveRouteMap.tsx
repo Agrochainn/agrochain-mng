@@ -3,7 +3,14 @@
 import { useEffect, useRef, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { MapPin, Navigation, Satellite, Map as MapIcon, AlertCircle, Eye } from "lucide-react";
+import {
+  MapPin,
+  Navigation,
+  Satellite,
+  Map as MapIcon,
+  AlertCircle,
+  Eye,
+} from "lucide-react";
 import { Loader2 } from "lucide-react";
 import {
   Tooltip,
@@ -20,7 +27,7 @@ interface LiveRouteMapProps {
 declare global {
   interface Window {
     google: any;
-    initMap?: () => void;
+    initMap: () => void;
   }
 }
 
@@ -104,21 +111,23 @@ export default function LiveRouteMap({
       // Listen for Street View visibility changes
       const panorama = mapInstance.getStreetView();
       streetViewRef.current = panorama;
-      window.google.maps.event.addListener(panorama, 'visible_changed', () => {
+      window.google.maps.event.addListener(panorama, "visible_changed", () => {
         setIsStreetView(panorama.getVisible());
       });
 
       // Initialize directions renderer with preserveViewport to prevent map resizing
-      directionsRendererRef.current = new window.google.maps.DirectionsRenderer({
-        map: mapInstance,
-        suppressMarkers: true,
-        preserveViewport: true, // Keep viewport stable during route updates
-        polylineOptions: {
-          strokeWeight: 5,
-          strokeColor: "#4285F4",
-          clickable: false,
+      directionsRendererRef.current = new window.google.maps.DirectionsRenderer(
+        {
+          map: mapInstance,
+          suppressMarkers: true,
+          preserveViewport: true, // Keep viewport stable during route updates
+          polylineOptions: {
+            strokeWeight: 5,
+            strokeColor: "#4285F4",
+            clickable: false,
+          },
         },
-      });
+      );
 
       // Create user marker
       userMarkerRef.current = new window.google.maps.Marker({
@@ -148,24 +157,27 @@ export default function LiveRouteMap({
 
       // Add destination marker
       const geocoder = new window.google.maps.Geocoder();
-      geocoder.geocode({ address: destinationAddress }, (results: any, status: any) => {
-        if (status === "OK" && results[0]) {
-          new window.google.maps.Marker({
-            map: mapInstance,
-            position: results[0].geometry.location,
-            title: destinationName,
-            icon: {
-              path: window.google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
-              scale: 7,
-              fillColor: "#EA4335",
-              fillOpacity: 1,
-              strokeColor: "#fff",
-              strokeWeight: 2,
-            },
-            zIndex: 999,
-          });
-        }
-      });
+      geocoder.geocode(
+        { address: destinationAddress },
+        (results: any, status: any) => {
+          if (status === "OK" && results[0]) {
+            new window.google.maps.Marker({
+              map: mapInstance,
+              position: results[0].geometry.location,
+              title: destinationName,
+              icon: {
+                path: window.google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
+                scale: 7,
+                fillColor: "#EA4335",
+                fillOpacity: 1,
+                strokeColor: "#fff",
+                strokeWeight: 2,
+              },
+              zIndex: 999,
+            });
+          }
+        },
+      );
 
       startTracking();
     } catch (err) {
@@ -191,27 +203,29 @@ export default function LiveRouteMap({
           lng: pos.coords.longitude,
         };
         currentPositionRef.current = position;
-        
+
         // Immediately center map on first location
         if (map && isFirstLocationRef.current) {
           map.setCenter(position);
           map.setZoom(16);
           isFirstLocationRef.current = false;
         }
-        
+
         // Update marker
         if (userMarkerRef.current) {
           userMarkerRef.current.setPosition(position);
         }
-        
-        setStatus(`Initial location acquired — accuracy ±${Math.round(pos.coords.accuracy)}m`);
+
+        setStatus(
+          `Initial location acquired — accuracy ±${Math.round(pos.coords.accuracy)}m`,
+        );
       },
       (err) => console.warn("Initial position error:", err),
       {
         enableHighAccuracy: true,
         timeout: 5000,
         maximumAge: 0,
-      }
+      },
     );
 
     // Then start continuous high-accuracy tracking
@@ -222,7 +236,7 @@ export default function LiveRouteMap({
         enableHighAccuracy: true, // Use GPS for best accuracy
         maximumAge: 0, // Don't use cached positions
         timeout: 15000, // Give more time for GPS lock
-      }
+      },
     );
   };
 
@@ -263,7 +277,7 @@ export default function LiveRouteMap({
       map.panTo(position);
       map.setZoom(16);
       isFirstLocationRef.current = false;
-      
+
       // Set initial bounds to include both user and destination
       if (!mapBoundsSetRef.current) {
         setTimeout(() => {
@@ -390,7 +404,9 @@ export default function LiveRouteMap({
                 <MapPin className="h-4 w-4 text-red-500 mt-0.5 flex-shrink-0" />
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium">{destinationName}</p>
-                  <p className="text-xs text-muted-foreground line-clamp-2">{destinationAddress}</p>
+                  <p className="text-xs text-muted-foreground line-clamp-2">
+                    {destinationAddress}
+                  </p>
                 </div>
               </div>
 
@@ -459,7 +475,11 @@ export default function LiveRouteMap({
                       </Button>
                     </TooltipTrigger>
                     <TooltipContent>
-                      <p>{isSatellite ? "Switch to Road Map" : "Switch to Satellite View"}</p>
+                      <p>
+                        {isSatellite
+                          ? "Switch to Road Map"
+                          : "Switch to Satellite View"}
+                      </p>
                     </TooltipContent>
                   </Tooltip>
                 </div>
@@ -482,7 +502,9 @@ export default function LiveRouteMap({
               <div className="absolute inset-0 flex items-center justify-center bg-gray-100 z-10">
                 <div className="text-center">
                   <Loader2 className="h-8 w-8 animate-spin text-primary mx-auto mb-2" />
-                  <p className="text-sm text-muted-foreground">Loading map...</p>
+                  <p className="text-sm text-muted-foreground">
+                    Loading map...
+                  </p>
                 </div>
               </div>
             )}

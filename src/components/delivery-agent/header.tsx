@@ -63,7 +63,7 @@ export function DeliveryAgentHeader({ title }: DeliveryAgentHeaderProps) {
             <DropdownMenuLabel>
               <div className="flex flex-col space-y-1">
                 <p className="text-sm font-medium leading-none">
-                  {user?.username || "Delivery Agent"}
+                  {user?.firstName || "Delivery Agent"}
                 </p>
                 <p className="text-xs text-muted-foreground">Delivery Agent</p>
               </div>

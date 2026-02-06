@@ -63,9 +63,11 @@ export function AdminHeader({ title }: AdminHeaderProps) {
             <DropdownMenuLabel>
               <div className="flex flex-col space-y-1">
                 <p className="text-sm font-medium leading-none">
-                  {user?.username || "Admin"}
+                  {user?.firstName || "Admin"}
                 </p>
-                <p className="text-xs text-muted-foreground">System Administrator</p>
+                <p className="text-xs text-muted-foreground">
+                  System Administrator
+                </p>
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
