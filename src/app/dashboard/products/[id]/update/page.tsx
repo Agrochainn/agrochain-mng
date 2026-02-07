@@ -117,7 +117,7 @@ const mockWarehouses = [
     currentStock: 7500,
     active: true,
     manager: "John Smith",
-    phone: "+1 (555) 123-4567",
+    phone: "+250 788 458 261",
     email: "john.smith@warehouse.com",
   },
   {

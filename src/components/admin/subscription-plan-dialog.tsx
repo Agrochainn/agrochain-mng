@@ -48,7 +48,11 @@ type PlanFormData = {
   maxWarehouses: number;
   maxEmployees: number;
   maxDeliveryAgents: number;
-  capability: "VISUALIZATION_ONLY" | "PICKUP_ORDERS" | "FULL_ECOMMERCE" | "HYBRID";
+  capability:
+    | "VISUALIZATION_ONLY"
+    | "PICKUP_ORDERS"
+    | "FULL_ECOMMERCE"
+    | "HYBRID";
 };
 
 const planSchema: z.ZodType<PlanFormData> = z.object({
@@ -80,9 +84,12 @@ interface SubscriptionPlanDialogProps {
 
 const CAPABILITY_DESCRIPTIONS: Record<ShopCapability, string> = {
   VISUALIZATION_ONLY: "Only display products. No orders, delivery, or returns.",
-  PICKUP_ORDERS: "Display products and accept pickup orders. Customers pick up at shop. Returns handled at shop (no delivery agent).",
-  FULL_ECOMMERCE: "Full e-commerce: products, orders, delivery with agents, and returns with agents.",
-  HYBRID: "Both pickup orders and full e-commerce capabilities (pickup + delivery).",
+  PICKUP_ORDERS:
+    "Display products and accept pickup orders. Customers pick up at shop. Returns handled at shop (no delivery agent).",
+  FULL_ECOMMERCE:
+    "Full e-commerce: products, orders, delivery with agents, and returns with agents.",
+  HYBRID:
+    "Both pickup orders and full e-commerce capabilities (pickup + delivery).",
 };
 
 export function SubscriptionPlanDialog({
@@ -119,7 +126,7 @@ export function SubscriptionPlanDialog({
         name: plan.name || "",
         description: plan.description || "",
         price: plan.price || 0,
-        currency: plan.currency || "USD",
+        currency: plan.currency || "RWF",
         durationInDays: plan.durationInDays || 30,
         isActive: plan.isActive ?? true,
         isFreemium: plan.isFreemium ?? false,
@@ -214,7 +221,7 @@ export function SubscriptionPlanDialog({
                   <FormItem>
                     <FormLabel>Currency</FormLabel>
                     <FormControl>
-                      <Input placeholder="USD" {...field} />
+                      <Input placeholder="RWF" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -310,7 +317,9 @@ export function SubscriptionPlanDialog({
             </div>
 
             <div className="space-y-2">
-              <h3 className="font-medium">Resource Limits (-1 for unlimited)</h3>
+              <h3 className="font-medium">
+                Resource Limits (-1 for unlimited)
+              </h3>
               <div className="grid grid-cols-2 gap-4">
                 <FormField
                   control={form.control}
@@ -375,7 +384,8 @@ export function SubscriptionPlanDialog({
                   <div>
                     <FormLabel>Shop Capability</FormLabel>
                     <FormDescription>
-                      Select the capability this plan is designed for. Plans are categorized by capability.
+                      Select the capability this plan is designed for. Plans are
+                      categorized by capability.
                     </FormDescription>
                   </div>
                   <FormControl>
@@ -384,7 +394,9 @@ export function SubscriptionPlanDialog({
                       value={field.value}
                       className="flex flex-col space-y-3"
                     >
-                      {(Object.keys(CAPABILITY_DESCRIPTIONS) as ShopCapability[]).map((capability) => (
+                      {(
+                        Object.keys(CAPABILITY_DESCRIPTIONS) as ShopCapability[]
+                      ).map((capability) => (
                         <div
                           key={capability}
                           className="flex items-start space-x-3 rounded-lg border p-4 hover:bg-accent/50 transition-colors"

@@ -14,12 +14,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Select,
   SelectContent,
@@ -56,12 +51,11 @@ import {
   AlertTriangle,
 } from "lucide-react";
 
-
 export default function SettingsPage() {
   // Theme handling
   const { theme, setTheme } = useTheme();
   const router = useRouter();
-  
+
   // State for form inputs
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -91,7 +85,9 @@ export default function SettingsPage() {
     <div className="space-y-6">
       {/* Header */}
       <div className="border-b border-border/40 pb-4">
-        <h1 className="text-3xl font-bold tracking-tight text-primary">Settings</h1>
+        <h1 className="text-3xl font-bold tracking-tight text-primary">
+          Settings
+        </h1>
         <p className="text-muted-foreground mt-1">
           Customize your dashboard experience and manage account settings
         </p>
@@ -101,25 +97,40 @@ export default function SettingsPage() {
       <Tabs defaultValue="appearance" className="w-full">
         <div className="flex flex-col sm:flex-row justify-between items-start gap-2">
           <TabsList className="w-full max-w-2xl mb-6 grid grid-cols-2 md:grid-cols-5 gap-1">
-            <TabsTrigger value="appearance" className="flex items-center justify-center data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+            <TabsTrigger
+              value="appearance"
+              className="flex items-center justify-center data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+            >
               <Palette className="w-4 h-4 mr-2" />
               <span className="hidden sm:inline">Appearance</span>
               <span className="sm:hidden">Theme</span>
             </TabsTrigger>
-            <TabsTrigger value="account" className="flex items-center justify-center data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+            <TabsTrigger
+              value="account"
+              className="flex items-center justify-center data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+            >
               <User className="w-4 h-4 mr-2" />
               Account
             </TabsTrigger>
-            <TabsTrigger value="notifications" className="flex items-center justify-center data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+            <TabsTrigger
+              value="notifications"
+              className="flex items-center justify-center data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+            >
               <Bell className="w-4 h-4 mr-2" />
               <span className="hidden sm:inline">Notifications</span>
               <span className="sm:hidden">Alerts</span>
             </TabsTrigger>
-            <TabsTrigger value="security" className="flex items-center justify-center data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+            <TabsTrigger
+              value="security"
+              className="flex items-center justify-center data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+            >
               <Lock className="w-4 h-4 mr-2" />
               Security
             </TabsTrigger>
-            <TabsTrigger value="system" className="flex items-center justify-center data-[state=active]:bg-destructive data-[state=active]:text-destructive-foreground">
+            <TabsTrigger
+              value="system"
+              className="flex items-center justify-center data-[state=active]:bg-destructive data-[state=active]:text-destructive-foreground"
+            >
               <Trash2 className="w-4 h-4 mr-2" />
               <span className="hidden sm:inline">System</span>
               <span className="sm:hidden">Reset</span>
@@ -127,7 +138,10 @@ export default function SettingsPage() {
           </TabsList>
 
           {showSaved && (
-            <Badge variant="outline" className="bg-green-500/10 text-green-500 border-green-500/20 flex items-center">
+            <Badge
+              variant="outline"
+              className="bg-green-500/10 text-green-500 border-green-500/20 flex items-center"
+            >
               <CheckCircle2 className="w-3 h-3 mr-1" />
               Settings saved
             </Badge>
@@ -154,7 +168,11 @@ export default function SettingsPage() {
                     <div className="grid grid-cols-3 gap-2">
                       <Button
                         variant={theme === "light" ? "default" : "outline"}
-                        className={theme === "light" ? "bg-primary text-primary-foreground" : ""}
+                        className={
+                          theme === "light"
+                            ? "bg-primary text-primary-foreground"
+                            : ""
+                        }
                         onClick={() => setTheme("light")}
                       >
                         <Sun className="w-4 h-4 mr-2" />
@@ -162,7 +180,11 @@ export default function SettingsPage() {
                       </Button>
                       <Button
                         variant={theme === "dark" ? "default" : "outline"}
-                        className={theme === "dark" ? "bg-primary text-primary-foreground" : ""}
+                        className={
+                          theme === "dark"
+                            ? "bg-primary text-primary-foreground"
+                            : ""
+                        }
                         onClick={() => setTheme("dark")}
                       >
                         <Moon className="w-4 h-4 mr-2" />
@@ -170,7 +192,11 @@ export default function SettingsPage() {
                       </Button>
                       <Button
                         variant={theme === "system" ? "default" : "outline"}
-                        className={theme === "system" ? "bg-primary text-primary-foreground" : ""}
+                        className={
+                          theme === "system"
+                            ? "bg-primary text-primary-foreground"
+                            : ""
+                        }
                         onClick={() => setTheme("system")}
                       >
                         <Laptop className="w-4 h-4 mr-2" />
@@ -178,35 +204,42 @@ export default function SettingsPage() {
                       </Button>
                     </div>
                   </div>
-                  
+
                   <Separator />
-                  
+
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
-                      <Label htmlFor="sidebar-collapsed" className="flex items-center gap-2">
+                      <Label
+                        htmlFor="sidebar-collapsed"
+                        className="flex items-center gap-2"
+                      >
                         <Layout className="w-4 h-4" />
                         Collapsed Sidebar by Default
                       </Label>
-                      <Switch 
-                        id="sidebar-collapsed" 
+                      <Switch
+                        id="sidebar-collapsed"
                         checked={sidebarCollapsed}
                         onCheckedChange={setSidebarCollapsed}
                         className="data-[state=checked]:bg-primary"
                       />
                     </div>
                     <p className="text-sm text-muted-foreground">
-                      When enabled, the sidebar will be collapsed when you first load the dashboard
+                      When enabled, the sidebar will be collapsed when you first
+                      load the dashboard
                     </p>
                   </div>
-                  
+
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
-                      <Label htmlFor="dense-mode" className="flex items-center gap-2">
+                      <Label
+                        htmlFor="dense-mode"
+                        className="flex items-center gap-2"
+                      >
                         <Grid3X3Icon className="w-4 h-4" />
                         Dense Mode
                       </Label>
-                      <Switch 
-                        id="dense-mode" 
+                      <Switch
+                        id="dense-mode"
                         checked={denseMode}
                         onCheckedChange={setDenseMode}
                         className="data-[state=checked]:bg-primary"
@@ -219,7 +252,7 @@ export default function SettingsPage() {
                 </div>
               </CardContent>
               <CardFooter className="flex justify-end">
-                <Button 
+                <Button
                   onClick={handleSave}
                   className="bg-primary hover:bg-primary/90"
                 >
@@ -244,7 +277,10 @@ export default function SettingsPage() {
                   <div className="space-y-2">
                     <Label htmlFor="language">Language</Label>
                     <Select value={language} onValueChange={setLanguage}>
-                      <SelectTrigger id="language" className="border-primary/20 focus-visible:ring-primary">
+                      <SelectTrigger
+                        id="language"
+                        className="border-primary/20 focus-visible:ring-primary"
+                      >
                         <SelectValue placeholder="Select language" />
                       </SelectTrigger>
                       <SelectContent>
@@ -256,28 +292,46 @@ export default function SettingsPage() {
                       </SelectContent>
                     </Select>
                   </div>
-                  
+
                   <div className="space-y-2">
                     <Label htmlFor="timezone">Time Zone</Label>
                     <Select value={timezone} onValueChange={setTimezone}>
-                      <SelectTrigger id="timezone" className="border-primary/20 focus-visible:ring-primary">
+                      <SelectTrigger
+                        id="timezone"
+                        className="border-primary/20 focus-visible:ring-primary"
+                      >
                         <SelectValue placeholder="Select time zone" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="UTC">UTC (Coordinated Universal Time)</SelectItem>
-                        <SelectItem value="EST">EST (Eastern Standard Time)</SelectItem>
-                        <SelectItem value="CST">CST (Central Standard Time)</SelectItem>
-                        <SelectItem value="MST">MST (Mountain Standard Time)</SelectItem>
-                        <SelectItem value="PST">PST (Pacific Standard Time)</SelectItem>
-                        <SelectItem value="GMT">GMT (Greenwich Mean Time)</SelectItem>
+                        <SelectItem value="UTC">
+                          UTC (Coordinated Universal Time)
+                        </SelectItem>
+                        <SelectItem value="EST">
+                          EST (Eastern Standard Time)
+                        </SelectItem>
+                        <SelectItem value="CST">
+                          CST (Central Standard Time)
+                        </SelectItem>
+                        <SelectItem value="MST">
+                          MST (Mountain Standard Time)
+                        </SelectItem>
+                        <SelectItem value="PST">
+                          PST (Pacific Standard Time)
+                        </SelectItem>
+                        <SelectItem value="GMT">
+                          GMT (Greenwich Mean Time)
+                        </SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
-                  
+
                   <div className="space-y-2">
                     <Label htmlFor="date-format">Date Format</Label>
                     <Select value={dateFormat} onValueChange={setDateFormat}>
-                      <SelectTrigger id="date-format" className="border-primary/20 focus-visible:ring-primary">
+                      <SelectTrigger
+                        id="date-format"
+                        className="border-primary/20 focus-visible:ring-primary"
+                      >
                         <SelectValue placeholder="Select date format" />
                       </SelectTrigger>
                       <SelectContent>
@@ -288,14 +342,18 @@ export default function SettingsPage() {
                       </SelectContent>
                     </Select>
                   </div>
-                  
+
                   <div className="space-y-2">
                     <Label htmlFor="currency">Currency</Label>
-                    <Select defaultValue="usd">
-                      <SelectTrigger id="currency" className="border-primary/20 focus-visible:ring-primary">
+                    <Select defaultValue="rwf">
+                      <SelectTrigger
+                        id="currency"
+                        className="border-primary/20 focus-visible:ring-primary"
+                      >
                         <SelectValue placeholder="Select currency" />
                       </SelectTrigger>
                       <SelectContent>
+                        <SelectItem value="rwf">RWF</SelectItem>
                         <SelectItem value="usd">USD ($)</SelectItem>
                         <SelectItem value="eur">EUR (€)</SelectItem>
                         <SelectItem value="gbp">GBP (£)</SelectItem>
@@ -306,7 +364,7 @@ export default function SettingsPage() {
                 </div>
               </CardContent>
               <CardFooter className="flex justify-end">
-                <Button 
+                <Button
                   onClick={handleSave}
                   className="bg-primary hover:bg-primary/90"
                 >
@@ -336,30 +394,39 @@ export default function SettingsPage() {
                   <div className="flex flex-col items-center gap-2">
                     <Avatar className="w-24 h-24 border-2 border-border">
                       <AvatarImage src="" alt={name} />
-                      <AvatarFallback className="text-2xl bg-primary/10 text-primary">{name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                      <AvatarFallback className="text-2xl bg-primary/10 text-primary">
+                        {name
+                          .split(" ")
+                          .map((n) => n[0])
+                          .join("")}
+                      </AvatarFallback>
                     </Avatar>
-                    <Button variant="outline" size="sm" className="mt-2 border-primary/20 hover:bg-primary/5 hover:text-primary">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="mt-2 border-primary/20 hover:bg-primary/5 hover:text-primary"
+                    >
                       Change Picture
                     </Button>
                   </div>
                   <div className="flex-1 space-y-4">
                     <div className="space-y-2">
                       <Label htmlFor="name">Full Name</Label>
-                      <Input 
-                        id="name" 
-                        value={name} 
+                      <Input
+                        id="name"
+                        value={name}
                         onChange={(e) => setName(e.target.value)}
-                        className="border-primary/20 focus-visible:ring-primary" 
+                        className="border-primary/20 focus-visible:ring-primary"
                       />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="email">Email Address</Label>
-                      <Input 
-                        id="email" 
-                        type="email" 
-                        value={email} 
+                      <Input
+                        id="email"
+                        type="email"
+                        value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        className="border-primary/20 focus-visible:ring-primary" 
+                        className="border-primary/20 focus-visible:ring-primary"
                       />
                     </div>
                   </div>
@@ -381,7 +448,7 @@ export default function SettingsPage() {
                 </div>
               </CardContent>
               <CardFooter className="flex justify-end">
-                <Button 
+                <Button
                   onClick={handleSave}
                   className="bg-primary hover:bg-primary/90"
                 >
@@ -406,22 +473,32 @@ export default function SettingsPage() {
                   <div className="space-y-2">
                     <Label htmlFor="default-view">Default Dashboard View</Label>
                     <Select defaultValue="analytics">
-                      <SelectTrigger id="default-view" className="border-primary/20 focus-visible:ring-primary">
+                      <SelectTrigger
+                        id="default-view"
+                        className="border-primary/20 focus-visible:ring-primary"
+                      >
                         <SelectValue placeholder="Select default view" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="analytics">Analytics Overview</SelectItem>
+                        <SelectItem value="analytics">
+                          Analytics Overview
+                        </SelectItem>
                         <SelectItem value="orders">Recent Orders</SelectItem>
-                        <SelectItem value="products">Product Management</SelectItem>
+                        <SelectItem value="products">
+                          Product Management
+                        </SelectItem>
                         <SelectItem value="customers">Customer List</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
-                  
+
                   <div className="space-y-2">
                     <Label htmlFor="items-per-page">Items Per Page</Label>
                     <Select defaultValue="10">
-                      <SelectTrigger id="items-per-page" className="border-primary/20 focus-visible:ring-primary">
+                      <SelectTrigger
+                        id="items-per-page"
+                        className="border-primary/20 focus-visible:ring-primary"
+                      >
                         <SelectValue placeholder="Select items per page" />
                       </SelectTrigger>
                       <SelectContent>
@@ -432,34 +509,41 @@ export default function SettingsPage() {
                       </SelectContent>
                     </Select>
                   </div>
-                  
+
                   <Separator />
-                  
+
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
-                      <Label htmlFor="confirm-actions" className="flex items-center gap-2">
+                      <Label
+                        htmlFor="confirm-actions"
+                        className="flex items-center gap-2"
+                      >
                         <ShieldAlert className="w-4 h-4" />
                         Confirm Before Actions
                       </Label>
-                      <Switch 
-                        id="confirm-actions" 
+                      <Switch
+                        id="confirm-actions"
                         defaultChecked={true}
                         className="data-[state=checked]:bg-primary"
                       />
                     </div>
                     <p className="text-sm text-muted-foreground">
-                      Show confirmation dialogs before deletions and other critical actions
+                      Show confirmation dialogs before deletions and other
+                      critical actions
                     </p>
                   </div>
-                  
+
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
-                      <Label htmlFor="data-export" className="flex items-center gap-2">
+                      <Label
+                        htmlFor="data-export"
+                        className="flex items-center gap-2"
+                      >
                         <ArrowUpFromLine className="w-4 h-4" />
                         Enable Data Export
                       </Label>
-                      <Switch 
-                        id="data-export" 
+                      <Switch
+                        id="data-export"
                         checked={dataExport}
                         onCheckedChange={setDataExport}
                         className="data-[state=checked]:bg-primary"
@@ -472,7 +556,7 @@ export default function SettingsPage() {
                 </div>
               </CardContent>
               <CardFooter className="flex justify-end">
-                <Button 
+                <Button
                   onClick={handleSave}
                   className="bg-primary hover:bg-primary/90"
                 >
@@ -483,7 +567,7 @@ export default function SettingsPage() {
             </Card>
           </div>
         </TabsContent>
-        
+
         {/* Notifications Tab */}
         <TabsContent value="notifications">
           <Card>
@@ -500,23 +584,24 @@ export default function SettingsPage() {
               <div className="grid gap-6 md:grid-cols-2">
                 <div className="space-y-4">
                   <h3 className="text-lg font-medium">Email Notifications</h3>
-                  
+
                   <div className="flex items-center justify-between">
                     <div className="space-y-0.5">
                       <Label className="cursor-pointer">Order Updates</Label>
                       <p className="text-sm text-muted-foreground">
-                        Receive notifications about new orders and status changes
+                        Receive notifications about new orders and status
+                        changes
                       </p>
                     </div>
-                    <Switch 
+                    <Switch
                       checked={emailNotifications}
                       onCheckedChange={setEmailNotifications}
                       className="data-[state=checked]:bg-primary"
                     />
                   </div>
-                  
+
                   <Separator />
-                  
+
                   <div className="flex items-center justify-between">
                     <div className="space-y-0.5">
                       <Label className="cursor-pointer">Product Updates</Label>
@@ -524,15 +609,15 @@ export default function SettingsPage() {
                         Notifications about inventory changes and product issues
                       </p>
                     </div>
-                    <Switch 
+                    <Switch
                       checked={productUpdates}
                       onCheckedChange={setProductUpdates}
                       className="data-[state=checked]:bg-primary"
                     />
                   </div>
-                  
+
                   <Separator />
-                  
+
                   <div className="flex items-center justify-between">
                     <div className="space-y-0.5">
                       <Label className="cursor-pointer">Security Alerts</Label>
@@ -540,48 +625,53 @@ export default function SettingsPage() {
                         Important security notifications about your account
                       </p>
                     </div>
-                    <Switch 
+                    <Switch
                       checked={securityAlerts}
                       onCheckedChange={setSecurityAlerts}
                       className="data-[state=checked]:bg-primary"
                     />
                   </div>
                 </div>
-                
+
                 <div className="space-y-4">
-                  <h3 className="text-lg font-medium">Dashboard Notifications</h3>
-                  
+                  <h3 className="text-lg font-medium">
+                    Dashboard Notifications
+                  </h3>
+
                   <div className="flex items-center justify-between">
                     <div className="space-y-0.5">
                       <Label className="cursor-pointer">Real-time Alerts</Label>
                       <p className="text-sm text-muted-foreground">
-                        Show notifications in real-time while using the dashboard
+                        Show notifications in real-time while using the
+                        dashboard
                       </p>
                     </div>
-                    <Switch 
+                    <Switch
                       checked={pushNotifications}
                       onCheckedChange={setPushNotifications}
                       className="data-[state=checked]:bg-primary"
                     />
                   </div>
-                  
+
                   <Separator />
-                  
+
                   <div className="flex items-center justify-between">
                     <div className="space-y-0.5">
-                      <Label className="cursor-pointer">Critical Notifications Only</Label>
+                      <Label className="cursor-pointer">
+                        Critical Notifications Only
+                      </Label>
                       <p className="text-sm text-muted-foreground">
                         Only show critical notifications like inventory alerts
                       </p>
                     </div>
-                    <Switch 
+                    <Switch
                       defaultChecked={false}
                       className="data-[state=checked]:bg-primary"
                     />
                   </div>
-                  
+
                   <Separator />
-                  
+
                   <div className="flex items-center justify-between">
                     <div className="space-y-0.5">
                       <Label className="cursor-pointer">Sound Effects</Label>
@@ -589,7 +679,7 @@ export default function SettingsPage() {
                         Play sound when new notifications arrive
                       </p>
                     </div>
-                    <Switch 
+                    <Switch
                       defaultChecked={false}
                       className="data-[state=checked]:bg-primary"
                     />
@@ -598,25 +688,39 @@ export default function SettingsPage() {
               </div>
 
               <div className="pt-4">
-                <h3 className="text-lg font-medium mb-4">Notification Frequency</h3>
+                <h3 className="text-lg font-medium mb-4">
+                  Notification Frequency
+                </h3>
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-2">
-                  <Button variant="outline" className="border-primary/20 hover:bg-primary/5 hover:text-primary">
+                  <Button
+                    variant="outline"
+                    className="border-primary/20 hover:bg-primary/5 hover:text-primary"
+                  >
                     Real-time
                   </Button>
-                  <Button variant="outline" className="border-primary text-primary bg-primary/5">
+                  <Button
+                    variant="outline"
+                    className="border-primary text-primary bg-primary/5"
+                  >
                     Hourly Digest
                   </Button>
-                  <Button variant="outline" className="border-primary/20 hover:bg-primary/5 hover:text-primary">
+                  <Button
+                    variant="outline"
+                    className="border-primary/20 hover:bg-primary/5 hover:text-primary"
+                  >
                     Daily Digest
                   </Button>
-                  <Button variant="outline" className="border-primary/20 hover:bg-primary/5 hover:text-primary">
+                  <Button
+                    variant="outline"
+                    className="border-primary/20 hover:bg-primary/5 hover:text-primary"
+                  >
                     Weekly Digest
                   </Button>
                 </div>
               </div>
             </CardContent>
             <CardFooter className="flex justify-end">
-              <Button 
+              <Button
                 onClick={handleSave}
                 className="bg-primary hover:bg-primary/90"
               >
@@ -626,7 +730,7 @@ export default function SettingsPage() {
             </CardFooter>
           </Card>
         </TabsContent>
-        
+
         {/* Security Tab */}
         <TabsContent value="security">
           <div className="grid gap-6 md:grid-cols-2">
@@ -643,7 +747,7 @@ export default function SettingsPage() {
               <CardContent>
                 <div className="space-y-4">
                   <div className="space-y-2">
-                    <Button 
+                    <Button
                       variant="outline"
                       className="w-full justify-start border-primary/20 hover:bg-primary/5 hover:text-primary"
                     >
@@ -651,17 +755,20 @@ export default function SettingsPage() {
                       Change Password
                     </Button>
                   </div>
-                  
+
                   <Separator />
-                  
+
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
-                      <Label htmlFor="two-factor" className="flex items-center gap-2">
+                      <Label
+                        htmlFor="two-factor"
+                        className="flex items-center gap-2"
+                      >
                         <ShieldAlert className="w-4 h-4" />
                         Two-Factor Authentication
                       </Label>
-                      <Switch 
-                        id="two-factor" 
+                      <Switch
+                        id="two-factor"
                         checked={twoFactorEnabled}
                         onCheckedChange={setTwoFactorEnabled}
                         className="data-[state=checked]:bg-primary"
@@ -671,15 +778,16 @@ export default function SettingsPage() {
                       Enable two-factor authentication for enhanced security
                     </p>
                   </div>
-                  
+
                   {twoFactorEnabled && (
                     <div className="border rounded-lg p-4 bg-muted/50">
                       <p className="text-sm mb-3">
-                        Two-factor authentication has been enabled for your account.
-                        You will be prompted for a verification code when signing in.
+                        Two-factor authentication has been enabled for your
+                        account. You will be prompted for a verification code
+                        when signing in.
                       </p>
-                      <Button 
-                        variant="outline" 
+                      <Button
+                        variant="outline"
                         size="sm"
                         className="border-primary/20 hover:bg-primary/5 hover:text-primary"
                       >
@@ -687,13 +795,19 @@ export default function SettingsPage() {
                       </Button>
                     </div>
                   )}
-                  
+
                   <Separator />
-                  
+
                   <div className="space-y-2">
                     <Label htmlFor="session-timeout">Session Timeout</Label>
-                    <Select value={sessionTimeout} onValueChange={setSessionTimeout}>
-                      <SelectTrigger id="session-timeout" className="border-primary/20 focus-visible:ring-primary">
+                    <Select
+                      value={sessionTimeout}
+                      onValueChange={setSessionTimeout}
+                    >
+                      <SelectTrigger
+                        id="session-timeout"
+                        className="border-primary/20 focus-visible:ring-primary"
+                      >
                         <SelectValue placeholder="Select session timeout" />
                       </SelectTrigger>
                       <SelectContent>
@@ -711,7 +825,7 @@ export default function SettingsPage() {
                 </div>
               </CardContent>
               <CardFooter className="flex justify-end">
-                <Button 
+                <Button
                   onClick={handleSave}
                   className="bg-primary hover:bg-primary/90"
                 >
@@ -735,14 +849,28 @@ export default function SettingsPage() {
                 <ScrollArea className="h-[300px] pr-4">
                   <div className="space-y-4">
                     {[...Array(5)].map((_, i) => (
-                      <div key={i} className="flex justify-between border-b border-border/30 pb-3">
+                      <div
+                        key={i}
+                        className="flex justify-between border-b border-border/30 pb-3"
+                      >
                         <div>
-                          <p className="font-medium">Login from Chrome on Windows</p>
+                          <p className="font-medium">
+                            Login from Chrome on Windows
+                          </p>
                           <p className="text-sm text-muted-foreground">
-                            {new Date(Date.now() - i * 86400000).toLocaleString()}
+                            {new Date(
+                              Date.now() - i * 86400000,
+                            ).toLocaleString()}
                           </p>
                         </div>
-                        <Badge variant={i === 0 ? "default" : "outline"} className={i === 0 ? "bg-primary" : "bg-green-500/10 text-green-500 border-green-500/20"}>
+                        <Badge
+                          variant={i === 0 ? "default" : "outline"}
+                          className={
+                            i === 0
+                              ? "bg-primary"
+                              : "bg-green-500/10 text-green-500 border-green-500/20"
+                          }
+                        >
                           {i === 0 ? "Current" : "Successful"}
                         </Badge>
                       </div>
@@ -751,7 +879,7 @@ export default function SettingsPage() {
                 </ScrollArea>
               </CardContent>
               <CardFooter className="flex justify-end">
-                <Button 
+                <Button
                   variant="outline"
                   className="border-destructive/30 text-destructive hover:bg-destructive/10 hover:text-destructive"
                 >
@@ -764,4 +892,4 @@ export default function SettingsPage() {
       </Tabs>
     </div>
   );
-} 
+}

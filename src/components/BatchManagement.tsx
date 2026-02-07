@@ -130,15 +130,16 @@ export function BatchManagement({
         manufactureDate:
           createForm.manufactureDate && createFormTimes.manufactureTime
             ? `${createForm.manufactureDate}T${createFormTimes.manufactureTime}:00`
-            : createForm.manufactureDate
-            ? `${createForm.manufactureDate}T00:00:00`
-            : undefined,
+            : createForm.manufactureDate &&
+                !createForm.manufactureDate.includes("T")
+              ? `${createForm.manufactureDate}T00:00:00`
+              : createForm.manufactureDate || undefined,
         expiryDate:
           createForm.expiryDate && createFormTimes.expiryTime
             ? `${createForm.expiryDate}T${createFormTimes.expiryTime}:00`
-            : createForm.expiryDate
-            ? `${createForm.expiryDate}T00:00:00`
-            : undefined,
+            : createForm.expiryDate && !createForm.expiryDate.includes("T")
+              ? `${createForm.expiryDate}T00:00:00`
+              : createForm.expiryDate || undefined,
         quantity: createForm.quantity,
         supplierName: createForm.supplierName || undefined,
         supplierBatchNumber: createForm.supplierBatchNumber || undefined,
@@ -220,11 +221,16 @@ export function BatchManagement({
         manufactureDate:
           editForm.manufactureDate && editFormTimes.manufactureTime
             ? `${editForm.manufactureDate}T${editFormTimes.manufactureTime}:00`
-            : editForm.manufactureDate,
+            : editForm.manufactureDate &&
+                !editForm.manufactureDate.includes("T")
+              ? `${editForm.manufactureDate}T00:00:00`
+              : editForm.manufactureDate,
         expiryDate:
           editForm.expiryDate && editFormTimes.expiryTime
             ? `${editForm.expiryDate}T${editFormTimes.expiryTime}:00`
-            : editForm.expiryDate,
+            : editForm.expiryDate && !editForm.expiryDate.includes("T")
+              ? `${editForm.expiryDate}T00:00:00`
+              : editForm.expiryDate,
       };
 
       console.log("Updating batch with data:", formData);
@@ -279,22 +285,49 @@ export function BatchManagement({
       supplierName: batch.supplierName || "",
       supplierBatchNumber: batch.supplierBatchNumber || "",
     });
-    // Extract time from date strings if they exist
-    const manufactureTime = batch.manufactureDate
-      ? new Date(batch.manufactureDate).toTimeString().slice(0, 5)
-      : "";
-    const expiryTime = batch.expiryDate
-      ? new Date(batch.expiryDate).toTimeString().slice(0, 5)
-      : "";
+    // Extract date and time from the batch data
+    const extractDateAndTime = (dateTimeStr: string | null) => {
+      if (!dateTimeStr) return { date: "", time: "" };
+
+      try {
+        // If the string already contains a T followed by another T or duplicate patterns,
+        // take only the first valid ISO-8601 part
+        let cleanStr = dateTimeStr;
+        if (cleanStr.includes("T")) {
+          const parts = cleanStr.split("T");
+          if (parts.length > 2) {
+            // It's malformed like 2026-01-30T14:49:00T14:49:00
+            cleanStr = `${parts[0]}T${parts[1]}`;
+          }
+        }
+
+        const dateObj = new Date(cleanStr);
+        if (isNaN(dateObj.getTime())) return { date: "", time: "" };
+
+        const date = format(dateObj, "yyyy-MM-dd");
+        const time = format(dateObj, "HH:mm");
+        return { date, time };
+      } catch (error) {
+        return { date: "", time: "" };
+      }
+    };
+
+    const manufactureDateTime = extractDateAndTime(batch.manufactureDate);
+    const expiryDateTime = extractDateAndTime(batch.expiryDate);
 
     setEditFormTimes({
-      manufactureTime,
-      expiryTime,
+      manufactureTime: manufactureDateTime.time,
+      expiryTime: expiryDateTime.time,
     });
     setIsEditOpen(true);
   };
 
-  const getStatusColor = (status: string) => {
+  const getStatusColor = (batch: StockBatch) => {
+    // Check if the batch is expired based on current date
+    const isActuallyExpired =
+      batch.expiryDate && new Date(batch.expiryDate) < new Date();
+    const status = isActuallyExpired ? "EXPIRED" : batch.status;
+
     switch (status) {
       case "ACTIVE":
         return "bg-green-100 text-green-800";
@@ -366,7 +399,7 @@ export function BatchManagement({
                           className={cn(
                             "flex-1 justify-start text-left font-normal",
                             !createForm.manufactureDate &&
-                              "text-muted-foreground"
+                              "text-muted-foreground",
                           )}
                         >
                           <CalendarIcon className="mr-2 h-4 w-4" />
@@ -421,7 +454,7 @@ export function BatchManagement({
                           variant={"outline"}
                           className={cn(
                             "flex-1 justify-start text-left font-normal",
-                            !createForm.expiryDate && "text-muted-foreground"
+                            !createForm.expiryDate && "text-muted-foreground",
                           )}
                         >
                           <CalendarIcon className="mr-2 h-4 w-4" />
@@ -542,60 +575,76 @@ export function BatchManagement({
           </div>
         ) : (
           <div className="space-y-3">
-            {batches.map((batch) => (
-              <div key={batch.id} className="border rounded-md p-4">
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center gap-2">
-                    <span className="font-medium">{batch.batchNumber}</span>
-                    <Badge className={getStatusColor(batch.status)}>
-                      {batch.status}
-                    </Badge>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => openEditDialog(batch)}
-                    >
-                      <Edit className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => handleDeleteBatch(batch.id)}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 gap-4 text-sm">
-                  <div>
-                    <span className="text-muted-foreground">Quantity:</span>
-                    <span className="ml-2 font-medium">{batch.quantity}</span>
-                  </div>
-                  <div>
-                    <span className="text-muted-foreground">
-                      Manufacture Date:
-                    </span>
-                    <span className="ml-2">
-                      {new Date(batch.manufactureDate).toLocaleDateString()}
-                    </span>
-                  </div>
-                  <div>
-                    <span className="text-muted-foreground">Expiry Date:</span>
-                    <span className="ml-2">
-                      {new Date(batch.expiryDate).toLocaleDateString()}
-                    </span>
-                  </div>
-                  {batch.supplierName && (
-                    <div>
-                      <span className="text-muted-foreground">Supplier:</span>
-                      <span className="ml-2">{batch.supplierName}</span>
+            {batches.map((batch) => {
+              const isActuallyExpired =
+                batch.expiryDate && new Date(batch.expiryDate) < new Date();
+              const displayStatus = isActuallyExpired
+                ? "EXPIRED"
+                : batch.status;
+
+              return (
+                <div key={batch.id} className="border rounded-md p-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-2">
+                      <span className="font-medium">{batch.batchNumber}</span>
+                      <Badge className={getStatusColor(batch)}>
+                        {displayStatus}
+                      </Badge>
                     </div>
-                  )}
+                    <div className="flex items-center gap-2">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => openEditDialog(batch)}
+                      >
+                        <Edit className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => handleDeleteBatch(batch.id)}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4 text-sm">
+                    <div>
+                      <span className="text-muted-foreground">Quantity:</span>
+                      <span className="ml-2 font-medium">{batch.quantity}</span>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">
+                        Manufacture Date:
+                      </span>
+                      <span className="ml-2">
+                        {new Date(batch.manufactureDate).toLocaleDateString()}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">
+                        Expiry Date:
+                      </span>
+                      <span
+                        className={cn(
+                          "ml-2",
+                          isActuallyExpired && "text-destructive font-semibold",
+                        )}
+                      >
+                        {new Date(batch.expiryDate).toLocaleDateString()}
+                        {isActuallyExpired && " (EXPIRED)"}
+                      </span>
+                    </div>
+                    {batch.supplierName && (
+                      <div>
+                        <span className="text-muted-foreground">Supplier:</span>
+                        <span className="ml-2">{batch.supplierName}</span>
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
 
@@ -626,7 +675,7 @@ export function BatchManagement({
                         variant={"outline"}
                         className={cn(
                           "flex-1 justify-start text-left font-normal",
-                          !editForm.manufactureDate && "text-muted-foreground"
+                          !editForm.manufactureDate && "text-muted-foreground",
                         )}
                       >
                         <CalendarIcon className="mr-2 h-4 w-4" />
@@ -681,7 +730,7 @@ export function BatchManagement({
                         variant={"outline"}
                         className={cn(
                           "flex-1 justify-start text-left font-normal",
-                          !editForm.expiryDate && "text-muted-foreground"
+                          !editForm.expiryDate && "text-muted-foreground",
                         )}
                       >
                         <CalendarIcon className="mr-2 h-4 w-4" />
