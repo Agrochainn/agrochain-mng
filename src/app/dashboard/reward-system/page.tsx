@@ -43,7 +43,7 @@ export default function RewardSystemPage() {
   const [pageSize] = useState(10);
   const [expandedCards, setExpandedCards] = useState<Set<number>>(new Set());
   const [editingSystem, setEditingSystem] = useState<RewardSystemDTO | null>(
-    null
+    null,
   );
 
   // Fetch shopId from shopSlug
@@ -102,7 +102,7 @@ export default function RewardSystemPage() {
         currentPage,
         pageSize,
         "id",
-        "desc"
+        "desc",
       );
       setRewardSystems(data.content);
       setTotalPages(data.totalPages);
@@ -121,7 +121,7 @@ export default function RewardSystemPage() {
 
   const handleSystemUpdate = (updatedSystem: RewardSystemDTO) => {
     setRewardSystems((prev) =>
-      prev.map((sys) => (sys.id === updatedSystem.id ? updatedSystem : sys))
+      prev.map((sys) => (sys.id === updatedSystem.id ? updatedSystem : sys)),
     );
     setEditingSystem(null);
     toast({
@@ -166,13 +166,13 @@ export default function RewardSystemPage() {
     try {
       const updatedSystem = await rewardSystemService.activateRewardSystem(
         systemId,
-        shopIdRef.current
+        shopIdRef.current,
       );
       setRewardSystems((prev) =>
         prev.map((sys) => ({
           ...sys,
           isActive: sys.id === systemId,
-        }))
+        })),
       );
       toast({
         title: "Success",
@@ -190,7 +190,7 @@ export default function RewardSystemPage() {
 
   const handleToggleSystemEnabled = async (
     systemId: number,
-    enabled: boolean
+    enabled: boolean,
   ) => {
     if (!shopIdRef.current) return;
 
@@ -198,10 +198,10 @@ export default function RewardSystemPage() {
       const updatedSystem = await rewardSystemService.toggleSystemEnabled(
         systemId,
         shopIdRef.current,
-        enabled
+        enabled,
       );
       setRewardSystems((prev) =>
-        prev.map((sys) => (sys.id === systemId ? updatedSystem : sys))
+        prev.map((sys) => (sys.id === systemId ? updatedSystem : sys)),
       );
       toast({
         title: "Success",
@@ -223,7 +223,9 @@ export default function RewardSystemPage() {
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
           <p className="text-muted-foreground">
-            {shopLoading ? "Loading shop information..." : "Loading reward systems..."}
+            {shopLoading
+              ? "Loading shop information..."
+              : "Loading reward systems..."}
           </p>
         </div>
       </div>
@@ -360,7 +362,7 @@ export default function RewardSystemPage() {
                     </div>
                   </div>
                   <CardDescription>
-                    Point Value: ${system.pointValue}                     | Review Points:{" "}
+                    Point Value: {system.pointValue}RWF | Review Points:{" "}
                     {system.isReviewPointsEnabled
                       ? `${system.reviewPointsAmount} pts`
                       : "Disabled"}
@@ -387,7 +389,7 @@ export default function RewardSystemPage() {
                             onClick={() =>
                               handleToggleSystemEnabled(
                                 system.id!,
-                                !system.isSystemEnabled
+                                !system.isSystemEnabled,
                               )
                             }
                             className="flex items-center gap-2"
@@ -500,7 +502,7 @@ export default function RewardSystemPage() {
                                     {system.rewardRanges
                                       .filter(
                                         (range) =>
-                                          range.rangeType === "QUANTITY"
+                                          range.rangeType === "QUANTITY",
                                       )
                                       .map((range, idx) => (
                                         <div key={idx}>
@@ -535,7 +537,7 @@ export default function RewardSystemPage() {
                                   <div className="text-xs text-muted-foreground">
                                     {system.rewardRanges
                                       .filter(
-                                        (range) => range.rangeType === "AMOUNT"
+                                        (range) => range.rangeType === "AMOUNT",
                                       )
                                       .map((range, idx) => (
                                         <div key={idx}>
@@ -582,7 +584,7 @@ export default function RewardSystemPage() {
                           variant="outline"
                           onClick={() =>
                             router.push(
-                              `/dashboard/reward-system/edit/${system.id}${shopSlug ? `?shopSlug=${shopSlug}` : ""}`
+                              `/dashboard/reward-system/edit/${system.id}${shopSlug ? `?shopSlug=${shopSlug}` : ""}`,
                             )
                           }
                         >
@@ -592,7 +594,7 @@ export default function RewardSystemPage() {
                         <Button
                           onClick={() =>
                             router.push(
-                              `/dashboard/reward-system/edit/${system.id}${shopSlug ? `?shopSlug=${shopSlug}` : ""}`
+                              `/dashboard/reward-system/edit/${system.id}${shopSlug ? `?shopSlug=${shopSlug}` : ""}`,
                             )
                           }
                         >
