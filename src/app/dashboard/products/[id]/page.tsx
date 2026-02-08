@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import { productService } from "@/lib/services/product-service";
 import ProductClient from "./client";
 import { ProductDTO } from "@/lib/types/product";
@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation";
 
 export default function ProductView() {
   const params = useParams();
+  const searchParams = useSearchParams();
   const router = useRouter();
   const { toast } = useToast();
   const [product, setProduct] = useState<ProductDTO | null>(null);
@@ -19,6 +20,7 @@ export default function ProductView() {
   const [error, setError] = useState<string | null>(null);
 
   const productId = params.id as string;
+  const shopSlug = searchParams.get("shopSlug");
 
   useEffect(() => {
     if (productId) {
@@ -82,5 +84,5 @@ export default function ProductView() {
     );
   }
 
-  return <ProductClient product={product} id={productId} />;
+  return <ProductClient product={product} id={productId} shopSlug={shopSlug} />;
 }

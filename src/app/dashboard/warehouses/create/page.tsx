@@ -23,6 +23,7 @@ import { ArrowLeft, Upload, X, AlertTriangle } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { useRouter, useSearchParams } from "next/navigation";
 import { shopService } from "@/lib/services/shop-service";
+import { GoogleMapsAddressPicker } from "@/components/GoogleMapsWarehousePicker";
 
 export default function CreateWarehousePage() {
   const router = useRouter();
@@ -250,8 +251,7 @@ export default function CreateWarehousePage() {
           <CardHeader>
             <CardTitle>Address Information</CardTitle>
             <CardDescription>
-              Enter the warehouse address details (Google Maps is currently
-              disabled).
+              Enter the warehouse address details
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -325,14 +325,39 @@ export default function CreateWarehousePage() {
 
         {/* Google Maps picker intentionally disabled (API key expired). */}
         <Card>
-          <CardContent className="p-6">
-            <Alert>
-              <AlertTriangle className="h-4 w-4" />
-              <AlertDescription>
-                Google Maps is currently disabled. We’ll use a mocked
-                latitude/longitude on create if none is set.
-              </AlertDescription>
-            </Alert>
+          <CardHeader>
+            <CardTitle>Address Picker</CardTitle>
+            <CardDescription>
+              Use the interactive map to search and pick the warehouse location.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="p-0">
+            {process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ? (
+              <GoogleMapsAddressPicker
+                apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}
+                onAddressSelect={(addr) => {
+                  setFormData((prev) => ({
+                    ...prev,
+                    address: addr.formattedAddress || prev.address,
+                    city: addr.city || prev.city,
+                    country: addr.country || prev.country,
+                    latitude: addr.latitude,
+                    longitude: addr.longitude,
+                  }));
+                }}
+              />
+            ) : (
+              <CardContent className="p-6">
+                <Alert>
+                  <AlertTriangle className="h-4 w-4" />
+                  <AlertDescription>
+                    {/* Google Maps is not configured. We’ll use a mocked
+                    latitude/longitude on create if none is set. */}
+                    Using default location data
+                  </AlertDescription>
+                </Alert>
+              </CardContent>
+            )}
           </CardContent>
         </Card>
 
