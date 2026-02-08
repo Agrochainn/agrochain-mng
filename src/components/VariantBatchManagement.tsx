@@ -136,6 +136,25 @@ export function VariantBatchManagement({
         return;
       }
 
+      // Require manufacture and expiry dates when assigning batches to a warehouse
+      if (!createForm.manufactureDate) {
+        toast({
+          title: "Validation Error",
+          description: "Manufacture date is required",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      if (!createForm.expiryDate) {
+        toast({
+          title: "Validation Error",
+          description: "Expiry date is required",
+          variant: "destructive",
+        });
+        return;
+      }
+
       // Prepare the request data with proper date/time formatting
       const requestData = {
         stockId: createForm.stockId,
@@ -144,14 +163,14 @@ export function VariantBatchManagement({
           createForm.manufactureDate && createFormTimes.manufactureTime
             ? `${createForm.manufactureDate}T${createFormTimes.manufactureTime}:00`
             : createForm.manufactureDate
-            ? `${createForm.manufactureDate}T00:00:00`
-            : undefined,
+              ? `${createForm.manufactureDate}T00:00:00`
+              : undefined,
         expiryDate:
           createForm.expiryDate && createFormTimes.expiryTime
             ? `${createForm.expiryDate}T${createFormTimes.expiryTime}:00`
             : createForm.expiryDate
-            ? `${createForm.expiryDate}T00:00:00`
-            : undefined,
+              ? `${createForm.expiryDate}T00:00:00`
+              : undefined,
         quantity: createForm.quantity,
         supplierName: createForm.supplierName || undefined,
         supplierBatchNumber: createForm.supplierBatchNumber || undefined,
@@ -208,6 +227,25 @@ export function VariantBatchManagement({
         return;
       }
 
+      // Require manufacture and expiry dates for updates too
+      if (!editForm.manufactureDate) {
+        toast({
+          title: "Validation Error",
+          description: "Manufacture date is required",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      if (!editForm.expiryDate) {
+        toast({
+          title: "Validation Error",
+          description: "Expiry date is required",
+          variant: "destructive",
+        });
+        return;
+      }
+
       // Prepare the request data with proper date/time formatting
       const requestData = {
         ...editForm,
@@ -216,14 +254,14 @@ export function VariantBatchManagement({
           editForm.manufactureDate && editFormTimes.manufactureTime
             ? `${editForm.manufactureDate}T${editFormTimes.manufactureTime}:00`
             : editForm.manufactureDate
-            ? `${editForm.manufactureDate}T00:00:00`
-            : undefined,
+              ? `${editForm.manufactureDate}T00:00:00`
+              : undefined,
         expiryDate:
           editForm.expiryDate && editFormTimes.expiryTime
             ? `${editForm.expiryDate}T${editFormTimes.expiryTime}:00`
             : editForm.expiryDate
-            ? `${editForm.expiryDate}T00:00:00`
-            : undefined,
+              ? `${editForm.expiryDate}T00:00:00`
+              : undefined,
       };
 
       await stockBatchService.updateBatch(editingBatch.id, requestData);
@@ -307,26 +345,37 @@ export function VariantBatchManagement({
       return <Badge variant="secondary">Empty</Badge>;
     }
     if (batch.isExpiringSoon) {
-      return <Badge variant="outline" className="text-yellow-600">Expiring Soon</Badge>;
+      return (
+        <Badge variant="outline" className="text-yellow-600">
+          Expiring Soon
+        </Badge>
+      );
     }
     if (batch.isAvailable) {
-      return <Badge variant="outline" className="text-green-600">Active</Badge>;
+      return (
+        <Badge variant="outline" className="text-green-600">
+          Active
+        </Badge>
+      );
     }
     return <Badge variant="secondary">Inactive</Badge>;
   };
 
   // Group batches by warehouse
-  const batchesByWarehouse = batches.reduce((acc, batch) => {
-    const warehouseId = batch.warehouseId;
-    if (!acc[warehouseId]) {
-      acc[warehouseId] = {
-        warehouseName: batch.warehouseName,
-        batches: [],
-      };
-    }
-    acc[warehouseId].batches.push(batch);
-    return acc;
-  }, {} as Record<number, { warehouseName: string; batches: StockBatch[] }>);
+  const batchesByWarehouse = batches.reduce(
+    (acc, batch) => {
+      const warehouseId = batch.warehouseId;
+      if (!acc[warehouseId]) {
+        acc[warehouseId] = {
+          warehouseName: batch.warehouseName,
+          batches: [],
+        };
+      }
+      acc[warehouseId].batches.push(batch);
+      return acc;
+    },
+    {} as Record<number, { warehouseName: string; batches: StockBatch[] }>,
+  );
 
   return (
     <div className="space-y-6">
@@ -337,8 +386,8 @@ export function VariantBatchManagement({
               <Package className="h-5 w-5" />
               Batch Management - {variantName}
             </CardTitle>
-            <Button 
-              onClick={() => setIsCreateOpen(true)} 
+            <Button
+              onClick={() => setIsCreateOpen(true)}
               disabled={loading || warehouseStocks.length === 0}
             >
               <Plus className="w-4 h-4 mr-2" />
@@ -355,61 +404,77 @@ export function VariantBatchManagement({
             </div>
           ) : Object.keys(batchesByWarehouse).length > 0 ? (
             <div className="space-y-6">
-              {Object.entries(batchesByWarehouse).map(([warehouseId, { warehouseName, batches }]) => (
-                <div key={warehouseId} className="space-y-4">
-                  <h4 className="font-semibold text-sm border-b pb-2">
-                    {warehouseName} ({batches.length} batches)
-                  </h4>
-                  <div className="grid gap-3">
-                    {batches.map((batch) => (
-                      <div
-                        key={batch.id}
-                        className="flex items-center justify-between p-4 bg-muted/20 rounded-md border"
-                      >
-                        <div className="flex-1 space-y-2">
-                          <div className="flex items-center gap-3">
-                            <span className="font-medium">{batch.batchNumber}</span>
-                            {getBatchStatusBadge(batch)}
-                            <span className="text-sm font-semibold text-primary">
-                              {batch.quantity} units
-                            </span>
+              {Object.entries(batchesByWarehouse).map(
+                ([warehouseId, { warehouseName, batches }]) => (
+                  <div key={warehouseId} className="space-y-4">
+                    <h4 className="font-semibold text-sm border-b pb-2">
+                      {warehouseName} ({batches.length} batches)
+                    </h4>
+                    <div className="grid gap-3">
+                      {batches.map((batch) => (
+                        <div
+                          key={batch.id}
+                          className="flex items-center justify-between p-4 bg-muted/20 rounded-md border"
+                        >
+                          <div className="flex-1 space-y-2">
+                            <div className="flex items-center gap-3">
+                              <span className="font-medium">
+                                {batch.batchNumber}
+                              </span>
+                              {getBatchStatusBadge(batch)}
+                              <span className="text-sm font-semibold text-primary">
+                                {batch.quantity} units
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                              {batch.manufactureDate && (
+                                <span>
+                                  Mfg:{" "}
+                                  {format(
+                                    new Date(batch.manufactureDate),
+                                    "MMM dd, yyyy",
+                                  )}
+                                </span>
+                              )}
+                              {batch.expiryDate && (
+                                <span>
+                                  Exp:{" "}
+                                  {format(
+                                    new Date(batch.expiryDate),
+                                    "MMM dd, yyyy",
+                                  )}
+                                </span>
+                              )}
+                              {batch.supplierName && (
+                                <span>Supplier: {batch.supplierName}</span>
+                              )}
+                            </div>
                           </div>
-                          <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                            {batch.manufactureDate && (
-                              <span>Mfg: {format(new Date(batch.manufactureDate), "MMM dd, yyyy")}</span>
-                            )}
-                            {batch.expiryDate && (
-                              <span>Exp: {format(new Date(batch.expiryDate), "MMM dd, yyyy")}</span>
-                            )}
-                            {batch.supplierName && (
-                              <span>Supplier: {batch.supplierName}</span>
-                            )}
+                          <div className="flex items-center gap-2">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleEditBatch(batch)}
+                            >
+                              <Edit className="w-4 h-4 mr-1" />
+                              Edit
+                            </Button>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleDeleteBatch(batch.id)}
+                              className="text-destructive hover:bg-destructive/10"
+                            >
+                              <Trash2 className="w-4 h-4 mr-1" />
+                              Delete
+                            </Button>
                           </div>
                         </div>
-                        <div className="flex items-center gap-2">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => handleEditBatch(batch)}
-                          >
-                            <Edit className="w-4 h-4 mr-1" />
-                            Edit
-                          </Button>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => handleDeleteBatch(batch.id)}
-                            className="text-destructive hover:bg-destructive/10"
-                          >
-                            <Trash2 className="w-4 h-4 mr-1" />
-                            Delete
-                          </Button>
-                        </div>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
-                </div>
-              ))}
+                ),
+              )}
             </div>
           ) : (
             <div className="text-center py-12">
@@ -446,14 +511,20 @@ export function VariantBatchManagement({
               <select
                 id="warehouse"
                 value={createForm.stockId}
-                onChange={(e) => setCreateForm({ ...createForm, stockId: Number(e.target.value) })}
+                onChange={(e) =>
+                  setCreateForm({
+                    ...createForm,
+                    stockId: Number(e.target.value),
+                  })
+                }
                 className="w-full mt-1 px-3 py-2 border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
                 required
               >
                 <option value={0}>Select a warehouse</option>
                 {warehouseStocks.map((stock) => (
                   <option key={stock.stockId} value={stock.stockId}>
-                    {stock.warehouseName} ({stock.stockQuantity} units available)
+                    {stock.warehouseName} ({stock.stockQuantity} units
+                    available)
                   </option>
                 ))}
               </select>
@@ -480,7 +551,7 @@ export function VariantBatchManagement({
                       variant={"outline"}
                       className={cn(
                         "flex-1 justify-start text-left font-normal",
-                        !createForm.manufactureDate && "text-muted-foreground"
+                        !createForm.manufactureDate && "text-muted-foreground",
                       )}
                     >
                       <CalendarIcon className="mr-2 h-4 w-4" />
@@ -536,7 +607,7 @@ export function VariantBatchManagement({
                       variant={"outline"}
                       className={cn(
                         "flex-1 justify-start text-left font-normal",
-                        !createForm.expiryDate && "text-muted-foreground"
+                        !createForm.expiryDate && "text-muted-foreground",
                       )}
                     >
                       <CalendarIcon className="mr-2 h-4 w-4" />
@@ -674,7 +745,7 @@ export function VariantBatchManagement({
                       variant={"outline"}
                       className={cn(
                         "flex-1 justify-start text-left font-normal",
-                        !editForm.manufactureDate && "text-muted-foreground"
+                        !editForm.manufactureDate && "text-muted-foreground",
                       )}
                     >
                       <CalendarIcon className="mr-2 h-4 w-4" />
@@ -730,7 +801,7 @@ export function VariantBatchManagement({
                       variant={"outline"}
                       className={cn(
                         "flex-1 justify-start text-left font-normal",
-                        !editForm.expiryDate && "text-muted-foreground"
+                        !editForm.expiryDate && "text-muted-foreground",
                       )}
                     >
                       <CalendarIcon className="mr-2 h-4 w-4" />
@@ -809,7 +880,9 @@ export function VariantBatchManagement({
             </div>
 
             <div>
-              <Label htmlFor="editSupplierBatchNumber">Supplier Batch Number</Label>
+              <Label htmlFor="editSupplierBatchNumber">
+                Supplier Batch Number
+              </Label>
               <Input
                 id="editSupplierBatchNumber"
                 value={editForm.supplierBatchNumber}

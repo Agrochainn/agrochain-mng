@@ -231,8 +231,10 @@ export function WarehouseSelectorWithBatches({
           batchErrors.quantity = "Quantity must be greater than 0";
         }
 
-        // Validate manufacture date
-        if (batch.manufactureDate) {
+        // Require and validate manufacture date
+        if (!batch.manufactureDate) {
+          batchErrors.manufactureDate = "Manufacture date is required";
+        } else {
           const mfgDate = new Date(batch.manufactureDate);
           const now = new Date();
 
@@ -242,8 +244,10 @@ export function WarehouseSelectorWithBatches({
           }
         }
 
-        // Validate expiry date
-        if (batch.expiryDate) {
+        // Require and validate expiry date
+        if (!batch.expiryDate) {
+          batchErrors.expiryDate = "Expiry date is required";
+        } else {
           const expDate = new Date(batch.expiryDate);
           const now = new Date();
 
@@ -717,7 +721,10 @@ export function WarehouseSelectorWithBatches({
                                               handleBatchChange(
                                                 index,
                                                 "manufactureDate",
-                                                newDateTime.toISOString(),
+                                                format(
+                                                  newDateTime,
+                                                  "yyyy-MM-dd'T'HH:mm:ss",
+                                                ),
                                               );
                                             }
                                           }}
@@ -753,7 +760,7 @@ export function WarehouseSelectorWithBatches({
                                             handleBatchChange(
                                               index,
                                               "manufactureDate",
-                                              date.toISOString(),
+                                              format(date, "yyyy-MM-dd'T'HH:mm:ss"),
                                             );
                                           }
                                         }}
@@ -846,7 +853,10 @@ export function WarehouseSelectorWithBatches({
                                               handleBatchChange(
                                                 index,
                                                 "expiryDate",
-                                                newDateTime.toISOString(),
+                                                format(
+                                                  newDateTime,
+                                                  "yyyy-MM-dd'T'HH:mm:ss",
+                                                ),
                                               );
                                             }
                                           }}
@@ -882,7 +892,7 @@ export function WarehouseSelectorWithBatches({
                                             handleBatchChange(
                                               index,
                                               "expiryDate",
-                                              date.toISOString(),
+                                              format(date, "yyyy-MM-dd'T'HH:mm:ss"),
                                             );
                                           }
                                         }}
