@@ -370,6 +370,7 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
 
   const router = useRouter();
   const searchParams = useSearchParams();
+  const shopSlug = searchParams.get("shopSlug");
   const { toast } = useToast();
 
   // State management
@@ -2388,7 +2389,10 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
             <Button
               variant="outline"
               size="sm"
-              onClick={() => router.push(`/dashboard/products/${productId}`)}
+              onClick={() => {
+                const backUrl = `/dashboard/products/${productId}${shopSlug ? `?shopSlug=${encodeURIComponent(shopSlug)}` : ""}`;
+                router.push(backUrl);
+              }}
               className="border-primary/20 hover:bg-primary/5 hover:text-primary"
             >
               <ArrowLeft className="mr-2 h-4 w-4" />
@@ -2409,13 +2413,12 @@ export default function ProductUpdate({ params }: ProductUpdateProps) {
               variant="outline"
               size="sm"
               onClick={() => {
+                const viewUrl = `/dashboard/products/${productId}${shopSlug ? `?shopSlug=${encodeURIComponent(shopSlug)}` : ""}`;
                 if (hasUnsavedChanges) {
                   setIsUnsavedChangesModalOpen(true);
-                  setPendingAction(
-                    () => () => router.push(`/dashboard/products/${productId}`),
-                  );
+                  setPendingAction(() => () => router.push(viewUrl));
                 } else {
-                  router.push(`/dashboard/products/${productId}`);
+                  router.push(viewUrl);
                 }
               }}
             >
