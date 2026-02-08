@@ -52,15 +52,20 @@ import { formatCurrency } from "@/lib/utils";
 interface ProductClientProps {
   product: ProductDTO;
   id: string;
+  shopSlug?: string | null;
 }
 
-export default function ProductClient({ product, id }: ProductClientProps) {
+export default function ProductClient({
+  product,
+  id,
+  shopSlug,
+}: ProductClientProps) {
   const router = useRouter();
   const [selectedImage, setSelectedImage] = useState<string | null>(
     product.images && product.images.length > 0
       ? product.images.find((img) => img.isPrimary)?.url ||
           product.images[0].url
-      : null
+      : null,
   );
 
   if (!product) {
@@ -115,7 +120,10 @@ export default function ProductClient({ product, id }: ProductClientProps) {
             <Button
               variant="outline"
               size="sm"
-              onClick={() => router.push("/dashboard/products")}
+              onClick={() => {
+                const backUrl = `/dashboard/products${shopSlug ? `?shopSlug=${encodeURIComponent(shopSlug)}` : ""}`;
+                router.push(backUrl);
+              }}
               className="border-primary/20 hover:bg-primary/5 hover:text-primary"
             >
               <ArrowLeft className="mr-2 h-4 w-4" />
@@ -129,7 +137,10 @@ export default function ProductClient({ product, id }: ProductClientProps) {
             </div>
           </div>
           <Button
-            onClick={() => router.push(`/dashboard/products/${id}/update`)}
+            onClick={() => {
+              const updateUrl = `/dashboard/products/${id}/update${shopSlug ? `?shopSlug=${encodeURIComponent(shopSlug)}` : ""}`;
+              router.push(updateUrl);
+            }}
             className="bg-primary hover:bg-primary/90 mt-2 sm:mt-0"
           >
             <Edit className="mr-2 h-4 w-4" />
@@ -759,7 +770,7 @@ export default function ProductClient({ product, id }: ProductClientProps) {
                   <div className="text-center p-4 bg-green-50 rounded-md">
                     <div className="text-2xl font-bold text-green-600">
                       {product.warehouseStock?.filter(
-                        (stock) => stock.isInStock
+                        (stock) => stock.isInStock,
                       ).length || 0}
                     </div>
                     <div className="text-sm text-muted-foreground">
